@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Imports;
+
+use App\Obat;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Carbon\Carbon;
+use Session;
+use Illuminate\Support\Facades\Auth;
+
+
+
+class ProdukImport implements ToModel
+{
+    /**
+    * @param array $row
+    *
+    * @return \Illuminate\Database\Eloquent\Model|null
+    */
+    public function model(array $row)
+    {
+        return new Obat([
+            'id' => $row[0],
+            'kode_produk' => $row[1],
+            'kode_cabang' => Auth::user()->kode_cabang,
+            'barcode' => $row[3],
+            'no_batch' => $row[4],
+            'nama_produk' => $row[5],
+            'id_kategori' => $row[6],
+            'id_jenis' => $row[7],
+            'top' => $row[8],
+            'tipe' => $row[9],
+            'tgl_kadaluarsa' =>$row[10],
+            'qty' => $row[11],
+            'qty_min' => $row[12],
+            'id_unit' => $row[13],
+            'harga_beli' => $row[14],
+            'margin_rp' => $row[15],
+            'margin_persen' => $row[16],
+            'harga_jual' => $row[17],
+            'id_supplier' => $row[18],
+            'kode_pembelian' => $row[19],
+            'id_user_input' => Auth::user()->id
+        ]);
+    }
+}

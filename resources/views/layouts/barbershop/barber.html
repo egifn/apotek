@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Booking Online - BarberShop</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        />
+        <style>
+            :root {
+                --primary: #6c4ab6;
+                --secondary: #8d72e1;
+                --accent: #b9e0ff;
+                --light: #f5f5f5;
+                --dark: #333333;
+                --success: #4caf50;
+                --warning: #ff9800;
+                --danger: #f44336;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Poppins", sans-serif;
+            }
+
+            body {
+                background-color: #f8f9fa;
+                color: var(--dark);
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0 15px;
+                margin: 0 auto;
+            }
+
+            /* Header */
+            .header {
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+                color: white;
+                padding: 20px 0;
+                text-align: center;
+                border-radius: 0 0 20px 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                margin-bottom: 25px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+                opacity: 0.9;
+            }
+
+            /* Booking Card */
+            .booking-card {
+                background: white;
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 25px;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease;
+            }
+
+            .booking-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .booking-card h2 {
+                color: var(--primary);
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+            }
+
+            .booking-card h2 i {
+                margin-right: 10px;
+            }
+
+            /* Form Elements */
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 500;
+                color: var(--dark);
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                font-size: 1rem;
+                transition: all 0.3s;
+            }
+
+            .form-control:focus {
+                border-color: var(--secondary);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(140, 114, 225, 0.2);
+            }
+
+            select.form-control {
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                background-size: 1em;
+            }
+
+            /* Time Slots */
+            .time-slots {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .time-slot {
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .time-slot:hover {
+                border-color: var(--secondary);
+            }
+
+            .time-slot.selected {
+                background-color: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+            .time-slot.unavailable {
+                background-color: #f8f9fa;
+                color: #aaa;
+                cursor: not-allowed;
+                text-decoration: line-through;
+            }
+
+            /* Barber Card */
+            .barber-card {
+                display: flex;
+                align-items: center;
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .barber-avatar {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 15px;
+                border: 3px solid var(--accent);
+            }
+
+            .barber-info h3 {
+                font-size: 1.1rem;
+                margin-bottom: 5px;
+                color: var(--dark);
+            }
+
+            .barber-info p {
+                font-size: 0.8rem;
+                color: #666;
+                display: flex;
+                align-items: center;
+            }
+
+            .barber-info p i {
+                margin-right: 5px;
+                color: var(--secondary);
+            }
+
+            /* Service Card */
+            .service-card {
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .service-info h3 {
+                font-size: 1rem;
+                margin-bottom: 5px;
+                color: var(--dark);
+            }
+
+            .service-info p {
+                font-size: 0.8rem;
+                color: #666;
+            }
+
+            .service-price {
+                font-weight: 600;
+                color: var(--primary);
+            }
+
+            /* Button */
+            .btn {
+                display: inline-block;
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+                color: white;
+                border: none;
+                padding: 14px 25px;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 500;
+                cursor: pointer;
+                text-align: center;
+                width: 100%;
+                transition: all 0.3s;
+                box-shadow: 0 4px 15px rgba(108, 74, 182, 0.3);
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(108, 74, 182, 0.4);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            /* Calendar */
+            .calendar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .calendar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+
+            .calendar-title {
+                font-weight: 600;
+                color: var(--dark);
+            }
+
+            .calendar-nav {
+                display: flex;
+                gap: 10px;
+            }
+
+            .calendar-nav button {
+                background: var(--light);
+                border: none;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .calendar-weekdays {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                text-align: center;
+                font-size: 0.8rem;
+                color: #666;
+                margin-bottom: 10px;
+            }
+
+            .calendar-days {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+            }
+
+            .calendar-day {
+                aspect-ratio: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .calendar-day:hover {
+                background: var(--light);
+            }
+
+            .calendar-day.selected {
+                background: var(--primary);
+                color: white;
+            }
+
+            .calendar-day.disabled {
+                color: #ccc;
+                cursor: not-allowed;
+            }
+
+            /* Success Modal */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s;
+            }
+
+            .modal-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .modal {
+                background: white;
+                border-radius: 20px;
+                width: 90%;
+                max-width: 400px;
+                padding: 30px;
+                text-align: center;
+                transform: translateY(20px);
+                transition: all 0.3s;
+            }
+
+            .modal-overlay.active .modal {
+                transform: translateY(0);
+            }
+
+            .modal-icon {
+                font-size: 4rem;
+                color: var(--success);
+                margin-bottom: 20px;
+            }
+
+            .modal h2 {
+                color: var(--primary);
+                margin-bottom: 10px;
+            }
+
+            .modal p {
+                margin-bottom: 20px;
+                color: #666;
+            }
+
+            /* Responsive Adjustments */
+            @media (max-width: 576px) {
+                .time-slots {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .header h1 {
+                    font-size: 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="container">
+                <h1><i class="fas fa-calendar-check"></i> Booking Online</h1>
+                <p>Pilih barber dan waktu yang tersedia</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Step 1: Select Barber -->
+            <div class="booking-card">
+                <h2><i class="fas fa-user"></i> Pilih Barber</h2>
+                <div class="barber-card selected">
+                    <img
+                        src="https://randomuser.me/api/portraits/men/32.jpg"
+                        alt="Barber"
+                        class="barber-avatar"
+                    />
+                    <div class="barber-info">
+                        <h3>Andi Pratama</h3>
+                        <p><i class="fas fa-star"></i> 4.9 (120 review)</p>
+                    </div>
+                </div>
+
+                <div class="barber-card">
+                    <img
+                        src="https://randomuser.me/api/portraits/men/44.jpg"
+                        alt="Barber"
+                        class="barber-avatar"
+                    />
+                    <div class="barber-info">
+                        <h3>Budi Santoso</h3>
+                        <p><i class="fas fa-star"></i> 4.8 (95 review)</p>
+                    </div>
+                </div>
+
+                <div class="barber-card">
+                    <img
+                        src="https://randomuser.me/api/portraits/men/67.jpg"
+                        alt="Barber"
+                        class="barber-avatar"
+                    />
+                    <div class="barber-info">
+                        <h3>Charlie Gunawan</h3>
+                        <p><i class="fas fa-star"></i> 4.7 (80 review)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Select Service -->
+            <div class="booking-card">
+                <h2><i class="fas fa-cut"></i> Pilih Layanan</h2>
+                <div class="service-card selected">
+                    <div class="service-info">
+                        <h3>Haircut Premium</h3>
+                        <p>45 menit • Termasuk keramas</p>
+                    </div>
+                    <div class="service-price">Rp 85.000</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-info">
+                        <h3>Haircut Reguler</h3>
+                        <p>30 menit</p>
+                    </div>
+                    <div class="service-price">Rp 60.000</div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-info">
+                        <h3>Beard Trim</h3>
+                        <p>20 menit</p>
+                    </div>
+                    <div class="service-price">Rp 45.000</div>
+                </div>
+            </div>
+
+            <!-- Step 3: Select Date -->
+            <div class="booking-card">
+                <h2><i class="far fa-calendar-alt"></i> Pilih Tanggal</h2>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <div class="calendar-title">Juni 2023</div>
+                        <div class="calendar-nav">
+                            <button><i class="fas fa-chevron-left"></i></button>
+                            <button>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div>M</div>
+                        <div>S</div>
+                        <div>S</div>
+                        <div>R</div>
+                        <div>K</div>
+                        <div>J</div>
+                        <div>S</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays">
+                        <!-- Days will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Select Time -->
+            <div class="booking-card">
+                <h2><i class="far fa-clock"></i> Pilih Waktu</h2>
+                <div class="form-group">
+                    <div class="time-slots">
+                        <div class="time-slot">09:00</div>
+                        <div class="time-slot">10:00</div>
+                        <div class="time-slot">11:00</div>
+                        <div class="time-slot selected">13:00</div>
+                        <div class="time-slot">14:00</div>
+                        <div class="time-slot unavailable">15:00</div>
+                        <div class="time-slot">16:00</div>
+                        <div class="time-slot">17:00</div>
+                        <div class="time-slot">18:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Customer Information -->
+            <div class="booking-card">
+                <h2><i class="far fa-user"></i> Data Diri</h2>
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <input
+                        type="text"
+                        id="name"
+                        class="form-control"
+                        placeholder="Masukkan nama lengkap"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Nomor Telepon</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        class="form-control"
+                        placeholder="Masukkan nomor telepon"
+                    />
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="btn" id="bookNowBtn">
+                <i class="fas fa-calendar-check"></i> Booking Sekarang
+            </button>
+        </div>
+
+        <!-- Success Modal -->
+        <div class="modal-overlay" id="successModal">
+            <div class="modal">
+                <div class="modal-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Booking Berhasil!</h2>
+                <p>
+                    Kami telah mengirimkan detail booking ke nomor telepon Anda.
+                    Silahkan datang tepat waktu.
+                </p>
+                <button class="btn" id="closeModalBtn">Tutup</button>
+            </div>
+        </div>
+
+        <script>
+            // Calendar Logic
+            function renderCalendar() {
+                const calendarDays = document.getElementById("calendarDays");
+                const date = new Date();
+                const year = date.getFullYear();
+                const month = date.getMonth();
+
+                // Get first day of month
+                const firstDay = new Date(year, month, 1).getDay();
+                // Get last day of month
+                const lastDay = new Date(year, month + 1, 0).getDate();
+                // Get days in previous month
+                const prevLastDay = new Date(year, month, 0).getDate();
+
+                calendarDays.innerHTML = "";
+
+                // Previous month days
+                for (let i = firstDay === 0 ? 6 : firstDay - 1; i > 0; i--) {
+                    const day = document.createElement("div");
+                    day.classList.add("calendar-day", "disabled");
+                    day.textContent = prevLastDay - i + 1;
+                    calendarDays.appendChild(day);
+                }
+
+                // Current month days
+                const today = new Date();
+                for (let i = 1; i <= lastDay; i++) {
+                    const day = document.createElement("div");
+                    day.classList.add("calendar-day");
+                    day.textContent = i;
+
+                    // Highlight today
+                    if (
+                        i === today.getDate() &&
+                        month === today.getMonth() &&
+                        year === today.getFullYear()
+                    ) {
+                        day.classList.add("selected");
+                    }
+
+                    // Disable past days
+                    if (
+                        (i < today.getDate() && month === today.getMonth()) ||
+                        month < today.getMonth()
+                    ) {
+                        day.classList.add("disabled");
+                    }
+
+                    calendarDays.appendChild(day);
+                }
+
+                // Next month days
+                const daysLeft =
+                    42 - (firstDay === 0 ? 6 : firstDay - 1) - lastDay;
+                for (let i = 1; i <= daysLeft; i++) {
+                    const day = document.createElement("div");
+                    day.classList.add("calendar-day", "disabled");
+                    day.textContent = i;
+                    calendarDays.appendChild(day);
+                }
+            }
+
+            // Time Slot Selection
+            document
+                .querySelectorAll(".time-slot:not(.unavailable)")
+                .forEach((slot) => {
+                    slot.addEventListener("click", function () {
+                        document
+                            .querySelectorAll(".time-slot")
+                            .forEach((s) => s.classList.remove("selected"));
+                        this.classList.add("selected");
+                    });
+                });
+
+            // Barber Selection
+            document.querySelectorAll(".barber-card").forEach((barber) => {
+                barber.addEventListener("click", function () {
+                    document
+                        .querySelectorAll(".barber-card")
+                        .forEach((b) => b.classList.remove("selected"));
+                    this.classList.add("selected");
+                });
+            });
+
+            // Service Selection
+            document.querySelectorAll(".service-card").forEach((service) => {
+                service.addEventListener("click", function () {
+                    document
+                        .querySelectorAll(".service-card")
+                        .forEach((s) => s.classList.remove("selected"));
+                    this.classList.add("selected");
+                });
+            });
+
+            // Calendar Day Selection
+            document.addEventListener("click", function (e) {
+                if (
+                    e.target.classList.contains("calendar-day") &&
+                    !e.target.classList.contains("disabled")
+                ) {
+                    document
+                        .querySelectorAll(".calendar-day")
+                        .forEach((day) => day.classList.remove("selected"));
+                    e.target.classList.add("selected");
+                }
+            });
+
+            // Book Now Button
+            document
+                .getElementById("bookNowBtn")
+                .addEventListener("click", function () {
+                    document
+                        .getElementById("successModal")
+                        .classList.add("active");
+                });
+
+            // Close Modal
+            document
+                .getElementById("closeModalBtn")
+                .addEventListener("click", function () {
+                    document
+                        .getElementById("successModal")
+                        .classList.remove("active");
+                });
+
+            // Initialize Calendar
+            renderCalendar();
+        </script>
+    </body>
+</html>
