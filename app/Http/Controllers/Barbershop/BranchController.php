@@ -25,8 +25,7 @@ class BranchController extends Controller
 
             $query = DB::table('bs_branches')
                 ->select('id', 'name', 'address', 'phone', 'description', 
-                         'operational_hours', 'closed_days', 'latitude', 
-                         'longitude', 'email', 'manager_name',
+                         'operational_hours', 'closed_days', 
                          'created_at', 'updated_at', 'is_active');
 
             if ($id) {
@@ -35,9 +34,7 @@ class BranchController extends Controller
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%$search%")
                       ->orWhere('address', 'like', "%$search%")
-                      ->orWhere('phone', 'like', "%$search%")
-                      ->orWhere('email', 'like', "%$search%")
-                      ->orWhere('manager_name', 'like', "%$search%");
+                      ->orWhere('phone', 'like', "%$search%");
                 });
             } else if ($status !== null) {
                 $query->where('is_active', (int)$status);
@@ -72,10 +69,6 @@ class BranchController extends Controller
             'description'       => 'nullable|string',
             'operational_hours' => 'nullable|string|max:255',
             'closed_days'       => 'nullable|string|max:100',
-            'latitude'          => 'nullable|string|max:20',
-            'longitude'         => 'nullable|string|max:20',
-            'email'             => 'nullable|email|max:255',
-            'manager_name'      => 'nullable|string|max:255',
             'open_time'         => 'required|date_format:H:i',
             'close_time'        => 'required|date_format:H:i|after:open_time',
         ]);
@@ -98,10 +91,6 @@ class BranchController extends Controller
                 'description' => $request->description,
                 'operational_hours' => $request->operational_hours,
                 'closed_days' => $request->closed_days,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'email' => $request->email,
-                'manager_name' => $request->manager_name,
                 'operational_hours' => $request->open_time && $request->close_time ? $request->open_time . ' - ' . $request->close_time : null,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -133,10 +122,6 @@ class BranchController extends Controller
             'description'       => 'nullable|string',
             'operational_hours' => 'nullable|string|max:255',
             'closed_days'       => 'nullable|string|max:100',
-            'latitude'          => 'nullable|string|max:20',
-            'longitude'         => 'nullable|string|max:20',
-            'email'             => 'nullable|email|max:255',
-            'manager_name'      => 'nullable|string|max:255',
             'open_time'         => 'required|date_format:H:i',
             'close_time'        => 'required|date_format:H:i|after:open_time',
         ]);
@@ -159,10 +144,6 @@ class BranchController extends Controller
                 'description' => $request->description,
                 'operational_hours' => $request->operational_hours,
                 'closed_days' => $request->closed_days,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'email' => $request->email,
-                'manager_name' => $request->manager_name,
                 'operational_hours' => $request->open_time && $request->close_time ? $request->open_time . ' - ' . $request->close_time : null,
                 'updated_at' => now(),
             ];

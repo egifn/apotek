@@ -106,7 +106,6 @@ Route::prefix('barbershop')->name('barbershop.')->group(function () {
 
     // Master Data
     Route::prefix('master')->name('master.')->group(function () {
-
         // Branch
         Route::prefix('branches')->name('branches.')->group(function () {
             Route::get('/', 'Barbershop\BranchController@index')->name('index');
@@ -146,6 +145,12 @@ Route::prefix('barbershop')->name('barbershop.')->group(function () {
             Route::post('/in', 'Barbershop\BookingController@store')->name('store');
             Route::post('/up', 'Barbershop\BookingController@updateStatus')->name('update');
         });
+        Route::prefix('attendances')->name('attendances.')->group(function () {
+            Route::get('/', 'Barbershop\AttendanceController@index')->name('index');
+            Route::get('/data', 'Barbershop\AttendanceController@getAttendancesData')->name('data');
+            Route::post('/in', 'Barbershop\AttendanceController@store')->name('store');
+            Route::post('/up', 'Barbershop\AttendanceController@update')->name('update');
+        });
         
     });
     Route::prefix('reports')->name('reports.')->group(function () {
@@ -154,13 +159,98 @@ Route::prefix('barbershop')->name('barbershop.')->group(function () {
         Route::get('/sales/export','Barbershop\SalesReportExportController@export')->name('sales.export');
     });
 });
+// ------------------------------------- Senam Routes ----------------------------------------- //
+Route::prefix('senam')->name('senam.')->group(function () {
+    Route::get('/dashboard', 'senam\DashboardController@index')->name('dashboard');
 
+    // Master Data
+    Route::prefix('master')->name('master.')->group(function () {
+        // Branch
+        Route::prefix('branches')->name('branches.')->group(function () {
+            Route::get('/', 'senam\BranchController@index')->name('index');
+            Route::get('/data', 'senam\BranchController@getBranchesData')->name('data');
+            Route::post('/in', 'senam\BranchController@store')->name('store');
+            Route::post('/up', 'senam\BranchController@update')->name('update');
+            Route::post('/des', 'senam\BranchController@destroy')->name('destroy');
+        });
+        
+        Route::prefix('class-schedule')->name('class-schedule.')->group(function () {
+            Route::get('/', 'Senam\ClassScheduleController@index')->name('index');
+            Route::get('/data', 'Senam\ClassScheduleController@getData')->name('data');
+            Route::post('/store', 'Senam\ClassScheduleController@store')->name('store');
+            Route::post('/update', 'Senam\ClassScheduleController@update')->name('update');
+            Route::post('/destroy', 'Senam\ClassScheduleController@destroy')->name('destroy');
+        });
+
+        Route::prefix('class-types')->name('class-types.')->group(function () {
+            Route::get('/', 'Senam\ClassTypeController@index')->name('index');
+            Route::get('/data', 'Senam\ClassTypeController@getData')->name('data');
+            Route::post('/store', 'Senam\ClassTypeController@store')->name('store');
+            Route::post('/update', 'Senam\ClassTypeController@update')->name('update');
+            Route::post('/destroy', 'Senam\ClassTypeController@destroy')->name('destroy');
+        });
+
+        Route::prefix('instructors')->name('instructors.')->group(function () {
+            Route::get('/', 'Senam\InstructorController@index')->name('index');
+            Route::get('/data', 'Senam\InstructorController@getData')->name('data');
+            Route::post('/store', 'Senam\InstructorController@store')->name('store');
+            Route::post('/update', 'Senam\InstructorController@update')->name('update');
+            Route::post('/destroy', 'Senam\InstructorController@destroy')->name('destroy');
+        });
+
+        Route::prefix('members')->name('members.')->group(function () {
+            Route::get('/', 'Senam\MemberController@index')->name('index');
+            Route::get('/data', 'Senam\MemberController@getData')->name('data');
+            Route::post('/store', 'Senam\MemberController@store')->name('store');
+            Route::post('/update', 'Senam\MemberController@update')->name('update');
+            Route::post('/destroy', 'Senam\MemberController@destroy')->name('destroy');
+            Route::post('/add-quota', 'Senam\MemberController@addQuota')->name('add-quota');
+            Route::get('/quota-history', 'Senam\MemberController@getQuotaHistory')->name('quota-history');
+        });
+
+        Route::prefix('non-members')->name('non-members.')->group(function () {
+            Route::get('/', 'Senam\NonMemberController@index')->name('index');
+            Route::get('/data', 'Senam\NonMemberController@getData')->name('data');
+            Route::post('/store', 'Senam\NonMemberController@store')->name('store');
+            Route::post('/destroy', 'Senam\NonMemberController@destroy')->name('destroy');
+        });
+
+        Route::prefix('equipment')->name('equipment.')->group(function () {
+            Route::get('/', 'Senam\EquipmentController@index')->name('index');
+            Route::get('/data', 'Senam\EquipmentController@getData')->name('data');
+            Route::post('/store', 'Senam\EquipmentController@store')->name('store');
+            Route::post('/update', 'Senam\EquipmentController@update')->name('update');
+            Route::post('/destroy', 'Senam\EquipmentController@destroy')->name('destroy');
+        });
+
+         Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', 'Senam\ReportController@index')->name('index');
+            
+            // Data endpoints
+            Route::get('/class-participation', 'Senam\ReportController@getClassParticipation')->name('class-participation');
+            Route::get('/quota-usage', 'Senam\ReportController@getQuotaUsage')->name('quota-usage');
+            Route::get('/instructor-sessions', 'Senam\ReportController@getInstructorSessions')->name('instructor-sessions');
+            
+            // Export endpoints
+            Route::get('/export-participation', 'Senam\ReportController@exportParticipation')->name('export-participation');
+            Route::get('/export-quota', 'Senam\ReportController@exportQuota')->name('export-quota');
+            Route::get('/export-instructor', 'Senam\ReportController@exportInstructor')->name('export-instructor');
+        });
+
+
+    });
+
+});
 // ------------------------------------- POS Routes ----------------------------------------- //
 Route::prefix('pos')->group(function () {
     Route::get('/', 'PosController@index')->name('pos');
     Route::get('/products', 'PosController@getProducts')->name('pos.products');
     Route::get('/services', 'PosController@getServices')->name('pos.services');
     Route::post('/process', 'PosController@processTransaction')->name('pos.process');
+    Route::get('/exercise-classes', 'PosController@getExerciseClasses')->name('pos.exercise-classes');
+    Route::post('/check-member', 'PosController@checkMember')->name('pos.check-member');
+    Route::post('/register-class', 'PosController@registerClass')->name('pos.register-class');
+    Route::post('/topup-quota', 'PosController@topupQuota')->name('pos.topup-quota');
 });
 
 

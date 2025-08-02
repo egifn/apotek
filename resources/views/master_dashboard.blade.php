@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sindangsari Farma - Dashboard</title>
+    <title>Sindangsari Farma - Dashboard</title> 
     <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <style>
         /* Reset and Base Styles */
@@ -743,7 +743,7 @@
                                 +22%
                             </div>
                         </div>
-                        <div class="activity-icon icon-blue"><a href="{{ route('home') }}"><i
+                        <div class="activity-icon icon-blue"><a href="{{ route('senam.dashboard') }}"><i
                                     class="bi bi-arrow-up-right"></i></a>
                         </div>
                     </div>

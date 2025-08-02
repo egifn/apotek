@@ -1,74 +1,73 @@
 <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-        <div class="brand">
-            <span class="logo-text">BarberShop</span>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand">
+                <span class="logo-text">Senam</span>
+            </div>
+            <button class="btn btn-link p-0 text-muted" id="sidebarCollapse">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-        <button class="btn btn-link p-0 text-muted" id="sidebarCollapse">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
 
-    <!-- Navigation Menu -->
+        <!-- Navigation Menu -->
     <div class="sidebar-menu-container">
         <div class="sidebar-menu">
             <div class="menu-title">Menu</div>
 
-            <!-- Dashboard (always visible) -->
-            <a class="nav-link {{ request()->routeIs('barbershop.dashboard') ? 'active' : '' }}"
-                href=" {{ route('barbershop.dashboard') }}">
-               
-                <i class="fas fa-tachometer-alt"></i>
+            <!-- Dashboard -->
+            <a class="nav-link {{ request()->routeIs('senam.dashboard') ? 'active' : '' }}"
+                href="{{ route('senam.dashboard') }}">
+                <i class="fas fa-home"></i>
                 <span class="nav-link-text">Dashboard</span>
             </a>
-            
 
             <div class="menu-title">Master</div>
-               <a class="nav-link {{ request()->routeIs('barbershop.master.branches.index') ? 'active' : '' }}"
-                href="{{ route('barbershop.master.branches.index') }}">
-                    <i class="fas fa-building"></i>
-                    <span class="nav-link-text">Cabang</span>
-                </a>
 
-                <a class="nav-link {{ request()->routeIs('barbershop.master.barbers.index') ? 'active' : '' }}"
-                href="{{ route('barbershop.master.barbers.index') }}">
-                    <i class="fas fa-user-tie"></i>
-                    <span class="nav-link-text">Barbers</span>
-                </a>
+            <a class="nav-link {{ request()->routeIs('senam.master.class-schedule.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.class-schedule.index') }}">
+                <i class="fas fa-calendar-alt"></i>
+                <span class="nav-link-text">Jadwal Senam</span>
+            </a>
 
-                <a class="nav-link {{ request()->routeIs('barbershop.master.services.index') ? 'active' : '' }}"
-                href="{{ route('barbershop.master.services.index') }}">
-                    <i class="fas fa-scissors"></i>
-                    <span class="nav-link-text">Layanan</span>
-                </a>
+            <a class="nav-link {{ request()->routeIs('senam.master.class-types.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.class-types.index') }}">
+                <i class="fas fa-layer-group"></i>
+                <span class="nav-link-text">Tipe Senam</span>
+            </a>
 
-                {{-- <a class="nav-link {{ request()->routeIs('barbershop.master.schedules.index') ? 'active' : '' }}"
-                href="{{ route('barbershop.master.schedules.index') }}">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span class="nav-link-text">Jadwal</span>
-                </a> --}}
+            <a class="nav-link {{ request()->routeIs('senam.master.instructors.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.instructors.index') }}">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span class="nav-link-text">Instruktur</span>
+            </a>
 
-                <a class="nav-link {{ request()->routeIs('barbershop.master.bookings.index') ? 'active' : '' }}"
-                href="{{ route('barbershop.master.bookings.index') }}">
-                    <i class="fas fa-calendar-check"></i>
-                    <span class="nav-link-text">Bookings</span>
-                </a>
+            <a class="nav-link {{ request()->routeIs('senam.master.members.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.members.index') }}">
+                <i class="fas fa-users"></i>
+                <span class="nav-link-text">Member</span>
+            </a>
 
-                <a class="nav-link {{ request()->routeIs('barbershop.master.attendances.index') ? 'active' : '' }}"
-                href="{{ route('barbershop.master.attendances.index') }}">
-                    <i class="fas fa-user-check"></i>
-                    <span class="nav-link-text">Absensi</span>
-                </a>
+            <a class="nav-link {{ request()->routeIs('senam.master.non-members.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.non-members.index') }}">
+                <i class="fas fa-user-times"></i>
+                <span class="nav-link-text">Non-Member</span>
+            </a>
 
-           
+            <a class="nav-link {{ request()->routeIs('senam.master.equipment.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.equipment.index') }}">
+                <i class="fas fa-dumbbell"></i>
+                <span class="nav-link-text">Alat</span>
+            </a>
 
             <div class="menu-title">Laporan</div>
-            <a class="nav-link {{ request()->routeIs('coffeshop.master.analisa') ? 'active' : '' }}" href="#">
-                <i class="fas fa-coffee"></i>
+
+            <a class="nav-link {{ request()->routeIs('senam.master.reports.index') ? 'active' : '' }}" href="{{ route('senam.master.reports.index') }}">
+                <i class="fas fa-file-alt"></i>
                 <span class="nav-link-text">Laporan</span>
             </a>
         </div>
     </div>
+
 </div>
 
 @push('script')

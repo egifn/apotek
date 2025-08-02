@@ -16,9 +16,9 @@
     <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="table-card">
-                <div class="table-card-header">
-                    <div class="row g-2">
-                        <div class="col-md-3">
+                <div class="table-card-header g-2">
+                    <div style="width: 100%; display: flex; gap: 5px;">
+                        <div class="col-lg-2">
                             <select class="form-control form-control-sm" id="filter_barber">
                                 <option value="">Semua Barber</option>
                                 @foreach($barbers as $barber)
@@ -26,7 +26,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-2">
                             <select class="form-control form-control-sm" id="filter_status">
                                 <option value="">Semua Status</option>
                                 <option value="pending">Pending</option>
@@ -35,17 +35,17 @@
                                 <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-2">
                             <input type="date" class="form-control form-control-sm" id="filter_date">
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-control form-control-sm" id="short_by_limit">
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
+                    </div>
+                    <div class="col-2">
+                        <select class="form-control form-control-sm" id="short_by_limit">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                     </div>
                 </div>
 

@@ -67,31 +67,31 @@
                                     <label for="insert_name" class="form-label">Nama Cabang <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="insert_name" name="name" required>
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_phone" class="form-label">Telepon <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="insert_phone" name="phone" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="insert_email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="insert_email" name="email">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="insert_manager_name" class="form-label">Nama Manager</label>
-                                    <input type="text" class="form-control" id="insert_manager_name" name="manager_name">
-                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="insert_closed_days" class="form-label">Hari Libur</label>
-                                    <input type="text" class="form-control" id="insert_closed_days" name="closed_days" placeholder="Contoh: Minggu">
-                                </div>
+                        </div>
+                        <div class="row">   
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="insert_open_time" class="form-label">Jam Buka</label>
                                     <input type="time" class="form-control" id="insert_open_time" name="open_time">
                                 </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="insert_close_time" class="form-label">Jam Tutup</label>
                                     <input type="time" class="form-control" id="insert_close_time" name="close_time">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="insert_closed_days" class="form-label">Hari Libur</label>
+                                    <input type="text" class="form-control" id="insert_closed_days" name="closed_days" placeholder="Contoh: Minggu">
                                 </div>
                              </div>
                         </div>
@@ -132,59 +132,46 @@
                                     <label for="edit_name" class="form-label">Nama Cabang <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="edit_name" name="name" required>
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_phone" class="form-label">Telepon <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="edit_phone" name="phone" required>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="edit_email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="edit_email" name="email">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit_manager_name" class="form-label">Nama Manager</label>
-                                    <input type="text" class="form-control" id="edit_manager_name" name="manager_name">
+                                    <label for="edit_open_time" class="form-label">Jam Buka</label>
+                                    <input type="time" class="form-control" id="edit_open_time" name="open_time" value="09:00">
                                 </div>
                             </div>
-                            
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit_close_time" class="form-label">Jam Tutup</label>
+                                    <input type="time" class="form-control" id="edit_close_time" name="close_time" value="21:00">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="edit_closed_days" class="form-label">Hari Libur</label>
                                     <input type="text" class="form-control" id="edit_closed_days" name="closed_days">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="edit_latitude" class="form-label">Latitude</label>
-                                    <input type="text" class="form-control" id="edit_latitude" name="latitude">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit_longitude" class="form-label">Longitude</label>
-                                    <input type="text" class="form-control" id="edit_longitude" name="longitude">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="edit_open_time" class="form-label">Jam Buka</label>
-                                        <input type="time" class="form-control" id="edit_open_time" name="open_time" value="09:00">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="edit_close_time" class="form-label">Jam Tutup</label>
-                                        <input type="time" class="form-control" id="edit_close_time" name="close_time" value="21:00">
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit_address" class="form-label">Alamat <span class="text-danger">*</span></label>
-                            <textarea class="form-control" id="edit_address" name="address" rows="2" required></textarea>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="edit_address" class="form-label">Alamat <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="edit_address" name="address" rows="2" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_description" class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="edit_description" name="description" rows="3"></textarea>
+                            </div>
+                            <input type="hidden" id="edit_operational_hours" name="operational_hours">
                         </div>
-                        <div class="mb-3">
-                            <label for="edit_description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control" id="edit_description" name="description" rows="3"></textarea>
-                        </div>
-                        <input type="hidden" id="edit_operational_hours" name="operational_hours">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -261,10 +248,6 @@
         const edDescription = document.getElementById('edit_description');
         const edOperationalHours = document.getElementById('edit_operational_hours');
         const edClosedDays = document.getElementById('edit_closed_days');
-        const edLatitude = document.getElementById('edit_latitude');
-        const edLongitude = document.getElementById('edit_longitude');
-        const edEmail = document.getElementById('edit_email');
-        const edManagerName = document.getElementById('edit_manager_name');
         const edOpenTime = document.getElementById('edit_open_time');
         const edCloseTime = document.getElementById('edit_close_time');
         // TAMBAH DATA
@@ -280,8 +263,6 @@
         const inClosedDays = document.getElementById('insert_closed_days');
         const inLatitude = document.getElementById('insert_latitude');
         const inLongitude = document.getElementById('insert_longitude');
-        const inEmail = document.getElementById('insert_email');
-        const inManagerName = document.getElementById('insert_manager_name');
         const inOpenTime = document.getElementById('insert_open_time');
         const inCloseTime = document.getElementById('insert_close_time');
     </script>
@@ -414,10 +395,6 @@
                     close_time: inCloseTime.value,  
                     operational_hours: inOperationalHours.value,
                     closed_days: inClosedDays.value,
-                    latitude: inLatitude.value,
-                    longitude: inLongitude.value,
-                    email: inEmail.value,
-                    manager_name: inManagerName.value,
                 });
 
                 const data = response.data;
@@ -437,10 +414,6 @@
                     inDescription.value = '';
                     inOperationalHours.value = '';
                     inClosedDays.value = '';
-                    inLatitude.value = '';
-                    inLongitude.value = '';
-                    inEmail.value = '';
-                    inManagerName.value = '';
 
                     bootstrap.Modal.getInstance(componentModalFormInsert).hide();
                 } else {
@@ -498,10 +471,6 @@
                     edDescription.value = data.description || '';
                     edOperationalHours.value = data.operational_hours || '';
                     edClosedDays.value = data.closed_days || '';
-                    edLatitude.value = data.latitude || '';
-                    edLongitude.value = data.longitude || '';
-                    edEmail.value = data.email || '';
-                    edManagerName.value = data.manager_name || '';
 
                     new bootstrap.Modal(componentModalFormEdit).show();
                 } catch (error) {
@@ -527,10 +496,7 @@
                     close_time: edCloseTime.value,
                     operational_hours: edOperationalHours.value,
                     closed_days: edClosedDays.value,
-                    latitude: edLatitude.value,
-                    longitude: edLongitude.value,
-                    email: edEmail.value,
-                    manager_name: edManagerName.value,
+
                 });
 
                 const data = response.data;
