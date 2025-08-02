@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -28,7 +29,24 @@ class LoginController extends Controller
      * @var string
      */
     //protected $redirectTo = RouteServiceProvider::HOME;
-    protected $redirectTo = '/dashboard-master';
+     public function redirectTo()
+    {
+        $user = Auth::user();
+
+        // Cek role user dan arahkan ke route yang sesuai
+        switch ($user->type) { // Sesuaikan dengan kolom yang menyimpan role_id di tabel users
+            case 1: // Super Admin
+                return '/dashboard-master';
+            case 2: // Admin
+                return '/dashboard-apotek';
+            case 3: // Dokter
+                return '/pemeriksaan/getDataAntrianPeriksa';
+            case 4: // Kasir
+                return '/pos';
+            default:
+                return '/home'; // Fallback
+        }
+    }
 
     /**
      * Create a new controller instance.
