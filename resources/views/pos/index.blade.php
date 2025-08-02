@@ -747,6 +747,14 @@
             padding: 5px;
             transition: border-color 0.2s;
         }
+        
+        .form-control-qty {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            transition: border-color 0.2s;
+            width: 50px;
+        }
 
         .form-control:focus {
             border-color: var(--primary-color);
@@ -819,20 +827,20 @@
                 style="z-index: 9999; width: 100%; max-width: 400px;">
                 <!-- Alert akan muncul di sini -->
             </div>
-            <div class="d-flex">
+            <div class="">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
                                 <ul class="nav nav-tabs" id="posTabs" role="tablist">
-                                    <li class="nav-item flex-fill text-center" role="presentation" style="width:33.33%;">
-                                        <button class="nav-link active w-100" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab" style="min-width:120px;">Kopi Tiga</button>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Kopi Tiga</button>
                                     </li>
-                                    <li class="nav-item flex-fill text-center" role="presentation" style="width:33.33%;">
-                                        <button class="nav-link w-100" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" style="min-width:120px;">Barbershop</button>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">Barbershop</button>
                                     </li>
-                                    <li class="nav-item flex-fill text-center" role="presentation" style="width:33.33%;">
-                                        <button class="nav-link w-100" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise" type="button" role="tab" style="min-width:120px;">Senam</button>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise" type="button" role="tab">Senam</button>
                                     </li>
                                 </ul>
                             </div>
@@ -877,7 +885,7 @@
                                             </div>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table" id="classTable">
+                                            <table class="table-types-table" id="classTable">
                                                 <thead>
                                                     <tr>
                                                         <th>Class</th>
@@ -976,7 +984,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table" id="orderTable">
+                                    <table class="table-types-table" id="orderTable">
                                         <thead>
                                             <tr>
                                                 <th>Item</th>
@@ -1676,7 +1684,7 @@
                             <td>
                                 ${item.type === 'quota_topup' ? 
                                 '1' : 
-                                `<input type="number" class="form-control form-control-sm quantity-input" 
+                                `<input type="number" class="form-control-qty form-control-sm quantity-input" 
                                         data-index="${index}" value="${item.quantity}" min="1">`}
                             </td>
                             <td>Rp ${item.price.toLocaleString('id-ID')}</td>
