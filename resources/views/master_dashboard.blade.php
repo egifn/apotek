@@ -763,7 +763,7 @@
         </div>
 
         <!-- Charts and Activity -->
-        <div class="grid grid-cols-3">
+        {{-- <div class="grid grid-cols-3">
             <!-- Chart -->
             <div class="card" style="grid-column: span 3;">
                 <div class="card-header">
@@ -822,7 +822,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Transactions Table -->
         <div class="card">

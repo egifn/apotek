@@ -97,34 +97,8 @@
                             </div>
                         </div>
                         
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_location_id" class="form-label">Lokasi</label>
-                                <select class="form-control" id="insert_location_id" name="insert_location_id" required>
-                                    <option value="">Pilih Lokasi</option>
-                                    @foreach($locations as $location)
-                                        <option value="{{ $location->id }}">{{ $location->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_max_participants" class="form-label">Maksimal Peserta</label>
-                                <input type="number" class="form-control" id="insert_max_participants" name="insert_max_participants" min="1" required>
-                            </div>
-                        </div>
                         
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_start_datetime" class="form-label">Tanggal & Waktu Mulai</label>
-                                <input type="time" class="form-control" id="insert_start_datetime" name="insert_start_datetime" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_end_datetime" class="form-label">Tanggal & Waktu Selesai</label>
-                                <input type="time" class="form-control" id="insert_end_datetime" name="insert_end_datetime" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="insert_recurrence_type" class="form-label">Tipe Jadwal</label>
                                 <select class="form-control" id="insert_recurrence_type" name="insert_recurrence_type" required>
@@ -157,7 +131,7 @@
                                 <label for="insert_end_recurrence_date" class="form-label">Berakhir Pada</label>
                                 <input type="date" class="form-control" id="insert_end_recurrence_date" name="insert_end_recurrence_date">
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -296,10 +270,6 @@
         const componentModalFormInsert = document.getElementById('scheduleModalInput');
         const inClassTypeId = document.getElementById('insert_class_type_id');
         const inInstructorId = document.getElementById('insert_instructor_id');
-        const inLocationId = document.getElementById('insert_location_id');
-        const inMaxParticipants = document.getElementById('insert_max_participants');
-        const inStartDatetime = document.getElementById('insert_start_datetime');
-        const inEndDatetime = document.getElementById('insert_end_datetime');
         const inRecurrenceType = document.getElementById('insert_recurrence_type');
         const inRecurrenceValue = document.getElementById('insert_recurrence_value');
         const inEndRecurrenceDate = document.getElementById('insert_end_recurrence_date');
@@ -560,10 +530,6 @@
             // Reset form
             inClassTypeId.value = '';
             inInstructorId.value = '';
-            inLocationId.value = '';
-            inMaxParticipants.value = '';
-            inStartDatetime.value = '';
-            inEndDatetime.value = '';
             inRecurrenceType.value = '';
             inRecurrenceValue.value = '';
             inRecurrenceValueOnetime.value = '';
@@ -575,8 +541,6 @@
             const now = new Date();
             const timezoneOffset = now.getTimezoneOffset() * 60000;
             const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
-            inStartDatetime.min = localISOTime;
-            inEndDatetime.min = localISOTime;
             
             new bootstrap.Modal(componentModalFormInsert).show();
         });
@@ -595,10 +559,6 @@
                 const formData = {
                     class_type_id: inClassTypeId.value,
                     instructor_id: inInstructorId.value,
-                    location_id: inLocationId.value,
-                    start_datetime: inStartDatetime.value,
-                    end_datetime: inEndDatetime.value,
-                    max_participants: inMaxParticipants.value,
                     recurrence_type: inRecurrenceType.value,
                     recurrence_value: recurrence_value,
                     end_recurrence_date: inRecurrenceType.value !== 'one-time' ? inEndRecurrenceDate.value : null
