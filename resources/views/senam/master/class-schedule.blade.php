@@ -1,10 +1,10 @@
 @extends('layouts.senam.admin')
-@section('page-title', 'Jadwal Senam')
+@section('page-title', 'Produk Jasa')
 
 @section('content')
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h4 class="mb-0">Manajemen Jadwal Senam</h4>
+            <h4 class="mb-0">Manajemen Produk Jasa</h4>
         </div>
         <div class="col-md-4 text-end">
             <button class="btn btn-primary btn-sm" id="addScheduleBtn">
@@ -26,16 +26,8 @@
                             </select>
                         </div>
                         <div class="col-lg-3">
-                            <select class="form-control form-control-sm" id="recurrence">
-                                <option value="">Semua Tipe Jadwal</option>
-                                <option value="one-time">Sekali</option>
-                                <option value="Weekly">Mingguan</option>
-                                <option value="monthly ">Bulanan</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-3">
                             <select class="form-control form-control-sm" id="filter_class_type">
-                                <option value="">Semua Jenis Senam</option>
+                                <option value="">Semua Jasa</option>
                                 @foreach($classTypes as $classType)
                                     <option value="{{ $classType->id }}">{{ $classType->name }}</option>
                                 @endforeach
@@ -77,61 +69,62 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_class_type_id" class="form-label">Jenis Senam</label>
-                                <select class="form-control" id="insert_class_type_id" name="insert_class_type_id" required>
-                                    <option value="">Pilih Jenis Senam</option>
-                                    @foreach($classTypes as $classType)
-                                        <option value="{{ $classType->id }}">{{ $classType->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_services_name" class="form-label">Nama Servis*</label>
+                                    <input type="text" class="form-control" id="insert_services_name" name="insert_services_name" required>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_instructor_id" class="form-label">Instruktur</label>
-                                <select class="form-control" id="insert_instructor_id" name="insert_instructor_id" required>
-                                    <option value="">Pilih Instruktur</option>
-                                    @foreach($instructors as $instructor)
-                                        <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_type_services" class="form-label">Jenis Servis*</label>
+                                    <input type="text" class="form-control" id="insert_type_services" name="insert_type_services" required>
+                                </div>
                             </div>
                         </div>
-                        
-                        
-                        {{-- <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_recurrence_type" class="form-label">Tipe Jadwal</label>
-                                <select class="form-control" id="insert_recurrence_type" name="insert_recurrence_type" required>
-                                    <option value="" selected>Pilih Tipe Jadwal</option>
-                                    <option value="one-time">Sekali</option>
-                                    <option value="weekly">Mingguan</option>
-                                    <option value="monthly">Bulanan</option>
-                                </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_class_type_id" class="form-label">Jenis Senam*</label>
+                                    <select class="form-control" id="insert_class_type_id" name="insert_class_type_id" required>
+                                        <option value="">Pilih Jenis Senam</option>
+                                        @foreach($classTypes as $classType)
+                                            <option value="{{ $classType->id }}">{{ $classType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3" id="recurrence_value_container" style="display: none;">
-                                <label for="insert_recurrence_value" class="form-label" id="recurrence_value_label">Hari (Senin-Sabtu)</label>
-                                <select class="form-control" id="insert_recurrence_value" name="insert_recurrence_value">
-                                    <option value="Monday">Senin</option>
-                                    <option value="Tuesday">Selasa</option>
-                                    <option value="Wednesday">Rabu</option>
-                                    <option value="Thursday">Kamis</option>
-                                    <option value="Friday">Jumat</option>
-                                    <option value="Saturday">Sabtu</option>
-                                    <option value="Sunday">Minggu</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3" id="recurrence_value_onetime_container" style="display: none;">
-                                <label for="insert_recurrence_value_onetime" class="form-label">Tanggal Sekali</label>
-                                <input type="date" class="form-control" id="insert_recurrence_value_onetime" name="insert_recurrence_value_onetime">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_price" class="form-label">Harga*</label>
+                                    <input type="number" class="form-control" id="insert_price" name="insert_price" min="0" required>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row" id="end_recurrence_container" style="display: none;">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_end_recurrence_date" class="form-label">Berakhir Pada</label>
-                                <input type="date" class="form-control" id="insert_end_recurrence_date" name="insert_end_recurrence_date">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_instructor_id" class="form-label">Instruktur*</label>
+                                    <select class="form-control" id="insert_instructor_id" name="insert_instructor_id" required>
+                                        <option value="">Pilih Instruktur</option>
+                                        @foreach($instructors as $instructor)
+                                            <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div> --}}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_location_id" class="form-label">Lokasi*</label>
+                                    <select class="form-control" id="insert_location_id" name="insert_location_id" required>
+                                        <option value="">Pilih Lokasi</option>
+                                        @foreach($locations as $location)
+                                            <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -156,53 +149,62 @@
                     <input type="hidden" id="edit_schedule_id">
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_class_type_id" class="form-label">Jenis Senam</label>
-                                <select class="form-control" id="edit_class_type_id" name="edit_class_type_id" required>
-                                    <option value="">Pilih Jenis Senam</option>
-                                    @foreach($classTypes as $classType)
-                                        <option value="{{ $classType->id }}">{{ $classType->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_services_name" class="form-label">Nama Servis*</label>
+                                    <input type="text" class="form-control" id="edit_services_name" name="edit_services_name" required>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_instructor_id" class="form-label">Instruktur</label>
-                                <select class="form-control" id="edit_instructor_id" name="edit_instructor_id" required>
-                                    <option value="">Pilih Instruktur</option>
-                                    @foreach($instructors as $instructor)
-                                        <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_type_services" class="form-label">Jenis Servis*</label>
+                                    <input type="text" class="form-control" id="edit_type_services" name="edit_type_services" required>
+                                </div>
                             </div>
                         </div>
-                        
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_location_id" class="form-label">Lokasi</label>
-                                <select class="form-control" id="edit_location_id" name="edit_location_id" required>
-                                    <option value="">Pilih Lokasi</option>
-                                    @foreach($locations as $location)
-                                        <option value="{{ $location->id }}">{{ $location->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_class_type_id" class="form-label">Jenis Senam*</label>
+                                    <select class="form-control" id="edit_class_type_id" name="edit_class_type_id" required>
+                                        <option value="">Pilih Jenis Senam</option>
+                                        @foreach($classTypes as $classType)
+                                            <option value="{{ $classType->id }}">{{ $classType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_max_participants" class="form-label">Maksimal Peserta</label>
-                                <input type="number" class="form-control" id="edit_max_participants" name="edit_max_participants" min="1" required>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_price" class="form-label">Harga*</label>
+                                    <input type="number" class="form-control" id="edit_price" name="edit_price" min="0" required>
+                                </div>
                             </div>
                         </div>
-                        
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_start_datetime" class="form-label">Tanggal & Waktu Mulai</label>
-                                <input type="time" class="form-control" id="edit_start_datetime" name="edit_start_datetime" required>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_instructor_id" class="form-label">Instruktur*</label>
+                                    <select class="form-control" id="edit_instructor_id" name="edit_instructor_id" required>
+                                        <option value="">Pilih Instruktur</option>
+                                        @foreach($instructors as $instructor)
+                                            <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_end_datetime" class="form-label">Tanggal & Waktu Selesai</label>
-                                <input type="time" class="form-control" id="edit_end_datetime" name="edit_end_datetime" required>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_location_id" class="form-label">Lokasi*</label>
+                                    <select class="form-control" id="edit_location_id" name="edit_location_id" required>
+                                        <option value="">Pilih Lokasi</option>
+                                        @foreach($locations as $location)
+                                            <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        
                         <div class="mb-3">
                             <label for="edit_is_active" class="form-label">Status</label>
                             <select class="form-control" id="edit_is_active" name="edit_is_active" required>
@@ -256,7 +258,6 @@
     <script>
         // Filter variables
         const filterStatus = document.getElementById('filter_status');
-        const filterRecurrence = document.getElementById('recurrence');
         const filterClassType = document.getElementById('filter_class_type');
         const syLimit = document.getElementById('short_by_limit');
 
@@ -268,24 +269,22 @@
         const buttonInsert = document.getElementById('button_insert');
         const buttonInsertSend = document.getElementById('button_insert_send');
         const componentModalFormInsert = document.getElementById('scheduleModalInput');
+        const inServicesName = document.getElementById('insert_services_name');
+        const inTypeServices = document.getElementById('insert_type_services');
+        const inPrice = document.getElementById('insert_price');
         const inClassTypeId = document.getElementById('insert_class_type_id');
         const inInstructorId = document.getElementById('insert_instructor_id');
-        const inRecurrenceType = document.getElementById('insert_recurrence_type');
-        const inRecurrenceValue = document.getElementById('insert_recurrence_value');
-        const inEndRecurrenceDate = document.getElementById('insert_end_recurrence_date');
-        const recurrenceValueContainer = document.getElementById('recurrence_value_container');
-        const recurrenceValueLabel = document.getElementById('recurrence_value_label');
-        const endRecurrenceContainer = document.getElementById('end_recurrence_container');
+        const inLocationId = document.getElementById('insert_location_id');
 
         // MODAL EDIT
         const scheduleModalEdit = document.getElementById('scheduleModalEdit');
+        const editServicesName = document.getElementById('edit_services_name');
+        const editTypeServices = document.getElementById('edit_type_services');
+        const editPrice = document.getElementById('edit_price');
         const editScheduleId = document.getElementById('edit_schedule_id');
         const editClassTypeId = document.getElementById('edit_class_type_id');
         const editInstructorId = document.getElementById('edit_instructor_id');
         const editLocationId = document.getElementById('edit_location_id');
-        const editMaxParticipants = document.getElementById('edit_max_participants');
-        const editStartDatetime = document.getElementById('edit_start_datetime');
-        const editEndDatetime = document.getElementById('edit_end_datetime');
         const editIsActive = document.getElementById('edit_is_active');
         const buttonUpdate = document.getElementById('button_update');
         const buttonUpdateSend = document.getElementById('button_update_send');
@@ -301,56 +300,26 @@
         const buttonDeleteSend = document.getElementById('button_delete_send');
     </script>
 
-    {{-- RECURRENCE TYPE HANDLER --}}
+    {{-- Format --}}
     <script>
-        const recurrenceValueOnetimeContainer = document.getElementById('recurrence_value_onetime_container');
-        const inRecurrenceValueOnetime = document.getElementById('insert_recurrence_value_onetime');
-
-        inRecurrenceType.addEventListener('change', function() {
-            const value = this.value;
-            if (value === 'one-time') {
-                recurrenceValueContainer.style.display = 'none';
-                endRecurrenceContainer.style.display = 'none';
-                recurrenceValueOnetimeContainer.style.display = 'block';
-            } else {
-                recurrenceValueContainer.style.display = 'block';
-                endRecurrenceContainer.style.display = 'block';
-                recurrenceValueOnetimeContainer.style.display = 'none';
-                if (value === 'weekly') {
-                    recurrenceValueLabel.textContent = 'Hari (Senin-Sabtu)';
-                    inRecurrenceValue.innerHTML = `
-                        <option value="Monday">Senin</option>
-                        <option value="Tuesday">Selasa</option>
-                        <option value="Wednesday">Rabu</option>
-                        <option value="Thursday">Kamis</option>
-                        <option value="Friday">Jumat</option>
-                        <option value="Saturday">Sabtu</option>
-                        <option value="Sunday">Minggu</option>
-                    `;
-                } else if (value === 'monthly') {
-                    recurrenceValueLabel.textContent = 'Tanggal (1-31)';
-                    inRecurrenceValue.innerHTML = '';
-                    for (let i = 1; i <= 31; i++) {
-                        inRecurrenceValue.innerHTML += `<option value="${i}">${i}</option>`;
-                    }
-                }
-            }
-        });
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        }
     </script>
 
     {{-- GET DATA --}}
     <script>
-        async function fetchData(status, date, classTypeId, limit) {
+        async function fetchData(status, classTypeId, limit) {
             try {
                 let url = `{{ route('senam.master.class-schedule.data') }}`;
                 let params = new URLSearchParams();
 
                 if (status && status !== '') {
                     params.append('status', status);
-                }
-                // Ganti date menjadi recurrence_type
-                if (date && date !== '') {
-                    params.append('recurrence_type', date);
                 }
                 if (classTypeId && classTypeId !== '') {
                     params.append('class_type_id', classTypeId);
@@ -375,10 +344,9 @@
                     <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
-                            <th>Jenis Senam</th>
-                            <th>Lokasi</th>
-                            <th>Tanggal & Waktu</th>
-                            <th>Peserta</th>
+                            <th>Nama Jasa</th>
+                            <th>Jenis Jasa</th>
+                            <th>Harga</th>
                             <th>Status</th>
                             <th class="text-center pe-4" width="150">Aksi</th>
                         </tr>
@@ -395,64 +363,17 @@
                     return;
                 } else {
                     data.data.forEach((schedule, index) => {
-                        // Format date and time
-                        const startDate = new Date(schedule.start_datetime);
-                        const endDate = new Date(schedule.end_datetime);
-                        
-                        const formattedDate = startDate.toLocaleDateString('id-ID', { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        });
-                        
-                        const startTime = startDate.toLocaleTimeString('id-ID', { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                        });
-                        
-                        const endTime = endDate.toLocaleTimeString('id-ID', { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                        });
-
                         // Format status
                         const statusBadge = schedule.is_active 
                             ? '<span class="badge bg-success">Aktif</span>' 
                             : '<span class="badge bg-danger">Nonaktif</span>';
 
-                        // Format recurrence
-                        let recurrenceText = '';
-                        if (schedule.recurrence_type === 'weekly') {
-                            const days = {
-                                'Monday': 'Senin',
-                                'Tuesday': 'Selasa',
-                                'Wednesday': 'Rabu',
-                                'Thursday': 'Kamis',
-                                'Friday': 'Jumat',
-                                'Saturday': 'Sabtu',
-                                'Sunday': 'Minggu'
-                            };
-                            recurrenceText = `Setiap ${days[schedule.recurrence_value]}`;
-                        } else if (schedule.recurrence_type === 'monthly') {
-                            recurrenceText = `Setiap tanggal ${schedule.recurrence_value}`;
-                        } else {
-                            recurrenceText = `Tanggal  ${schedule.recurrence_value}`;
-                        }
-
                         scheduleTable.innerHTML += `
                             <tr>
                                 <td class="ps-4">${data.from + index}</td>
-                                <td>
-                                    <div class="fw-medium">${schedule.class_name}</div>
-                                    <div class="small text-muted">instruktur: ${schedule.instructor_name}</div>
-                                </td>
-                                <td>${schedule.location_name}</td>
-                                <td>
-                                    <div class="fw-medium">${recurrenceText}</div>
-                                    <div class="small text-muted">${schedule.start_datetime} - ${schedule.end_datetime}</div>
-                                </td>
-                                <td>0/${schedule.max_participants}</td>
+                                <td>${schedule.services_name}</td>
+                                <td>${schedule.type_services}</td>
+                                <td style="text-align: right;">${formatRupiah(schedule.price)}</td>
                                 <td>${statusBadge}</td>
                                 <td class="text-center pe-4">
                                     <div class="d-flex justify-content-center gap-2">
@@ -461,16 +382,25 @@
                                             title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                            data-id="${schedule.id}" 
-                                            data-active="${schedule.is_active}"
-                                            title="Hapus/Nonaktifkan">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        ${schedule.is_active ? 
+                                            `<button class="btn btn-icon btn-sm btn-outline-warning btn_delete" 
+                                                data-id="${schedule.id}" 
+                                                data-active="${schedule.is_active}"
+                                                title="Nonaktifkan">
+                                                <i class="fas fa-ban"></i>
+                                            </button>` : 
+                                            `<button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
+                                                data-id="${schedule.id}" 
+                                                data-active="${schedule.is_active}"
+                                                title="Hapus Permanen">
+                                                <i class="fas fa-trash"></i>
+                                            </button>`
+                                        }
                                     </div>
                                 </td>
                             </tr>
                         `;
+
                     });
                 }
             } catch (error) {
@@ -481,46 +411,33 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const status = filterStatus.value;
-            const recurrence_type = filterRecurrence.value;
             const classTypeId = filterClassType.value;
             const limit = syLimit.value;
-            fetchData(status, recurrence_type, classTypeId, limit);
+            fetchData(status, classTypeId, limit);
         });
 
         // Filter by status
         filterStatus.addEventListener('change', (event) => {
             const status = event.target.value;
-            const recurrence_type = filterRecurrence.value;
             const classTypeId = filterClassType.value;
             const limit = syLimit.value;
-            fetchData(status, recurrence_type, classTypeId, limit);
-        });
-
-        // Filter by recurrence type
-        filterRecurrence.addEventListener('change', (event) => {
-            const status = filterStatus.value;
-            const recurrence_type = event.target.value;
-            const classTypeId = filterClassType.value;
-            const limit = syLimit.value;
-            fetchData(status, recurrence_type, classTypeId, limit);
+            fetchData(status, classTypeId, limit);
         });
 
         // Filter by class type
         filterClassType.addEventListener('change', (event) => {
             const status = filterStatus.value;
-            const recurrence_type = filterRecurrence.value;
             const classTypeId = event.target.value;
             const limit = syLimit.value;
-            fetchData(status, recurrence_type, classTypeId, limit);
+            fetchData(status, classTypeId, limit);
         });
 
         // Filter by limit
         syLimit.addEventListener('change', (event) => {
             const status = filterStatus.value;
-            const recurrence_type = filterRecurrence.value;
             const classTypeId = filterClassType.value;
             const limit = event.target.value;
-            fetchData(status, recurrence_type, classTypeId, limit);
+            fetchData(status, classTypeId, limit);
         });
     </script>
 
@@ -530,13 +447,8 @@
             // Reset form
             inClassTypeId.value = '';
             inInstructorId.value = '';
-            inRecurrenceType.value = '';
-            inRecurrenceValue.value = '';
-            inRecurrenceValueOnetime.value = '';
-            inEndRecurrenceDate.value = '';
-            recurrenceValueContainer.style.display = 'none';
-            endRecurrenceContainer.style.display = 'none';
-            
+            inLocationId.value = '';
+          
             // Set min datetime to now
             const now = new Date();
             const timezoneOffset = now.getTimezoneOffset() * 60000;
@@ -550,18 +462,13 @@
             buttonInsertSend.style.display = 'inline-block';
 
             try {
-                let recurrence_value = null;
-                if (inRecurrenceType.value === 'one-time') {
-                    recurrence_value = inRecurrenceValueOnetime.value;
-                } else if (inRecurrenceType.value === 'weekly' || inRecurrenceType.value === 'monthly') {
-                    recurrence_value = inRecurrenceValue.value;
-                }
                 const formData = {
                     class_type_id: inClassTypeId.value,
                     instructor_id: inInstructorId.value,
-                    recurrence_type: inRecurrenceType.value,
-                    recurrence_value: recurrence_value,
-                    end_recurrence_date: inRecurrenceType.value !== 'one-time' ? inEndRecurrenceDate.value : null
+                    location_id: inLocationId.value,
+                    services_name: inServicesName.value,
+                    type_services: inTypeServices.value,
+                    price: inPrice.value
                 };
 
                 const response = await axios.post(`{{ route('senam.master.class-schedule.store') }}`, formData);
@@ -572,10 +479,9 @@
 
                     // Refresh data
                     const status = filterStatus.value;
-                    const date = filterRecurrence.value;
                     const classTypeId = filterClassType.value;
                     const limit = syLimit.value;
-                    await fetchData(status, date, classTypeId, limit);
+                    await fetchData(status, classTypeId, limit);
 
                     // Close the modal
                     bootstrap.Modal.getInstance(componentModalFormInsert).hide();
@@ -627,6 +533,28 @@
 
                     const schedule = response.data.data;
 
+                    // Fill the form
+                    editScheduleId.value = schedule.id;
+                    editServicesName.value = schedule.services_name || '';
+                    editTypeServices.value = schedule.type_services || '';
+                    editClassTypeId.value = schedule.class_type_id;
+                    editInstructorId.value = schedule.instructor_id;
+                    editLocationId.value = schedule.location_id;
+                    editPrice.value = schedule.price || '';
+                    editIsActive.value = schedule.is_active ? '1' : '0';
+
+                    // Dalam buttonUpdate event listener
+                    const formData = {
+                        id: editScheduleId.value,
+                        class_type_id: editClassTypeId.value,
+                        instructor_id: editInstructorId.value,
+                        location_id: editLocationId.value,
+                        services_name: editServicesName.value,
+                        type_services: editTypeServices.value,
+                        price: editPrice.value,
+                        is_active: editIsActive.value
+                    };
+
                     // Format time for input fields (type="time" expects HH:mm)
                     function toTimeString(val) {
                         if (!val) return '';
@@ -657,9 +585,6 @@
                     editClassTypeId.value = schedule.class_type_id;
                     editInstructorId.value = schedule.instructor_id;
                     editLocationId.value = schedule.location_id;
-                    editMaxParticipants.value = schedule.max_participants;
-                    editStartDatetime.value = startTime;
-                    editEndDatetime.value = endTime;
                     editIsActive.value = schedule.is_active ? '1' : '0';
 
                     new bootstrap.Modal(scheduleModalEdit).show();
@@ -675,26 +600,11 @@
             buttonUpdateSend.style.display = 'inline-block';
 
             try {
-                // Convert HH:mm to HH:mm:ss for backend
-                function toHHMMSS(val) {
-                    if (!val) return '';
-                    if (/^\d{2}:\d{2}$/.test(val)) {
-                        return val + ':00';
-                    }
-                    if (/^\d{2}:\d{2}:\d{2}$/.test(val)) {
-                        return val;
-                    }
-                    return val;
-                }
-
                 const formData = {
                     id: editScheduleId.value,
                     class_type_id: editClassTypeId.value,
                     instructor_id: editInstructorId.value,
                     location_id: editLocationId.value,
-                    start_datetime: toHHMMSS(editStartDatetime.value),
-                    end_datetime: toHHMMSS(editEndDatetime.value),
-                    max_participants: editMaxParticipants.value,
                     is_active: editIsActive.value
                 };
 
@@ -705,10 +615,9 @@
                     createDynamicAlert('success', data.message || 'Jadwal berhasil diperbarui');
                     
                     const status = filterStatus.value;
-                    const date = filterRecurrence.value;
                     const classTypeId = filterClassType.value;
                     const limit = syLimit.value;
-                    await fetchData(status, date, classTypeId, limit);
+                    await fetchData(status, classTypeId, limit);
                     
                     bootstrap.Modal.getInstance(scheduleModalEdit).hide();
                 } else {
@@ -742,14 +651,14 @@
                 
                 if (isActive) {
                     deleteAction.value = 'deactivate';
-                    deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan jadwal ini?';
+                    deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan jasa ini?';
                     passwordContainer.style.display = 'none';
                 } else {
                     deleteAction.value = 'delete';
-                    deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen jadwal ini?';
+                    deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen jasa ini? Tindakan ini tidak dapat dibatalkan.';
                     passwordContainer.style.display = 'block';
                 }
-                
+
                 new bootstrap.Modal(scheduleModalDelete).show();
             }
         });
@@ -772,10 +681,9 @@
                     createDynamicAlert('success', data.message);
                     
                     const status = filterStatus.value;
-                    const date = filterRecurrence.value;
                     const classTypeId = filterClassType.value;
                     const limit = syLimit.value;
-                    await fetchData(status, date, classTypeId, limit);
+                    await fetchData(status, classTypeId, limit);
                     
                     bootstrap.Modal.getInstance(scheduleModalDelete).hide();
                     deletePassword.value = '';

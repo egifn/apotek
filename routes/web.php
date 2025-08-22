@@ -251,11 +251,11 @@ Route::prefix('pos')->group(function () {
     Route::post('/check-member', 'PosController@checkMember')->name('pos.check-member');
     Route::post('/register-class', 'PosController@registerClass')->name('pos.register-class');
     Route::post('/topup-quota', 'PosController@topupQuota')->name('pos.topup-quota');
+    Route::get('/categories', 'PosController@getCategories')->name('pos.categories');
 });
 
 
 // ------------------------------------- Apotek Routes ----------------------------------------- //
-
 Route::get('/dashboard-apotek', 'Apotek\HomeApotekController@index')->name('home');
 Route::get('/dashboard-apotek/getDataJmlPenjualan', 'Apotek\HomeApotekController@getDataJmlPenjualan')->name('home/getDataJmlPenjualan');
 Route::get('/dashboard-apotek/getDataTtlPenjualan', 'Apotek\HomeApotekController@getDataTtlPenjualan')->name('home/getDataTtlPenjualan');

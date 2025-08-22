@@ -786,10 +786,6 @@
             <span class="navbar-brand">
                 @yield('page-title')
             </span>
-
-            {{-- <a href="{{ route('dashboard_master') }}" class="btn btn-primary btn-sm me-3">
-                Dashboard Utama
-            </a> --}}
             <div class="navbar-nav ms-auto">
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
@@ -820,7 +816,6 @@
                 </div>
             </div>
         </nav>
-
         <!-- Page Content -->
         <div class="content-area">
             <div id="alert-container" class="position-fixed top-0 end-0 p-3"
@@ -846,20 +841,19 @@
                             </div>
                             <div class="card-body">
                                 <div class="tab-content" id="posTabsContent">
+                                    
                                     <!-- Coffee Products Tab -->
                                     <div class="tab-pane fade show active" id="products" role="tabpanel">
                                         <div class="mb-3">
                                             <input type="text" class="form-control" id="productSearch" placeholder="Search coffee products...">
                                         </div>
-                                        <div class="row" id="productList">
-                                            <div class="col-12 text-center py-3">
-                                                <div class="spinner-border text-primary" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                            </div>
+                                        <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
+                                        </ul>
+                                        <div class="tab-content mt-3" id="categoryTabContent">
+                                            <!-- Products will be loaded here by category -->
                                         </div>
                                     </div>
-                                    
+                    
                                     <!-- Barbershop Services Tab -->
                                     <div class="tab-pane fade" id="services" role="tabpanel">
                                         <div class="mb-3">
@@ -877,10 +871,7 @@
                                     <!-- Exercise Classes Tab -->
                                     <div class="tab-pane fade" id="exercise" role="tabpanel">
                                         <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <input type="date" class="form-control" id="classDate" value="{{ date('Y-m-d') }}">
-                                            </div>
-                                            <div class="col-md-6">
+                                           <div class="col-md-12">
                                                 <input type="text" class="form-control" id="classSearch" placeholder="Search exercise classes...">
                                             </div>
                                         </div>
@@ -890,8 +881,6 @@
                                                     <tr>
                                                         <th>Class</th>
                                                         <th>Instructor</th>
-                                                        <th>Time</th>
-                                                        <th>Availability</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -1111,7 +1100,6 @@
             const serviceList = document.getElementById('serviceList');
             
             // DOM Elements - Exercise Classes
-            const classDate = document.getElementById('classDate');
             const classSearch = document.getElementById('classSearch');
             const classList = document.getElementById('classList');
             const exerciseFormCard = document.getElementById('exerciseFormCard');
@@ -1136,47 +1124,188 @@
             const changeAmount = document.getElementById('changeAmount');
             const processBtn = document.getElementById('processTransaction');
 
-            // ======================
+            // ===================================================================================
             // COFFEE PRODUCTS SECTION
-            // ======================
-            async function loadProducts(search = '') {
-                productList.innerHTML = `
-                    <div class="col-12 text-center py-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                `;
-                
+            // ===================================================================================
+            
+            // 1. Variabel global di paling atas
+            let categories = [];
+            let selectedCategory = 'all';
+
+            // 2. Function selectCategory harus didefinisikan sebelum dipanggil
+            function selectCategory(categoryId) {
+                console.log('Selecting category:', categoryId);
+                selectedCategory = categoryId;
+                const searchTerm = document.getElementById('productSearch').value;
+                loadProducts(searchTerm);
+            }
+
+            // 3. Function lainnya
+            async function loadCategories() {
                 try {
-                    const response = await fetch(`{{ route('pos.products') }}?search=${encodeURIComponent(search)}`);
+                    // console.log('Loading categories...');
+                    const response = await fetch(`{{ route('pos.categories') }}`);
                     const data = await response.json();
                     
                     if (data.status) {
-                        let html = '';
-                        data.data.forEach(product => {
-                            html += `
-                                <div class="col-md-4 mb-3">
-                                    <div class="card product-card" data-id="${product.id}" 
-                                        data-name="${product.name}" 
-                                        data-price="${product.selling_price}" 
-                                        data-type="product">
-                                        <div class="card-body">
-                                            <h6 class="card-title">${product.name}</h6>
-                                            <p class="card-text">Rp ${product.selling_price.toLocaleString('id-ID')}</p>
-                                        </div>
-                                    </div>
+                        categories = data.data;
+                        renderCategoryTabs();
+                        loadProducts();
+                    }
+                } catch (error) {
+                    console.error('Error loading categories:', error);
+                }
+            }
+
+            loadCategories();
+
+            function renderCategoryTabs() {
+                let tabsHtml = `
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active category-tab" 
+                                data-category="all" 
+                                type="button">
+                            All Products
+                        </button>
+                    </li>
+                `;
+                
+                categories.forEach(category => {
+                    tabsHtml += `
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link category-tab" 
+                                    data-category="${category.id}" 
+                                    type="button">
+                                ${category.name}
+                            </button>
+                        </li>
+                    `;
+                });
+                
+                document.getElementById('categoryTabs').innerHTML = tabsHtml;
+            }
+
+            async function loadProducts(search = '') {
+                const categoryTabContent = document.getElementById('categoryTabContent');
+                
+                if (selectedCategory === 'all') {
+                    categoryTabContent.innerHTML = `
+                        <div class="tab-pane fade show active" id="all-products" role="tabpanel">
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
-                            `;
-                        });
-                        
-                        productList.innerHTML = html || '<div class="col-12 text-center py-3 text-muted">No products found</div>';
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    categoryTabContent.innerHTML = `
+                        <div class="tab-pane fade show active" id="category-${selectedCategory}" role="tabpanel">
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                try {
+                    let url = `{{ route('pos.products') }}?search=${encodeURIComponent(search)}`;
+                    if (selectedCategory !== 'all') {
+                        url += `&category_id=${selectedCategory}`;
+                    }
+                    
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.status) {
+                        renderProductsByCategory(data.data);
                     }
                 } catch (error) {
                     console.error('Error loading products:', error);
-                    productList.innerHTML = '<div class="col-12 text-center py-3 text-danger">Error loading products</div>';
                 }
             }
+
+            function renderProductsByCategory(products) {
+                const categoryTabContent = document.getElementById('categoryTabContent');
+                
+                let html = '';
+                if (selectedCategory === 'all') {
+                    html = '<div class="tab-pane fade show active" id="all-products" role="tabpanel">';
+                } else {
+                    html = `<div class="tab-pane fade show active" id="category-${selectedCategory}" role="tabpanel">`;
+                }
+                
+                const category = categories.find(c => c.id == selectedCategory);
+                const categoryName = selectedCategory === 'all' ? 'All Products' : (category ? category.name : 'Products');
+                
+                html += `
+                    <h5 class="mb-3">${categoryName}</h5>
+                    <div class="row">
+                        ${renderProductCards(products)}
+                    </div>
+                </div>`;
+                
+                categoryTabContent.innerHTML = html;
+            }
+
+            function renderProductCards(products) {
+                if (!products || products.length === 0) {
+                    return '<div class="col-12 text-center py-3 text-muted">No products found</div>';
+                }
+                
+                return products.map(product => `
+                    <div class="col-md-4 mb-3">
+                        <div class="card product-card h-100" data-id="${product.id}" 
+                            data-name="${product.name}" 
+                            data-price="${product.selling_price}" 
+                            data-type="product">
+                            ${product.image ? `
+                                <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                    style="height: 150px; object-fit: cover;">
+                            ` : `
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                    style="height: 150px;">
+                                    <i class="fas fa-coffee fa-3x text-muted"></i>
+                                </div>
+                            `}
+                            <div class="card-body">
+                                <h6 class="card-title">${product.name}</h6>
+                                <p class="card-text">Rp ${product.selling_price.toLocaleString('id-ID')}</p>
+                                ${product.code ? `<small class="text-muted">Code: ${product.code}</small>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 4. Initialize saat DOM ready
+            document.addEventListener('DOMContentLoaded', () => {
+                loadCategories();
+                
+                // Event listener untuk search
+                document.getElementById('productSearch').addEventListener('input', (e) => {
+                    loadProducts(e.target.value);
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('category-tab')) {
+                    e.preventDefault();
+                    
+                    // Update active class
+                    document.querySelectorAll('.category-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+                    
+                    // Panggil selectCategory
+                    const categoryId = e.target.dataset.category;
+                    selectedCategory = categoryId;
+                    loadProducts(document.getElementById('productSearch').value);
+                }
+            });
 
             // ======================
             // BARBERSHOP SERVICES SECTION
@@ -1249,37 +1378,21 @@
                             html = `
                                 <tr>
                                     <td colspan="5" class="text-center py-3 text-muted">
-                                        No classes available for ${new Date(data.current_date).toLocaleDateString()}
+                                        No classes available for 
                                     </td>
                                 </tr>
                             `;
                         } else {
                             data.data.forEach(cls => {
-                                const startTime = new Date(cls.start_datetime);
-                                const endTime = new Date(cls.end_datetime);
-                                const available = cls.max_participants - cls.participants_count;
                                 
                                 html += `
                                     <tr>
                                         <td>${cls.class_name}</td>
                                         <td>${cls.instructor_name}</td>
                                         <td>
-                                            ${startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
-                                            ${endTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                        </td>
-                                        <td>
-                                            <span class="badge ${available > 0 ? 'bg-success' : 'bg-danger'}">
-                                                ${available}/${cls.max_participants}
-                                            </span>
-                                        </td>
-                                        <td>
                                             <button class="btn btn-sm btn-primary select-class-btn" 
                                                     data-id="${cls.id}"
-                                                    data-name="${cls.class_name}"
-                                                    data-start="${cls.start_datetime}"
-                                                    data-end="${cls.end_datetime}"
-                                                    data-available="${available}"
-                                                    ${available <= 0 ? 'disabled' : ''}>
+                                                    data-name="${cls.class_name}">
                                                 Select
                                             </button>
                                         </td>
@@ -1314,7 +1427,7 @@
                         available: e.target.dataset.available
                     };
                     
-                    selectedClass.value = `${selectedClassData.name} (${new Date(selectedClassData.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})`;
+                    selectedClass.value = `${selectedClassData.name}`;
                     selectedClassId.value = selectedClassData.id;
                     
                     // Show the registration form
@@ -1465,7 +1578,6 @@
                         successModal.show();
                         
                         // Reload classes to update availability
-                        loadClasses(classDate.value, classSearch.value);
                         
                         // Reset form if non-member
                         if (nonMemberRadio.checked) {
@@ -1842,9 +1954,6 @@
                 }
             }
 
-            const classDateInput = document.getElementById('classDate');
-            if (classDateInput) classDateInput.min = new Date().toISOString().split('T')[0];
-
             // Initialize time picker with business hours (e.g., 9AM-5PM)
             const bookingTimeInput = document.getElementById('booking_time');
             if (bookingTimeInput) {
@@ -1855,11 +1964,8 @@
             // Event listeners for all sections
             productSearch.addEventListener('input', () => loadProducts(productSearch.value));
             serviceSearch.addEventListener('input', () => loadServices(serviceSearch.value));
-            classDate.addEventListener('change', function() {
-                loadClasses(this.value, classSearch.value);
-            });
             classSearch.addEventListener('input', function() {
-                loadClasses(classDate.value, this.value);
+                loadClasses(this.value);
             });
             
             // Order summary event listeners
@@ -1877,54 +1983,6 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
-    <script>
-        // Toggle sidebar collapse
-        document.getElementById('sidebarCollapse').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.getElementById('mainContent').classList.toggle('collapsed');
-
-            // Store state in localStorage
-            localStorage.setItem('sidebarCollapsed',
-                document.getElementById('sidebar').classList.contains('collapsed'));
-        });
-
-        // Mobile sidebar toggle
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('show');
-        });
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-
-            if (window.innerWidth < 992 &&
-                !sidebar.contains(event.target) &&
-                !sidebarToggle.contains(event.target)) {
-                sidebar.classList.remove('show');
-            }
-        });
-
-        // Initialize sidebar state
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                document.getElementById('sidebar').classList.add('collapsed');
-                document.getElementById('mainContent').classList.add('collapsed');
-            }
-
-            // Prevent menu links from collapsing sidebar
-            const menuLinks = document.querySelectorAll('.sidebar .nav-link');
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (window.innerWidth < 992) {
-                        document.getElementById('sidebar').classList.remove('show');
-                    }
-                    // Don't prevent default to allow normal navigation
-                });
-            });
-        });
-    </script>
 
     <script>
         function toggleMasterMenu() {

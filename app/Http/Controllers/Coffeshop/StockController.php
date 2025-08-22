@@ -31,7 +31,7 @@ class StockController extends Controller
                     'cs_branches.name as branch_name'
                 )
                 ->join('cs_branches', 'cs_stocks.id_branch', '=', 'cs_branches.id')
-                ->join('cs_ingredients', 'cs_stocks.id_ingredients', '=', 'cs_ingredients.id');
+                ->join('cs_ingredients', 'cs_stocks.id_ingredients', '=', 'cs_ingredients.code_ingredient');
 
             if ($id) {
                 $query->where('cs_stocks.id', $id);

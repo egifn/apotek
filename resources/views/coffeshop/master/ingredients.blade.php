@@ -93,7 +93,7 @@
                                         ditetapkan</small> --}}
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Harga per Unit</label>
+                                    <label class="form-label">Harga per Satuan</label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rp</span>
                                         <input type="text" class="form-control" id="insert_price_per_unit" readonly>

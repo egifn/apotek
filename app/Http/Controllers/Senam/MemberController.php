@@ -22,10 +22,16 @@ class MemberController extends Controller
             $limit = $request->input('limit', 10);
             $id = $request->input('id');
 
-            $query = DB::table('s_members');
+            $query = DB::table('s_members')
+                    ->join('s_member_quotas as mq', 's_members.id', '=', 'mq.member_id')
+                    ->select(
+                        's_members.*',
+                        'mq.total_quota',    
+                        'mq.remaining_quota' 
+                    );
 
             if ($id) {
-                $query->where('id', $id);
+                $query->where('s_members.id', $id);
                 $member = $query->first();
                 if (!$member) {
                     return response()->json([
@@ -42,18 +48,19 @@ class MemberController extends Controller
 
             if ($search) {
                 $query->where(function($q) use ($search) {
-                    $q->where('name', 'like', "%$search%")
-                      ->orWhere('email', 'like', "%$search%")
-                      ->orWhere('phone', 'like', "%$search%");
+                    $q->where('s_members.name', 'like', "%$search%")
+                      ->orWhere('s_members.email', 'like', "%$search%")
+                      ->orWhere('s_members.phone', 'like', "%$search%");
                 });
             }
 
             if ($status !== null) {
-                $query->where('is_active', $status);
+                $query->where('s_members.is_active', $status);
             }
 
             $data = $query->orderBy('id')
                          ->paginate($limit);
+
 
             return response()->json([
                 'status' => true,

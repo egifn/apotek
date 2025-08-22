@@ -18,19 +18,47 @@ class PosController extends Controller
         return view('pos.index');
     }
 
+    // Di controller yang sama atau controller baru
+    public function getCategories(Request $request)
+    {
+        try {
+            $categories = DB::table('cs_categories')
+                ->select('id', 'name', 'description')
+                ->where('is_active', 1)
+                ->orderBy('name')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'data' => $categories
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to get categories',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function getProducts(Request $request)
     {
         try {
             $search = $request->input('search');
-            $limit = $request->input('limit', 10);
+            $categoryId = $request->input('category_id');
+            $limit = $request->input('limit', 50);
 
             $products = DB::table('cs_products')
-                ->select('id', 'code', 'name', 'selling_price')
+                ->select('id', 'code', 'name', 'selling_price', 'image', 'category_id')
                 ->where('is_active', 1)
                 ->when($search, function($query) use ($search) {
                     return $query->where('name', 'like', "%$search%")
                                 ->orWhere('code', 'like', "%$search%");
                 })
+                ->when($categoryId, function($query) use ($categoryId) {
+                    return $query->where('category_id', $categoryId);
+                })
+                ->orderBy('name')
                 ->limit($limit)
                 ->get();
 
@@ -402,24 +430,16 @@ class PosController extends Controller
                     'cs.class_type_id',
                     'cs.instructor_id',
                     'cs.location_id',
-                    'cs.start_datetime',
-                    'cs.end_datetime',
-                    'cs.max_participants',
-                    DB::raw('(SELECT COUNT(*) FROM s_class_attendances WHERE class_schedule_id = cs.id) as participants_count'),
                     'cs.is_active',
                     'ct.name as class_name',
                     'i.name as instructor_name',
                     'l.name as location_name'
                 )
-                ->where('cs.is_active', true)
-                ->whereDate('cs.start_datetime', $date)
-                ->when($search, function($q) use ($search) {
-                    $q->where('ct.name', 'like', "%$search%")
-                      ->orWhere('i.name', 'like', "%$search%");
-                })
-                ->orderBy('cs.start_datetime');
+                ->where('cs.is_active', true);
 
             $classes = $query->get();
+
+            // dd($classes);
 
             return response()->json([
                 'status' => true,
@@ -437,9 +457,10 @@ class PosController extends Controller
 
     public function checkMember(Request $request)
     {
+        // dd($request->all());
         try {
             $validator = Validator::make($request->all(), [
-                'member_id' => 'required|exists:s_members,id'
+                'member_id' => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -451,10 +472,10 @@ class PosController extends Controller
             }
 
             $member = DB::table('s_members')
-                ->where('id', $request->member_id)
+                ->where('name', $request->member_id)
                 ->where('is_active', true)
                 ->first();
-
+// dd($member);
             if (!$member) {
                 return response()->json([
                     'status' => false,

@@ -133,8 +133,7 @@
                                     <th>Kelas</th>
                                     <th>Instruktur</th>
                                     <th>Lokasi</th>
-                                    <th>Waktu</th>
-                                    <th>Peserta</th>
+                                 
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,11 +142,6 @@
                                     <td>{{ $class->class_name }}</td>
                                     <td>{{ $class->instructor_name }}</td>
                                     <td>{{ $class->location_name }}</td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($class->start_datetime)->format('H:i') }} - 
-                                        {{ \Carbon\Carbon::parse($class->end_datetime)->format('H:i') }}
-                                    </td>
-                                    <td>{{ $class->participants_count }}/{{ $class->max_participants }}</td>
                                 </tr>
                                 @empty
                                 <tr>
@@ -176,7 +170,6 @@
                                 <tr>
                                     <th>Pelanggan</th>
                                     <th>Kelas</th>
-                                    <th>Tanggal</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -185,7 +178,6 @@
                                 <tr>
                                     <td>{{ $booking->customer_name }}</td>
                                     <td>{{ $booking->class_name }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($booking->start_datetime)->format('d M H:i') }}</td>
                                     <td>
                                         @if($booking->payment_status == 'paid')
                                             <span class="badge bg-success">Lunas</span>
@@ -208,48 +200,43 @@
     </div>
 
     <!-- Kelas Mendatang (7 Hari) -->
-    <div class="row">
-        <div class="col-lg-12 mb-4">
-            <div class="table-card">
-                <div class="table-card-header">
-                    <div class="header-content">
-                        <h6 class="header-title">Jadwal Kelas 7 Hari Mendatang</h6>
+        {{-- <div class="row">
+            <div class="col-lg-12 mb-4">
+                <div class="table-card">
+                    <div class="table-card-header">
+                        <div class="header-content">
+                            <h6 class="header-title">Jadwal Kelas 7 Hari Mendatang</h6>
+                        </div>
                     </div>
-                </div>
-                <div class="table-card-body">
-                    <div class="table-container">
-                        <table class="table table-hover table-types-table">
-                            <thead>
-                                <tr>
-                                    <th>Hari/Tanggal</th>
-                                    <th>Kelas</th>
-                                    <th>Instruktur</th>
-                                    <th>Waktu</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($upcomingClasses as $class)
-                                <tr>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($class->start_datetime)->translatedFormat('l, d F Y') }}
-                                    </td>
-                                    <td>{{ $class->class_name }}</td>
-                                    <td>{{ $class->instructor_name }}</td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($class->start_datetime)->format('H:i') }} - 
-                                        {{ \Carbon\Carbon::parse($class->end_datetime)->format('H:i') }}
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="text-center">Tidak ada kelas dalam 7 hari mendatang</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div class="table-card-body">
+                        <div class="table-container">
+                            <table class="table table-hover table-types-table">
+                                <thead>
+                                    <tr>
+                                        <th>Hari/Tanggal</th>
+                                        <th>Kelas</th>
+                                        <th>Instruktur</th>
+                                        <th>Waktu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($upcomingClasses as $class)
+                                    <tr>
+                                        <td>-</td>
+                                        <td>{{ $class->class_name }}</td>
+                                        <td>{{ $class->instructor_name }}</td>
+                                        <td>-</td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">Tidak ada kelas dalam 7 hari mendatang</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> --}}
 @endsection

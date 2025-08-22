@@ -96,10 +96,6 @@ class ClassTypeController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100|unique:s_class_types,name',
             'description' => 'nullable|string',
-            'duration_minutes' => 'required|integer|min:15|max:180',
-            'required_equipment' => 'nullable|string',
-            'equipment_ids' => 'nullable|array',
-            'equipment_ids.*' => 'exists:s_equipment,id'
         ]);
 
         if ($validator->fails()) {
@@ -156,10 +152,6 @@ class ClassTypeController extends Controller
             'id' => 'required|exists:s_class_types,id',
             'name' => 'required|string|max:100|unique:s_class_types,name,'.$request->id,
             'description' => 'nullable|string',
-            'duration_minutes' => 'required|integer|min:15|max:180',
-            'required_equipment' => 'nullable|string',
-            'equipment_ids' => 'nullable|array',
-            'equipment_ids.*' => 'exists:s_equipment,id',
             'is_active' => 'required|boolean'
         ]);
 

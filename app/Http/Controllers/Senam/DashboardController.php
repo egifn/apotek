@@ -16,12 +16,9 @@ class DashboardController extends Controller
             'active_classes' => DB::table('s_class_types')->where('is_active', true)->count(),
             'active_instructors' => DB::table('s_instructors')->where('is_active', true)->count(),
             'upcoming_classes' => DB::table('s_class_schedule')
-                ->where('recurrence_value', '>=', now())
                 ->where('is_active', true)
                 ->count(),
             'completed_classes' => DB::table('s_class_schedule')
-                ->where('end_datetime', '<', now())
-                ->where('end_datetime', '>=', now()->startOfMonth())
                 ->count(),
         ];
 
@@ -35,14 +32,9 @@ class DashboardController extends Controller
                 'ct.name as class_name',
                 'i.name as instructor_name',
                 'l.name as location_name',
-                'cs.start_datetime',
-                'cs.end_datetime',
-                'cs.max_participants',
                 DB::raw('(SELECT COUNT(*) FROM s_class_bookings WHERE class_schedule_id = cs.id) as participants_count')
             )
-            ->whereDate('cs.start_datetime', today())
             ->where('cs.is_active', true)
-            ->orderBy('cs.start_datetime')
             ->get();
 
         // Kelas mendatang (7 hari ke depan)
@@ -53,12 +45,8 @@ class DashboardController extends Controller
                 'cs.id',
                 'ct.name as class_name',
                 'i.name as instructor_name',
-                'cs.start_datetime',
-                'cs.end_datetime'
             )
-            ->whereBetween('cs.start_datetime', [now(), now()->addDays(7)])
             ->where('cs.is_active', true)
-            ->orderBy('cs.start_datetime')
             ->get();
 
         // Booking terbaru
@@ -71,11 +59,9 @@ class DashboardController extends Controller
                 'cb.id',
                 DB::raw('COALESCE(m.name, nm.name) as customer_name'),
                 'ct.name as class_name',
-                'cs.start_datetime',
                 'cb.payment_status',
                 'cb.created_at'
             )
-            ->where('cs.start_datetime', '>=', now())
             ->orderBy('cb.created_at', 'desc')
             ->limit(10)
             ->get();

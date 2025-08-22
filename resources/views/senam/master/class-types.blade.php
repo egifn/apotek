@@ -73,18 +73,12 @@
                             <textarea class="form-control" id="insert_description" name="insert_description" rows="2"></textarea>
                         </div>
                         
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="insert_duration_minutes" class="form-label">Durasi (menit)</label>
                                 <input type="number" class="form-control" id="insert_duration_minutes" name="insert_duration_minutes" min="15" max="180" required>
                             </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="insert_required_equipment" class="form-label">Alat yang Dibutuhkan</label>
-                            <textarea class="form-control" id="insert_required_equipment" name="insert_required_equipment" rows="2" placeholder="Contoh: Matras, Resistance Band"></textarea>
-                        </div>
-                        
                         <div class="mb-3">
                             <label class="form-label">Pilih Alat dari Daftar</label>
                             <div class="equipment-checkbox-container">
@@ -97,7 +91,7 @@
                                     </div>
                                 @endforeach
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -129,32 +123,6 @@
                         <div class="mb-3">
                             <label for="edit_description" class="form-label">Deskripsi</label>
                             <textarea class="form-control" id="edit_description" name="edit_description" rows="2"></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_duration_minutes" class="form-label">Durasi (menit)</label>
-                                <input type="number" class="form-control" id="edit_duration_minutes" name="edit_duration_minutes" min="15" max="180" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="edit_required_equipment" class="form-label">Alat yang Dibutuhkan</label>
-                            <textarea class="form-control" id="edit_required_equipment" name="edit_required_equipment" rows="2"></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Pilih Alat dari Daftar</label>
-                            <div class="equipment-checkbox-container" id="edit_equipment_container">
-                                @foreach($equipment as $item)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="edit_equipment_ids[]" value="{{ $item->id }}" id="edit_equipment_{{ $item->id }}">
-                                        <label class="form-check-label" for="edit_equipment_{{ $item->id }}">
-                                            {{ $item->name }} (Tersedia: {{ $item->available_quantity }})
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
                         </div>
                         
                         <div class="mb-3">
@@ -246,18 +214,14 @@
         const componentModalFormInsert = document.getElementById('classTypeModalInput');
         const inName = document.getElementById('insert_name');
         const inDescription = document.getElementById('insert_description');
-        const inDurationMinutes = document.getElementById('insert_duration_minutes');
-        const inRequiredEquipment = document.getElementById('insert_required_equipment');
-        const inEquipmentIds = document.querySelectorAll('input[name="insert_equipment_ids[]"]');
+        // const inEquipmentIds = document.querySelectorAll('input[name="insert_equipment_ids[]"]');
+        // const inDurationMinutes = document.getElementById('insert_duration_minutes');
 
         // MODAL EDIT
         const classTypeModalEdit = document.getElementById('classTypeModalEdit');
         const editClassTypeId = document.getElementById('edit_class_type_id');
         const editName = document.getElementById('edit_name');
         const editDescription = document.getElementById('edit_description');
-        const editDurationMinutes = document.getElementById('edit_duration_minutes');
-        const editRequiredEquipment = document.getElementById('edit_required_equipment');
-        const editEquipmentContainer = document.getElementById('edit_equipment_container');
         const editIsActive = document.getElementById('edit_is_active');
         const buttonUpdate = document.getElementById('button_update');
         const buttonUpdateSend = document.getElementById('button_update_send');
@@ -303,8 +267,7 @@
                         <tr>
                             <th class="ps-4" width="50">No</th>
                             <th>Nama Jenis</th>
-                            <th>Durasi</th>
-                            <th>Alat</th>
+                            <th>Deskripsi</th>
                             <th>Status</th>
                             <th class="text-center pe-4" width="150">Aksi</th>
                         </tr>
@@ -338,10 +301,8 @@
                                 <td class="ps-4">${data.from + index}</td>
                                 <td>
                                     <div class="fw-medium">${classType.name}</div>
-                                    <div class="small text-muted">${classType.description ? classType.description.substring(0, 50) + (classType.description.length > 50 ? '...' : '') : '-'}</div>
                                 </td>
-                                <td>${duration}</td>
-                                <td>${equipment}</td>
+                                <td><div class="small text-muted">${classType.description ? classType.description.substring(0, 50) + (classType.description.length > 50 ? '...' : '') : '-'}</div></td>
                                 <td>${statusBadge}</td>
                                 <td class="text-center pe-4">
                                     <div class="d-flex justify-content-center gap-2">
@@ -406,11 +367,10 @@
             // Reset form
             inName.value = '';
             inDescription.value = '';
-            inDurationMinutes.value = '60';
-            inRequiredEquipment.value = '';
-            inEquipmentIds.forEach(checkbox => {
-                checkbox.checked = false;
-            });
+            // inDurationMinutes.value = '60';
+            // inEquipmentIds.forEach(checkbox => {
+            //     checkbox.checked = false;
+            // });
             
             new bootstrap.Modal(componentModalFormInsert).show();
         });
@@ -426,8 +386,7 @@
                 const formData = {
                     name: inName.value,
                     description: inDescription.value,
-                    duration_minutes: inDurationMinutes.value,
-                    required_equipment: inRequiredEquipment.value,
+                    // duration_minutes: inDurationMinutes.value,
                     equipment_ids: selectedEquipment
                 };
 
@@ -486,11 +445,7 @@
                     editClassTypeId.value = '';
                     editName.value = '';
                     editDescription.value = '';
-                    editDurationMinutes.value = '';
-                    editRequiredEquipment.value = '';
                     editIsActive.value = '1';
-                    const editEquipmentCheckboxes = document.querySelectorAll('input[name="edit_equipment_ids[]"]');
-                    editEquipmentCheckboxes.forEach(checkbox => { checkbox.checked = false; });
 
                     const response = await axios.get(`{{ route('senam.master.class-types.data') }}`, {
                         params: { id: id }
@@ -507,17 +462,8 @@
                     editClassTypeId.value = classType.id;
                     editName.value = classType.name || '';
                     editDescription.value = classType.description || '';
-                    editDurationMinutes.value = classType.duration_minutes || '';
-                    editRequiredEquipment.value = classType.required_equipment || '';
                     editIsActive.value = classType.is_active ? '1' : '0';
-
-                    // Check equipment checkboxes
-                    editEquipmentCheckboxes.forEach(checkbox => {
-                        if (equipmentRequirements.includes(parseInt(checkbox.value))) {
-                            checkbox.checked = true;
-                        }
-                    });
-
+                    
                     new bootstrap.Modal(classTypeModalEdit).show();
                 } catch (error) {
                     console.error('Error:', error);
@@ -531,16 +477,10 @@
             buttonUpdateSend.style.display = 'inline-block';
 
             try {
-                const selectedEquipment = Array.from(document.querySelectorAll('input[name="edit_equipment_ids[]"]:checked'))
-                    .map(el => el.value);
-
-                const formData = {
+            const formData = {
                     id: editClassTypeId.value,
                     name: editName.value,
                     description: editDescription.value,
-                    duration_minutes: editDurationMinutes.value,
-                    required_equipment: editRequiredEquipment.value,
-                    equipment_ids: selectedEquipment,
                     is_active: editIsActive.value
                 };
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\CoffeShop;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -109,9 +110,12 @@ class IngredientController extends Controller
         DB::beginTransaction();
         try {
             $pricePerUnit = $request->purchase_price / $request->quantity_purchase;
-
+            $kode = 'ING-' . strtoupper(substr($request->name, 0, 3)) . '-' . date('YmdHis');
+            $user = Auth::user()->kd_lokasi;
+            
             DB::table('cs_ingredients')->insert([
                 'name'              => $request->name,
+                'code_ingredient'   => $kode,
                 'unit_id'           => $request->unit_id,
                 'purchase_price'    => $request->purchase_price,
                 'quantity_purchase' => $request->quantity_purchase,
@@ -119,6 +123,14 @@ class IngredientController extends Controller
                 'is_active'         => 1,
                 'created_at'        => now(),
                 'updated_at'        => now(),
+            ]);
+           
+            DB::table('cs_stocks')->insert([
+                'id_branch'         => $user,
+                'id_ingredients'    => $kode,
+                'stock_available'   => 0,
+                'min_stock'   => 0,
+                'created_at'        => now(),
             ]);
             DB::commit();
 

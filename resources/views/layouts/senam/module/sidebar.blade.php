@@ -26,13 +26,13 @@
             <a class="nav-link {{ request()->routeIs('senam.master.class-schedule.index') ? 'active' : '' }}"
                 href="{{ route('senam.master.class-schedule.index') }}">
                 <i class="fas fa-calendar-alt"></i>
-                <span class="nav-link-text">Jadwal Senam</span>
+                <span class="nav-link-text">Produk Jasa</span>
             </a>
 
             <a class="nav-link {{ request()->routeIs('senam.master.class-types.index') ? 'active' : '' }}"
                 href="{{ route('senam.master.class-types.index') }}">
                 <i class="fas fa-layer-group"></i>
-                <span class="nav-link-text">Tipe Senam</span>
+                <span class="nav-link-text">Jenis Jasa</span>
             </a>
 
             <a class="nav-link {{ request()->routeIs('senam.master.instructors.index') ? 'active' : '' }}"

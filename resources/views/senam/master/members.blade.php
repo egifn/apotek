@@ -28,14 +28,6 @@
                                 <option value="0">Nonaktif</option>
                             </select>
                         </div>
-                        <div class="col-lg-3">
-                            <select class="form-control form-control-sm" id="filter_membership_type">
-                                <option value="">Semua Tipe</option>
-                                <option value="regular">Regular</option>
-                                <option value="premium">Premium</option>
-                                <option value="vip">VIP</option>
-                            </select>
-                        </div>
                     </div>
                     <div class="col-2">
                         <select class="form-control form-control-sm" id="short_by_limit">
@@ -77,50 +69,23 @@
                                 <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="insert_email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="insert_email" name="insert_email" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
                                 <label for="insert_phone" class="form-label">No. Telepon</label>
                                 <input type="text" class="form-control" id="insert_phone" name="insert_phone" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_join_date" class="form-label">Tanggal Bergabung</label>
-                                <input type="date" class="form-control" id="insert_join_date" name="insert_join_date" required>
-                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="insert_address" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="insert_address" name="insert_address" rows="2"></textarea>
-                        </div>
-                        
+                        <input type="date" class="form-control" id="insert_join_date" name="insert_join_date" required hidden>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_membership_type" class="form-label">Tipe Membership</label>
-                                <select class="form-control" id="insert_membership_type" name="insert_membership_type" required>
-                                    <option value="regular">Regular</option>
-                                    <option value="premium">Premium</option>
-                                    <option value="vip">VIP</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_total_quota" class="form-label">Jumlah Kuota Awal</label>
-                                <input type="number" class="form-control" id="insert_total_quota" name="insert_total_quota" min="1"  required readonly>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_start_date" class="form-label">Tanggal Mulai Kuota</label>
+                            <div class="col-md-4 mb-3">
+                                <label for="insert_start_date" class="form-label">Tanggal Mulai</label>
                                 <input type="date" class="form-control" id="insert_start_date" name="insert_start_date" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="insert_end_date" class="form-label">Tanggal Berakhir Kuota</label>
+                            <div class="col-md-4 mb-3">
+                                <label for="insert_end_date" class="form-label">Tanggal Berakhir</label>
                                 <input type="date" class="form-control" id="insert_end_date" name="insert_end_date" required>
+                            </div>
+                             <div class="col-md-4 mb-3">
+                                <label for="insert_total_quota" class="form-label">Kuota</label>
+                                <input type="number" class="form-control" id="insert_total_quota" name="insert_total_quota" min="1"  required readonly>
                             </div>
                         </div>
                     </div>
@@ -152,38 +117,10 @@
                                 <input type="text" class="form-control" id="edit_name" name="edit_name" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="edit_email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="edit_email" name="edit_email" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
                                 <label for="edit_phone" class="form-label">No. Telepon</label>
                                 <input type="text" class="form-control" id="edit_phone" name="edit_phone" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_join_date" class="form-label">Tanggal Bergabung</label>
-                                <input type="date" class="form-control" id="edit_join_date" name="edit_join_date" required>
-                            </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="edit_address" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="edit_address" name="edit_address" rows="2"></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_membership_type" class="form-label">Tipe Membership</label>
-                                <select class="form-control" id="edit_membership_type" name="edit_membership_type" required>
-                                    <option value="regular">Regular</option>
-                                    <option value="premium">Premium</option>
-                                    <option value="vip">VIP</option>
-                                </select>
-                            </div>
-                        </div>
-                        
                         <div class="mb-3">
                             <label for="edit_is_active" class="form-label">Status</label>
                             <select class="form-control" id="edit_is_active" name="edit_is_active" required>
@@ -308,7 +245,6 @@
         // Filter variables
         const filterSearch = document.getElementById('filter_search');
         const filterStatus = document.getElementById('filter_status');
-        const filterMembershipType = document.getElementById('filter_membership_type');
         const syLimit = document.getElementById('short_by_limit');
 
         // Table element
@@ -321,11 +257,8 @@
         const buttonInsertSend = document.getElementById('button_insert_send');
         const componentModalFormInsert = document.getElementById('memberModalInput');
         const inName = document.getElementById('insert_name');
-        const inEmail = document.getElementById('insert_email');
         const inPhone = document.getElementById('insert_phone');
         const inJoinDate = document.getElementById('insert_join_date');
-        const inAddress = document.getElementById('insert_address');
-        const inMembershipType = document.getElementById('insert_membership_type');
         const inTotalQuota = document.getElementById('insert_total_quota');
         const inStartDate = document.getElementById('insert_start_date');
         const inEndDate = document.getElementById('insert_end_date');
@@ -334,11 +267,7 @@
         const memberModalEdit = document.getElementById('memberModalEdit');
         const editMemberId = document.getElementById('edit_member_id');
         const editName = document.getElementById('edit_name');
-        const editEmail = document.getElementById('edit_email');
         const editPhone = document.getElementById('edit_phone');
-        const editJoinDate = document.getElementById('edit_join_date');
-        const editAddress = document.getElementById('edit_address');
-        const editMembershipType = document.getElementById('edit_membership_type');
         const editIsActive = document.getElementById('edit_is_active');
         const buttonUpdate = document.getElementById('button_update');
         const buttonUpdateSend = document.getElementById('button_update_send');
@@ -368,24 +297,19 @@
 
     {{-- GET DATA --}}
     <script>
-        async function fetchData(search, status, membershipType, limit) {
+        async function fetchData(search, status, limit) {
             try {
                 let url = `{{ route('senam.master.members.data') }}`;
                 let params = new URLSearchParams();
-
                 if (search && search !== '') {
                     params.append('search', search);
                 }
                 if (status && status !== '') {
                     params.append('status', status);
                 }
-                if (membershipType && membershipType !== '') {
-                    params.append('membership_type', membershipType);
-                }
                 if (limit && limit !== '') {
                     params.append('limit', limit);
                 }
-
                 if (params.toString()) {
                     url += '?' + params.toString();
                 }
@@ -393,13 +317,13 @@
                 const response = await axios.get(url);
                 const data = response.data.data;
 
+
                 memberTable.innerHTML = '';
                 memberTable.innerHTML += `
                     <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
                             <th>Nama</th>
-                            <th>Membership</th>
                             <th>Kontak</th>
                             <th>Kuota</th>
                             <th>Status</th>
@@ -418,38 +342,11 @@
                 } else {
                     data.data.forEach((member, index) => {
                         // Format status
+                        console.log(member);
+                        
                         const statusBadge = member.is_active 
                             ? '<span class="badge bg-success">Aktif</span>' 
                             : '<span class="badge bg-danger">Nonaktif</span>';
-
-                        // Format membership
-                        let membershipBadge = '';
-                        if (member.membership_type === 'regular') {
-                            membershipBadge = '<span class="badge bg-secondary">Regular</span>';
-                        } else if (member.membership_type === 'premium') {
-                            membershipBadge = '<span class="badge bg-primary">Premium</span>';
-                        } else {
-                            membershipBadge = '<span class="badge bg-warning">VIP</span>';
-                        }
-
-                        // Format contact
-                        const contact = `
-                            <div>${member.phone}</div>
-                            <div class="small text-muted">${member.email}</div>
-                        `;
-
-                        // Get current quota
-                        const currentQuota = member.quotas ? member.quotas[0] : null;
-                        let quotaInfo = '-';
-                        if (currentQuota) {
-                            quotaInfo = `
-                                <div>${currentQuota.remaining_quota}/${currentQuota.total_quota}</div>
-                                <div class="small text-muted">
-                                    ${new Date(currentQuota.start_date).toLocaleDateString('id-ID')} - 
-                                    ${new Date(currentQuota.end_date).toLocaleDateString('id-ID')}
-                                </div>
-                            `;
-                        }
 
                         memberTable.innerHTML += `
                             <tr>
@@ -458,9 +355,8 @@
                                     <div class="fw-medium">${member.name}</div>
                                     <div class="small text-muted">Bergabung: ${new Date(member.join_date).toLocaleDateString('id-ID')}</div>
                                 </td>
-                                <td>${membershipBadge}</td>
-                                <td>${contact}</td>
-                                <td>${quotaInfo}</td>
+                                <td>${member.phone}</td>
+                                <td>${member.remaining_quota}</td>
                                 <td>${statusBadge}</td>
                                 <td class="text-center pe-4">
                                     <div class="d-flex justify-content-center gap-2">
@@ -556,45 +452,32 @@
         document.addEventListener('DOMContentLoaded', () => {
             const search = filterSearch.value;
             const status = filterStatus.value;
-            const membershipType = filterMembershipType.value;
             const limit = syLimit.value;
-            fetchData(search, status, membershipType, limit);
+            fetchData(search, status, limit);
         });
 
         // Filter by search
         filterSearch.addEventListener('input', debounce((event) => {
             const search = event.target.value;
             const status = filterStatus.value;
-            const membershipType = filterMembershipType.value;
             const limit = syLimit.value;
-            fetchData(search, status, membershipType, limit);
+            fetchData(search, status, limit);
         }, 500));
 
         // Filter by status
         filterStatus.addEventListener('change', (event) => {
             const search = filterSearch.value;
             const status = event.target.value;
-            const membershipType = filterMembershipType.value;
             const limit = syLimit.value;
-            fetchData(search, status, membershipType, limit);
-        });
-
-        // Filter by membership type
-        filterMembershipType.addEventListener('change', (event) => {
-            const search = filterSearch.value;
-            const status = filterStatus.value;
-            const membershipType = event.target.value;
-            const limit = syLimit.value;
-            fetchData(search, status, membershipType, limit);
+            fetchData(search, status, limit);
         });
 
         // Filter by limit
         syLimit.addEventListener('change', (event) => {
             const search = filterSearch.value;
             const status = filterStatus.value;
-            const membershipType = filterMembershipType.value;
             const limit = event.target.value;
-            fetchData(search, status, membershipType, limit);
+            fetchData(search, status, limit);
         });
     </script>
 
@@ -603,11 +486,8 @@
         buttonShowModalFormInput.addEventListener('click', function() {
             // Reset form
             inName.value = '';
-            inEmail.value = '';
             inPhone.value = '';
             inJoinDate.value = '';
-            inAddress.value = '';
-            inMembershipType.value = 'regular';
             inTotalQuota.value = '4';
             inStartDate.value = '';
             inEndDate.value = '';
@@ -632,11 +512,8 @@
             try {
                 const formData = {
                     name: inName.value,
-                    email: inEmail.value,
                     phone: inPhone.value,
-                    address: inAddress.value,
                     join_date: inJoinDate.value,
-                    membership_type: inMembershipType.value,
                     total_quota: inTotalQuota.value,
                     start_date: inStartDate.value,
                     end_date: inEndDate.value
@@ -651,7 +528,6 @@
                     // Refresh data
                     const search = filterSearch.value;
                     const status = filterStatus.value;
-                    const membershipType = filterMembershipType.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
 
@@ -697,11 +573,7 @@
                     // Reset all fields before filling
                     editMemberId.value = '';
                     editName.value = '';
-                    editEmail.value = '';
                     editPhone.value = '';
-                    editJoinDate.value = '';
-                    editAddress.value = '';
-                    editMembershipType.value = 'regular';
                     editIsActive.value = '1';
 
                     const response = await axios.get(`{{ route('senam.master.members.data') }}`, {
@@ -722,11 +594,7 @@
                     // Fill the form
                     editMemberId.value = member.id !== undefined && member.id !== null ? member.id : '';
                     editName.value = member.name !== undefined && member.name !== null ? member.name : '';
-                    editEmail.value = member.email !== undefined && member.email !== null ? member.email : '';
                     editPhone.value = member.phone !== undefined && member.phone !== null ? member.phone : '';
-                    editJoinDate.value = member.join_date ? member.join_date.split(' ')[0] : '';
-                    editAddress.value = member.address !== undefined && member.address !== null ? member.address : '';
-                    editMembershipType.value = member.membership_type !== undefined && member.membership_type !== null ? member.membership_type : 'regular';
                     editIsActive.value = member.is_active == 1 ? '1' : '0';
 
                     new bootstrap.Modal(memberModalEdit).show();
@@ -745,11 +613,7 @@
                 const formData = {
                     id: editMemberId.value,
                     name: editName.value,
-                    email: editEmail.value,
                     phone: editPhone.value,
-                    address: editAddress.value,
-                    join_date: editJoinDate.value,
-                    membership_type: editMembershipType.value,
                     is_active: editIsActive.value
                 };
 
@@ -761,7 +625,6 @@
                     
                     const search = filterSearch.value;
                     const status = filterStatus.value;
-                    const membershipType = filterMembershipType.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
                     
@@ -836,7 +699,6 @@
                     
                     const search = filterSearch.value;
                     const status = filterStatus.value;
-                    const membershipType = filterMembershipType.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
                     
@@ -904,7 +766,6 @@
                     
                     const search = filterSearch.value;
                     const status = filterStatus.value;
-                    const membershipType = filterMembershipType.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
                     
