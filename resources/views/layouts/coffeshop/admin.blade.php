@@ -550,6 +550,7 @@
         .table-responsive-custom {
             width: 100%;
             overflow-x: auto;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             border-collapse: collapse;
         }
@@ -766,7 +767,10 @@
             }
         }
     </style>
+
+    @yield('style')
 </head>
+
 
 <body>
     <div class="d-flex">
@@ -927,6 +931,7 @@
     </script>
 
     @stack('scripts')
+    @yield('scripts')
 </body>
 
 </html>

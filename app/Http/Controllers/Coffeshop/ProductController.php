@@ -149,7 +149,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code'           => 'required|string|max:50|unique:cs_products,code',
             'name'           => 'required|string|max:255',
             'category_id'    => 'required|integer|exists:cs_categories,id',
             'selling_price'  => 'required|numeric|min:0',
@@ -171,8 +170,26 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             // Insert produk
+            $lastProduct = DB::table('cs_products')
+            ->where('category_id', $request->category_id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+            $nextNumber = 1;
+            if ($lastProduct) {
+                // cek code terakhir → ambil urutan di belakang
+                $parts = explode('-', $lastProduct->code);
+                $lastNumber = intval(end($parts));
+                $nextNumber = $lastNumber + 1;
+            }
+
+            // Format nomor urut 3 digit (001, 002, dst)
+            $numberFormatted = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+            // Generate code
+            $code = $request->name . '-' . $request->category_id . '-' . $numberFormatted;
             $productId = DB::table('cs_products')->insertGetId([
-                'code'          => $request->code,
+                'code'          => $code,
                 'name'         => $request->name,
                 'category_id'   => $request->category_id,
                 'description'  => $request->description,
@@ -212,9 +229,6 @@ class ProductController extends Controller
         }
     }
 
-   // ProductController.php
-
-// Tambahkan method untuk menghapus komposisi
     public function deleteCompositions(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -250,7 +264,6 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id'            => 'required|integer|exists:cs_products,id',
-            'code'          => 'required|string|max:50|unique:cs_products,code,' . $request->id,
             'name'          => 'required|string|max:255',
             'category_id'   => 'required|integer|exists:cs_categories,id',
             'selling_price' => 'required|numeric|min:0',
@@ -275,7 +288,6 @@ class ProductController extends Controller
             DB::table('cs_products')
                 ->where('id', $request->id)
                 ->update([
-                    'code'          => $request->code,
                     'name'         => $request->name,
                     'category_id'   => $request->category_id,
                     'description'  => $request->description,

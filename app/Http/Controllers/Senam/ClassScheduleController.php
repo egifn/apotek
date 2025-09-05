@@ -30,7 +30,7 @@ class ClassScheduleController extends Controller
 
             $query = DB::table('s_class_schedule as cs')
                 ->join('s_class_types as ct', 'cs.class_type_id', '=', 'ct.id')
-                ->join('s_instructors as i', 'cs.instructor_id', '=', 'i.id')
+                ->leftjoin('s_instructors as i', 'cs.instructor_id', '=', 'i.id')
                 ->join('s_locations as l', 'cs.location_id', '=', 'l.id')
                 ->select(
                     'cs.id',
@@ -95,10 +95,10 @@ class ClassScheduleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'class_type_id' => 'required|exists:s_class_types,id',
-            'instructor_id' => 'required|exists:s_instructors,id',
+            // 'instructor_id' => 'required|exists:s_instructors,id',
             'location_id' => 'required|exists:s_locations,id',
             'services_name' => 'required|string|max:255',
-            'type_services' => 'required|string|max:255',
+            // 'type_services' => 'required|string|max:255',
             'price' => 'required|numeric|min:0'
         ]);
 
@@ -141,15 +141,14 @@ class ClassScheduleController extends Controller
 
     public function update(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:s_class_schedule,id',
             'class_type_id' => 'required|exists:s_class_types,id',
-            'instructor_id' => 'required|exists:s_instructors,id',
             'location_id' => 'required|exists:s_locations,id',
-            'services_name' => 'required|string|max:255',
-            'type_services' => 'required|string|max:255',
+            // 'services_name' => 'required|string|max:255',
+            // 'type_services' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'is_active' => 'required|boolean'
         ]);
 
         if ($validator->fails()) {
@@ -170,7 +169,6 @@ class ClassScheduleController extends Controller
                 'services_name' => $request->services_name,
                 'type_services' => $request->type_services,
                 'price' => $request->price,
-                'is_active' => $request->is_active
             ];
 
             DB::table('s_class_schedule')->where('id', $request->id)->update($data);

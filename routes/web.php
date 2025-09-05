@@ -25,10 +25,25 @@ Route::get('/dashboard-master', 'HomeController@dashboard_master')->name('dashbo
 // ------------------------------------- CoffeShop Routes ----------------------------------------- //
 Route::prefix('coffeshop')->name('coffeshop.')->group(function () {
     Route::get('/dashboard', 'Coffeshop\DashboardController@index')->name('dashboard');
-
+    
+    
     // Master Data
     Route::prefix('master')->name('master.')->group(function () {
         // Route::resource('products', 'Coffeshop\ProductController');
+        // ------------------------------------- Pembelian Routes ----------------------------------------- //
+        Route::prefix('pembelian')->name('pembelian.')->group(function () {
+            Route::get('/', 'Coffeshop\PembelianController@index')->name('index');
+            Route::get('/data', 'Coffeshop\PembelianController@getTransaksiData')->name('data');
+            Route::get('/create', 'Coffeshop\PembelianController@create')->name('create');
+            Route::get('/create/getSupplier', 'Coffeshop\PembelianController@getSupplier')->name('getSupplier');
+            Route::get('/create/getProduk', 'Coffeshop\PembelianController@getProduk')->name('getProduk');
+            Route::post('/in', 'Coffeshop\PembelianController@store')->name('store')->name('store');
+            Route::get('/pembelian/detail/{kode}', 'Coffeshop\PembelianController@getTransaksiDataDetail')->name('detail');
+            Route::post('/pembelian/terima/{kode}', 'Coffeshop\PembelianController@terimaBarang')->name('accept');
+            // Route::post('/up', 'Coffeshop\BranchController@update')->name('update');
+            // Route::post('/des', 'Coffeshop\BranchController@destroy')->name('destroy');
+        });
+        
         // Branch
         Route::prefix('branches')->name('branches.')->group(function () {
             Route::get('/', 'Coffeshop\BranchController@index')->name('index');
@@ -249,9 +264,11 @@ Route::prefix('pos')->group(function () {
     Route::post('/process', 'PosController@processTransaction')->name('pos.process');
     Route::get('/exercise-classes', 'PosController@getExerciseClasses')->name('pos.exercise-classes');
     Route::post('/check-member', 'PosController@checkMember')->name('pos.check-member');
+    Route::post('/search-members', 'PosController@searchMembers')->name('pos.search-members');
     Route::post('/register-class', 'PosController@registerClass')->name('pos.register-class');
     Route::post('/topup-quota', 'PosController@topupQuota')->name('pos.topup-quota');
     Route::get('/categories', 'PosController@getCategories')->name('pos.categories');
+    // Route::post('/search-members','PosController@searchMembers')->name('pos.search-members');
 });
 
 

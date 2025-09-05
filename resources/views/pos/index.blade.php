@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
 
     <style>
         /* ========== ROOT VARIABLES ========== */
@@ -510,6 +512,8 @@
         .header-title {
             margin-bottom: 0;
             color: #212529;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
         .table-container {
@@ -541,10 +545,6 @@
             color: #474747;
             font-weight: 400;
         }
-
-        /* .table-types-table tbody:hover {
-            opacity: 10%;
-        } */
 
         .table-responsive-custom {
             width: 100%;
@@ -728,6 +728,8 @@
 
         .modal-body {
             padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .modal-footer {
@@ -761,6 +763,54 @@
             box-shadow: 0 0 0 0.25rem rgba(26, 86, 219, 0.1);
         }
 
+        /* Product and Service Cards */
+        .product-card, .service-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover, .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Exercise Class Table */
+        .select-class-btn {
+            min-width: 80px;
+        }
+
+        /* Participant Card */
+        .participant-card {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Modal Backdrop Fix */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1040;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            opacity: 0.5;
+        }
+
+        /* Modal Fix untuk mencegah kelap-kelip */
+        .modal {
+            z-index: 1050;
+            overflow: hidden;
+            outline: 0;
+        }
+
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: translate(0, -50px);
+        }
+
+        .modal.show .modal-dialog {
+            transform: none;
+        }
 
         /* Responsive adjustments */
         @media (max-width: 576px) {
@@ -770,6 +820,15 @@
 
             .modal-content {
                 border-radius: 0;
+            }
+            
+            .table-types-table th, 
+            .table-types-table td {
+                padding: 0.5rem;
+            }
+            
+            .header-title {
+                font-size: 1rem;
             }
         }
     </style>
@@ -832,7 +891,7 @@
                                         <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Kopi Tiga</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">Barbershop</button>
+                                        <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" >Barbershop</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise" type="button" role="tab">Senam</button>
@@ -879,14 +938,14 @@
                                             <table class="table-types-table" id="classTable">
                                                 <thead>
                                                     <tr>
-                                                        <th>Class</th>
-                                                        <th>Instructor</th>
-                                                        <th>Action</th>
+                                                        <th>Kelas</th>
+                                                        <th>Harga</th>
+                                                        <th>Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="classList">
                                                     <tr>
-                                                        <td colspan="5" class="text-center py-3">
+                                                        <td colspan="3" class="text-center py-3">
                                                             <div class="spinner-border text-primary" role="status">
                                                                 <span class="visually-hidden">Loading...</span>
                                                             </div>
@@ -894,70 +953,6 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                        
-                                        <!-- Exercise Registration Form (hidden by default) -->
-                                        <div class="card mt-3" id="exerciseFormCard" style="display: none;">
-                                            <div class="card-header">
-                                                <h5 class="card-title mb-0">Exercise Registration</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mb-3">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="userType" id="memberRadio" value="member" checked>
-                                                        <label class="form-check-label" for="memberRadio">Member</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="userType" id="nonMemberRadio" value="non-member">
-                                                        <label class="form-check-label" for="nonMemberRadio">Non-Member</label>
-                                                    </div>
-                                                </div>
-
-                                                <div id="memberForm">
-                                                    <div class="mb-3">
-                                                        <label for="memberId" class="form-label">Member ID/Phone</label>
-                                                        <div class="input-group">
-                                                            <input type="text" class="form-control" id="memberId" placeholder="Enter member ID or phone">
-                                                            <button class="btn btn-primary" id="checkMemberBtn">Check</button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="member-details mb-3" id="memberDetails" style="display: none;">
-                                                        <div class="card bg-light">
-                                                            <div class="card-body">
-                                                                <h6 class="card-title" id="memberName"></h6>
-                                                                <p class="card-text mb-1">
-                                                                    <small>Membership:</small> <span id="memberType"></span>
-                                                                </p>
-                                                                <p class="card-text mb-1">
-                                                                    <small>Quota:</small> <span id="memberQuota"></span>/<span id="memberTotalQuota"></span>
-                                                                </p>
-                                                                <p class="card-text mb-0">
-                                                                    <small>Valid until:</small> <span id="memberQuotaEnd"></span>
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div id="nonMemberForm" style="display: none;">
-                                                    <div class="mb-3">
-                                                        <label for="nonMemberName" class="form-label">Name</label>
-                                                        <input type="text" class="form-control" id="nonMemberName">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="nonMemberPhone" class="form-label">Phone Number</label>
-                                                        <input type="text" class="form-control" id="nonMemberPhone">
-                                                    </div>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="selectedClass" class="form-label">Selected Class</label>
-                                                    <input type="text" class="form-control" id="selectedClass" readonly>
-                                                    <input type="hidden" id="selectedClassId">
-                                                </div>
-
-                                                <button class="btn btn-primary w-100" id="registerExerciseBtn" disabled>Register</button>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1001,15 +996,15 @@
                             </div>
                             <div class="card-footer">
                                 <div class="mb-3">
-                                    <label for="paymentAmount" class="form-label">Payment Amount</label>
-                                    <input type="number" class="form-control" id="paymentAmount" placeholder="Enter payment amount">
+                                    <label for="paymentAmount" class="form-label">Jumlah Pembayaran</label>
+                                    <input type="number" class="form-control" id="paymentAmount" placeholder="Masukkan jumlah pembayaran">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="changeAmount" class="form-label">Change</label>
+                                    <label for="changeAmount" class="form-label">Kembalian</label>
                                     <input type="text" class="form-control" id="changeAmount" readonly>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="paymentMethod" class="form-label">Payment Method</label>
+                                <div class="mb-3">  
+                                    <label for="paymentMethod" class="form-label">Metode Pembayaran</label>
                                     <select class="form-control" id="paymentMethod">
                                         <option value="cash">Cash</option>
                                         <option value="debit">Debit Card</option>
@@ -1023,66 +1018,94 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Quota Modal -->
-                <div class="modal fade" id="quotaModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Quota Exhausted</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="alert alert-warning">
-                                    <i class="fas fa-exclamation-triangle"></i> 
-                                    <span id="quotaMessage"></span>
-                                </div>
-                                <div class="mb-3">
-                                    <p>Would you like to top up your quota for Rp 200,000?</p>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="addToOrderCheck" checked>
-                                        <label class="form-check-label" for="addToOrderCheck">
-                                            Add to current order
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary" id="topupBtn">Top Up Quota</button>
-                            </div>
-                        </div>
+        <!-- Modal untuk Input Peserta Kelas -->
+    <div class="modal fade" id="exerciseModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exerciseModalLabel">Daftar Peserta Kelas: <span id="modalClassName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <button class="btn btn-sm btn-outline-primary" id="addParticipantBtn">
+                            <i class="fas fa-plus"></i> Tambah Peserta
+                        </button>
+                    </div>
+                    
+                    <div id="participantsContainer">
+                        <!-- Participant forms will be added here -->
                     </div>
                 </div>
-
-                <!-- Success Modal -->
-                <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Registration Successful</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="alert alert-success">
-                                    <i class="fas fa-check-circle"></i> 
-                                    <span id="successMessage"></span>
-                                </div>
-                                <div class="registration-details">
-                                    <p><strong>Class:</strong> <span id="regClass"></span></p>
-                                    <p><strong>Time:</strong> <span id="regTime"></span></p>
-                                    <p><strong>Participant:</strong> <span id="regParticipant"></span></p>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="confirmParticipants">Konfirmasi</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Template untuk form peserta (hidden) -->
+    <template id="participantTemplate">
+    <div class="card participant-card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0">Peserta #<span class="participant-number">1</span></h6>
+                <button type="button" class="btn btn-sm btn-danger remove-participant">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="memberType_{id}" value="member" checked>
+                        <label class="form-check-label" for="memberType_{id}">Member</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="nonMemberType_{id}" value="non_member">
+                        <label class="form-check-label" for="nonMemberType_{id}">Non-Member</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="member-fields">
+                <div class="mb-2 position-relative">
+                    <label class="form-label">Cari Member</label>
+                    <input type="text" class="form-control member-search-input" placeholder="Ketik nama member..." data-participant-id="{id}">
+                    <ul class="list-group position-absolute w-100 mt-1 member-dropdown" style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></ul>
+                </div>
+                <div class="member-details" id="memberDetails_{id}" style="display: none;">
+                    <small class="text-muted">
+                        Sisa Kuota: <span class="quota-remaining">0</span>/<span class="quota-total">0</span>
+                        (Berlaku hingga: <span class="quota-end">-</span>)
+                    </small>
+                </div>
+            </div>
+
+            <div class="non-member-fields" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Nama Non-Member</label>
+                        <input type="text" class="form-control non-member-name" placeholder="Nama lengkap">
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">No. Telepon</label>
+                        <input type="text" class="form-control non-member-phone" placeholder="No. telepon">
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-info mt-2">
+                <strong>Harga: <span class="participant-price">Rp 0</span></strong>
+            </div>
+        </div>
+    </div>
+</template>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1093,7 +1116,6 @@
             
             // DOM Elements - Coffee Products
             const productSearch = document.getElementById('productSearch');
-            const productList = document.getElementById('productList');
             
             // DOM Elements - Barbershop Services
             const serviceSearch = document.getElementById('serviceSearch');
@@ -1102,19 +1124,6 @@
             // DOM Elements - Exercise Classes
             const classSearch = document.getElementById('classSearch');
             const classList = document.getElementById('classList');
-            const exerciseFormCard = document.getElementById('exerciseFormCard');
-            const memberRadio = document.getElementById('memberRadio');
-            const nonMemberRadio = document.getElementById('nonMemberRadio');
-            const memberForm = document.getElementById('memberForm');
-            const nonMemberForm = document.getElementById('nonMemberForm');
-            const memberIdInput = document.getElementById('memberId');
-            const checkMemberBtn = document.getElementById('checkMemberBtn');
-            const memberDetails = document.getElementById('memberDetails');
-            const registerExerciseBtn = document.getElementById('registerExerciseBtn');
-            const selectedClass = document.getElementById('selectedClass');
-            const selectedClassId = document.getElementById('selectedClassId');
-            const quotaModal = new bootstrap.Modal('#quotaModal');
-            const successModal = new bootstrap.Modal('#successModal');
             
             // DOM Elements - Order Summary
             const orderTable = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
@@ -1123,27 +1132,25 @@
             const paymentAmount = document.getElementById('paymentAmount');
             const changeAmount = document.getElementById('changeAmount');
             const processBtn = document.getElementById('processTransaction');
+            // Variabel untuk modal
+            let exerciseModal = null;
 
             // ===================================================================================
             // COFFEE PRODUCTS SECTION
             // ===================================================================================
-            
             // 1. Variabel global di paling atas
             let categories = [];
             let selectedCategory = 'all';
-
             // 2. Function selectCategory harus didefinisikan sebelum dipanggil
             function selectCategory(categoryId) {
-                console.log('Selecting category:', categoryId);
+                // console.log('Selecting category:', categoryId);
                 selectedCategory = categoryId;
                 const searchTerm = document.getElementById('productSearch').value;
                 loadProducts(searchTerm);
             }
-
             // 3. Function lainnya
             async function loadCategories() {
                 try {
-                    // console.log('Loading categories...');
                     const response = await fetch(`{{ route('pos.categories') }}`);
                     const data = await response.json();
                     
@@ -1157,9 +1164,10 @@
                 }
             }
 
-            loadCategories();
-
             function renderCategoryTabs() {
+                const categoryTabs = document.getElementById('categoryTabs');
+                if (!categoryTabs) return;
+                
                 let tabsHtml = `
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active category-tab" 
@@ -1182,11 +1190,12 @@
                     `;
                 });
                 
-                document.getElementById('categoryTabs').innerHTML = tabsHtml;
+                categoryTabs.innerHTML = tabsHtml;
             }
 
             async function loadProducts(search = '') {
                 const categoryTabContent = document.getElementById('categoryTabContent');
+                if (!categoryTabContent) return;
                 
                 if (selectedCategory === 'all') {
                     categoryTabContent.innerHTML = `
@@ -1202,7 +1211,7 @@
                     categoryTabContent.innerHTML = `
                         <div class="tab-pane fade show active" id="category-${selectedCategory}" role="tabpanel">
                             <div class="text-center py-3">
-                                <div class="spinner-border text-primary" role="status">
+                                <div class="spinner-border text-primary, role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
@@ -1229,6 +1238,7 @@
 
             function renderProductsByCategory(products) {
                 const categoryTabContent = document.getElementById('categoryTabContent');
+                if (!categoryTabContent) return;
                 
                 let html = '';
                 if (selectedCategory === 'all') {
@@ -1272,7 +1282,7 @@
                             `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
-                                <p class="card-text">Rp ${product.selling_price.toLocaleString('id-ID')}</p>
+                                <p class="card-text">${formatRupiah(product.selling_price)}</p>
                                 ${product.code ? `<small class="text-muted">Code: ${product.code}</small>` : ''}
                             </div>
                         </div>
@@ -1281,15 +1291,13 @@
             }
 
             // 4. Initialize saat DOM ready
-            document.addEventListener('DOMContentLoaded', () => {
-                loadCategories();
-                
-                // Event listener untuk search
-                document.getElementById('productSearch').addEventListener('input', (e) => {
+            loadCategories();
+            // Event listener untuk search
+            if (productSearch) {
+                productSearch.addEventListener('input', (e) => {
                     loadProducts(e.target.value);
                 });
-            });
-
+            }
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('category-tab')) {
                     e.preventDefault();
@@ -1303,7 +1311,8 @@
                     // Panggil selectCategory
                     const categoryId = e.target.dataset.category;
                     selectedCategory = categoryId;
-                    loadProducts(document.getElementById('productSearch').value);
+                    const searchInput = document.getElementById('productSearch');
+                    loadProducts(searchInput ? searchInput.value : '');
                 }
             });
 
@@ -1311,6 +1320,8 @@
             // BARBERSHOP SERVICES SECTION
             // ======================
             async function loadServices(search = '') {
+                if (!serviceList) return;
+                
                 serviceList.innerHTML = `
                     <div class="col-12 text-center py-3">
                         <div class="spinner-border text-primary" role="status">
@@ -1334,7 +1345,7 @@
                                         data-type="service">
                                         <div class="card-body">
                                             <h6 class="card-title">${service.name}</h6>
-                                            <p class="card-text">Rp ${service.price.toLocaleString('id-ID')}</p>
+                                            <p class="card-text">${formatRupiah(service.price)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1352,10 +1363,17 @@
             // ======================
             // EXERCISE CLASSES SECTION
             // ======================
+            // Variabel global tambahan
+            let participants = [];
+            let participantCount = 0;
+
+            // Modifikasi fungsi loadClasses
             async function loadClasses(date = '', search = '') {
+                if (!classList) return;
+                
                 classList.innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center py-3">
+                        <td colspan="3" class="text-center py-3">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -1370,30 +1388,32 @@
                     
                     const response = await fetch(`{{ route('pos.exercise-classes') }}?${params.toString()}`);
                     const data = await response.json();
-                    
+
                     if (data.status) {
                         let html = '';
                         
                         if (data.data.length === 0) {
                             html = `
                                 <tr>
-                                    <td colspan="5" class="text-center py-3 text-muted">
-                                        No classes available for 
+                                    <td colspan="3" class="text-center py-3 text-muted">
+                                        Tidak ada kelas yang tersedia
                                     </td>
                                 </tr>
                             `;
                         } else {
                             data.data.forEach(cls => {
+                                // console.log(cls.id);
                                 
                                 html += `
                                     <tr>
                                         <td>${cls.class_name}</td>
-                                        <td>${cls.instructor_name}</td>
+                                        <td>${formatRupiah(cls.price)}</td>
                                         <td>
                                             <button class="btn btn-sm btn-primary select-class-btn" 
                                                     data-id="${cls.id}"
-                                                    data-name="${cls.class_name}">
-                                                Select
+                                                    data-name="${cls.class_name}"
+                                                    data-price="${cls.price}">
+                                                Pilih
                                             </button>
                                         </td>
                                     </tr>
@@ -1402,66 +1422,232 @@
                         }
                         
                         classList.innerHTML = html;
-                        exerciseFormCard.style.display = 'none';
                     }
                 } catch (error) {
                     console.error('Error loading classes:', error);
                     classList.innerHTML = `
                         <tr>
-                            <td colspan="5" class="text-center py-3 text-danger">
+                            <td colspan="3" class="text-center py-3 text-danger">
                                 Error loading classes
                             </td>
                         </tr>
                     `;
                 }
             }
-            
-            // Handle class selection
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('select-class-btn')) {
+
+            // Modifikasi event handler untuk tombol pilih kelas
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.select-class-btn');
+                if (btn) {
                     selectedClassData = {
-                        id: e.target.dataset.id,
-                        name: e.target.dataset.name,
-                        start: e.target.dataset.start,
-                        end: e.target.dataset.end,
-                        available: e.target.dataset.available
+                        id: btn.dataset.id,
+                        name: btn.dataset.name,
+                        price: parseInt(btn.dataset.price)
                     };
                     
-                    selectedClass.value = `${selectedClassData.name}`;
-                    selectedClassId.value = selectedClassData.id;
-                    
-                    // Show the registration form
-                    exerciseFormCard.style.display = 'block';
-                    
-                    // Enable register button if member is verified or non-member form is filled
-                    if ((memberRadio.checked && currentMember) || 
-                        (nonMemberRadio.checked && document.getElementById('nonMemberName').value)) {
-                        registerExerciseBtn.disabled = false;
-                    }
+                    // Tampilkan modal untuk input peserta
+                    showExerciseModal();
                 }
             });
-            
-            // Handle user type change
-            memberRadio.addEventListener('change', function() {
-                memberForm.style.display = 'block';
-                nonMemberForm.style.display = 'none';
-                registerExerciseBtn.disabled = true;
-            });
-            
-            nonMemberRadio.addEventListener('change', function() {
-                memberForm.style.display = 'none';
-                nonMemberForm.style.display = 'block';
-                registerExerciseBtn.disabled = !selectedClassData || !document.getElementById('nonMemberName').value;
-            });
-            
-            // Check member
-            checkMemberBtn.addEventListener('click', async function() {
-                const memberId = memberIdInput.value.trim();
-                if (!memberId) return;
+
+            // Fungsi untuk menampilkan modal
+            function showExerciseModal() {
+                const modalClassName = document.getElementById('modalClassName');
+                if (modalClassName) {
+                    modalClassName.textContent = selectedClassData.name;
+                }
                 
-                checkMemberBtn.disabled = true;
-                checkMemberBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Checking...';
+                const participantsContainer = document.getElementById('participantsContainer');
+                if (participantsContainer) {
+                    participantsContainer.innerHTML = '';
+                }
                 
+                participants = [];
+                participantCount = 0;
+                
+                // Tambahkan peserta pertama
+                addParticipant();
+                
+                const modalElement = document.getElementById('exerciseModal');
+                if (modalElement) {
+                    // Inisialisasi modal hanya sekali
+                    if (!exerciseModal) {
+                        exerciseModal = new bootstrap.Modal(modalElement, {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                    }
+                    
+                    // Tambahkan event listener untuk menutup modal
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        // Reset state modal jika diperlukan
+                        participants = [];
+                        participantCount = 0;
+                    });
+                    
+                    exerciseModal.show();
+                }
+            }
+
+            // Fungsi untuk menambah form peserta
+            function addParticipant() {
+                participantCount++;
+                const template = document.getElementById('participantTemplate');
+                if (!template) return;
+
+                const templateContent = template.innerHTML;
+                const participantHtml = templateContent
+                    .replace(/{id}/g, participantCount)
+                    .replace(/{participantNumber}/g, participantCount);
+
+                const participantDiv = document.createElement('div');
+                participantDiv.innerHTML = participantHtml;
+                const card = participantDiv.firstElementChild;
+
+                const participantsContainer = document.getElementById('participantsContainer');
+                if (participantsContainer) {
+                    participantsContainer.appendChild(card);
+
+                    // Pasang ulang event listener untuk tombol hapus
+                    const removeBtn = card.querySelector('.remove-participant');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', function () {
+                            card.remove();
+                            participants = participants.filter(p => p.participantId !== participantCount);
+                        });
+                    }
+
+                    // Pasang ulang event listener untuk radio button toggle
+                    initParticipantEvents(card, participantCount);
+                }
+            }
+
+            // Inisialisasi select2 untuk pencarian member
+            function initMemberSelect(selectElement, participantId) {
+                if (!selectElement) return;
+
+                $(selectElement).select2({
+                    placeholder: "Pilih Member...",
+                    ajax: {
+                        url: "{{ route('pos.search-members') }}",
+                        type: "POST",
+                        dataType: 'json',
+                        delay: 250,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        data: function (params) {
+                            return {
+                                search: params.term
+                            };
+                        },
+                        processResults: function (data) {
+                            return {
+                                results: data.data.map(member => ({
+                                    id: member.id,
+                                    text: `${member.name} (${member.member_id})`
+                                }))
+                            };
+                        },
+                        cache: true
+                    },
+                    minimumInputLength: 2,
+                    dropdownParent: $('#exerciseModal') // penting agar tidak tertutup modal
+                });
+
+                $(selectElement).on('select2:select', function (e) {
+                    const memberId = e.params.data.id;
+                    loadMemberDetails(memberId, participantId);
+                });
+            }
+
+            // Fungsi debounce untuk membatasi frekuensi pencarian
+           
+            
+
+            // Fungsi untuk mencari member
+async function searchMembers(query, dropdownEl, participantId) {
+    if (query.length < 2) {
+        dropdownEl.style.display = 'none';
+        return;
+    }
+
+    try {
+        const response = await fetch("{{ route('pos.search-members') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ search: query })
+        });
+
+        const data = await response.json();
+        dropdownEl.innerHTML = '';
+
+        if (data.status && data.data.length > 0) {
+            data.data.forEach(member => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item list-group-item-action';
+                li.innerHTML = `
+                    <div>
+                        <strong>${member.name}</strong>
+                        ${member.email ? `<br><small>Email: ${member.email}</small>` : ''}
+                    </div>
+                `;
+                li.dataset.id = member.id;
+                li.dataset.name = member.name;
+                li.addEventListener('click', () => {
+                    const input = dropdownEl.previousElementSibling;
+                    input.value = member.name;
+                    dropdownEl.style.display = 'none';
+                    loadMemberDetails(member.id, participantId);
+                });
+                dropdownEl.appendChild(li);
+            });
+            dropdownEl.style.display = 'block';
+        } else {
+            dropdownEl.style.display = 'none';
+            dropdownEl.innerHTML = '<li class="list-group-item text-muted">No members found</li>';
+        }
+    } catch (err) {
+        console.error('Error searching member:', err);
+        dropdownEl.style.display = 'none';
+    }
+}
+
+// Event listener untuk input pencarian member
+document.addEventListener('input', function (e) {
+    if (e.target.classList.contains('member-search-input')) {
+        const dropdown = e.target.nextElementSibling;
+        const participantId = e.target.dataset.participantId;
+        const debouncedSearch = debounce(searchMembers, 300);
+        debouncedSearch(e.target.value, dropdown, participantId);
+    }
+});
+
+// Fungsi debounce
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+            // Tutup dropdown saat klik di luar
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.member-fields')) {
+                    document.querySelectorAll('.member-dropdown').forEach(dd => dd.style.display = 'none');
+                }
+            });
+
+            // Load detail member dan cek kuota
+            async function loadMemberDetails(memberId, participantId) {
                 try {
                     const response = await fetch("{{ route('pos.check-member') }}", {
                         method: 'POST',
@@ -1475,279 +1661,217 @@
                     const data = await response.json();
                     
                     if (data.status) {
-                        currentMember = data.member;
+                        const member = data.member;
+                        const memberDetails = document.getElementById(`memberDetails_${participantId}`);
+                        const quotaRemaining = document.querySelector(`#memberDetails_${participantId} .quota-remaining`);
+                        const quotaTotal = document.querySelector(`#memberDetails_${participantId} .quota-total`);
+                        const quotaEnd = document.querySelector(`#memberDetails_${participantId} .quota-end`);
+                        const priceElement = document.querySelector(`.participant-card:nth-child(${participantId}) .participant-price`);
                         
-                        // Display member details
-                        document.getElementById('memberName').textContent = currentMember.name;
-                        document.getElementById('memberType').textContent = currentMember.membership_type.toUpperCase();
-                        
-                        if (data.quota) {
-                            document.getElementById('memberQuota').textContent = data.quota.remaining_quota;
-                            document.getElementById('memberTotalQuota').textContent = data.quota.total_quota;
-                            document.getElementById('memberQuotaEnd').textContent = new Date(data.quota.end_date).toLocaleDateString();
+                        if (data.quota && data.quota.remaining_quota > 0) {
+                            // Member memiliki kuota
+                            if (quotaRemaining) quotaRemaining.textContent = data.quota.remaining_quota;
+                            if (quotaTotal) quotaTotal.textContent = data.quota.total_quota;
+                            if (quotaEnd) quotaEnd.textContent = new Date(data.quota.end_date).toLocaleDateString('id-ID');
+                            if (priceElement) priceElement.textContent = 'Rp 0 (Pakai Kuota)';
+                            
+                            // Simpan data peserta
+                            updateParticipant(participantId, {
+                                type: 'member',
+                                member_id: member.id,
+                                member_name: member.name,
+                                use_quota: true,
+                                price: 0
+                            });
                         } else {
-                            document.getElementById('memberQuota').textContent = '0';
-                            document.getElementById('memberTotalQuota').textContent = '0';
-                            document.getElementById('memberQuotaEnd').textContent = 'No active quota';
-                        }
-                        
-                        memberDetails.style.display = 'block';
-                        
-                        // Enable register button if class is selected
-                        if (selectedClassData) {
-                            registerExerciseBtn.disabled = false;
-                        }
-                    } else {
-                        alert(data.message || 'Member not found');
-                        memberDetails.style.display = 'none';
-                        currentMember = null;
-                    }
-                } catch (error) {
-                    console.error('Error checking member:', error);
-                    alert('Failed to check member');
-                } finally {
-                    checkMemberBtn.disabled = false;
-                    checkMemberBtn.textContent = 'Check';
-                }
-            });
-            
-            // Handle non-member form changes
-            document.getElementById('nonMemberName').addEventListener('input', function() {
-                registerExerciseBtn.disabled = !selectedClassData || !this.value;
-            });
-            
-            // Register for class
-            registerExerciseBtn.addEventListener('click', async function() {
-                if (!selectedClassData) {
-                    alert('Please select a class first');
-                    return;
-                }
-                
-                // For members, check quota
-                if (memberRadio.checked && currentMember) {
-                    const remainingQuota = parseInt(document.getElementById('memberQuota').textContent);
-                    if (remainingQuota <= 0) {
-                        document.getElementById('quotaMessage').textContent = 
-                            `${currentMember.name} has no remaining quota. Please top up to continue.`;
-                        quotaModal.show();
-                        return;
-                    }
-                }
-                
-                registerExerciseBtn.disabled = true;
-                registerExerciseBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Processing...';
-                
-                try {
-                    const formData = {
-                        class_schedule_id: selectedClassData.id
-                    };
-                    
-                    if (memberRadio.checked && currentMember) {
-                        formData.member_id = currentMember.id;
-                    } else {
-                        formData.non_member_name = document.getElementById('nonMemberName').value;
-                        formData.non_member_phone = document.getElementById('nonMemberPhone').value;
-                    }
-                    
-                    const response = await fetch("{{ route('pos.register-class') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify(formData)
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status) {
-                        // Show success message
-                        document.getElementById('successMessage').textContent = 
-                            memberRadio.checked ? 
-                            `Member ${currentMember.name} registered successfully` :
-                            `Non-member ${formData.non_member_name} registered successfully`;
-                        
-                        document.getElementById('regClass').textContent = selectedClassData.name;
-                        document.getElementById('regTime').textContent = 
-                            `${new Date(selectedClassData.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
-                            ${new Date(selectedClassData.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-                        
-                        document.getElementById('regParticipant').textContent = 
-                            memberRadio.checked ? currentMember.name : formData.non_member_name;
-                        
-                        successModal.show();
-                        
-                        // Reload classes to update availability
-                        
-                        // Reset form if non-member
-                        if (nonMemberRadio.checked) {
-                            document.getElementById('nonMemberName').value = '';
-                            document.getElementById('nonMemberPhone').value = '';
-                        } else {
-                            // Update quota display
-                            if (currentMember) {
-                                const newQuota = parseInt(document.getElementById('memberQuota').textContent) - 1;
-                                document.getElementById('memberQuota').textContent = newQuota;
-                            }
-                        }
-                        
-                        selectedClassData = null;
-                        selectedClass.value = '';
-                        selectedClassId.value = '';
-                        exerciseFormCard.style.display = 'none';
-                    } else {
-                        alert(data.message || 'Failed to register for class');
-                    }
-                } catch (error) {
-                    console.error('Registration error:', error);
-                    alert('Failed to register for class');
-                } finally {
-                    registerExerciseBtn.disabled = !selectedClassData;
-                    registerExerciseBtn.textContent = 'Register';
-                }
-            });
-            
-            // Top up quota - modified to add to order summary
-            document.getElementById('topupBtn').addEventListener('click', async function() {
-                if (!currentMember) return;
-                
-                const btn = document.getElementById('topupBtn');
-                const addToOrder = document.getElementById('addToOrderCheck').checked;
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Processing...';
-                
-                try {
-                    const response = await fetch("{{ route('pos.topup-quota') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({ 
-                            member_id: currentMember.id,
-                            add_to_pos: addToOrder 
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status) {
-                        // Update quota display
-                        document.getElementById('memberQuota').textContent = '4';
-                        document.getElementById('memberTotalQuota').textContent = '4';
-                        document.getElementById('memberQuotaEnd').textContent = 
-                            new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString();
-                        
-                        // If added to order, update the order summary
-                        if (addToOrder && data.pos_item) {
-                            const topupItem = data.pos_item;
+                            // Member tidak memiliki kuota
+                            if (quotaRemaining) quotaRemaining.textContent = '0';
+                            if (quotaTotal) quotaTotal.textContent = '0';
+                            if (quotaEnd) quotaEnd.textContent = 'Tidak ada kuota aktif';
+                            if (priceElement) priceElement.textContent = formatRupiah(selectedClassData.price);
                             
-                            // Check if item exists
-                            const existingItem = orderItems.find(item => item.id === topupItem.id);
-                            
-                            if (existingItem) {
-                                existingItem.quantity += 1;
-                                existingItem.subtotal = existingItem.quantity * existingItem.price;
-                            } else {
-                                orderItems.push({
-                                    id: topupItem.id,
-                                    name: topupItem.name,
-                                    price: topupItem.price,
-                                    quantity: 1,
-                                    subtotal: topupItem.price,
-                                    type: topupItem.type,
-                                    member_id: topupItem.member_id
-                                });
-                            }
-                            
-                            updateOrderTable();
+                            // Simpan data peserta
+                            updateParticipant(participantId, {
+                                type: 'member',
+                                member_id: member.id,
+                                member_name: member.name,
+                                use_quota: false,
+                                price: selectedClassData.price
+                            });
                         }
                         
-                        // Show success message
-                        // const successMsg = addToOrder ? 
-                        //     'Quota topped up successfully and added to order!' : 
-                        //     'Quota topped up successfully!';
-                        // alert(successMsg);
-                        
-                        quotaModal.hide();
+                        if (memberDetails) {
+                            memberDetails.style.display = 'block';
+                        }
                     } else {
-                        alert(data.message || 'Failed to top up quota');
+                        createDynamicAlert('danger', 'Member tidak ditemukan');
                     }
                 } catch (error) {
-                    console.error('Topup error:', error);
-                    alert('Failed to top up quota');
-                } finally {
-                    btn.disabled = false;
-                    btn.textContent = 'Top Up Quota';
-                }
-            });
-
-            // Update the processTransaction function to handle quota topups
-            async function processTransaction() {
-                const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
-                const payment = parseFloat(paymentAmount.value) || 0;
-                
-                if (orderItems.length === 0) {
-                    alert('Please add items to the order');
-                    return;
-                }
-                
-                if (payment < total) {
-                    alert('Payment amount is less than total amount');
-                    return;
-                }
-                
-                processBtn.disabled = true;
-                processBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
-                
-                try {
-                    // Get the current active tab to determine business type
-                    const activeTab = document.querySelector('#posTabs .nav-link.active');
-                    let businessType = 'coffee'; // default
-                    
-                    if (activeTab.id === 'services-tab') {
-                        businessType = 'barbershop';
-                    } else if (activeTab.id === 'exercise-tab') {
-                        businessType = 'exercise';
-                    }
-                    
-                    const response = await fetch("{{ route('pos.process') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            business_type: businessType,
-                            items: orderItems,
-                            payment_method: 'cash', // You can add a payment method selector
-                            payment_amount: payment,
-                            customer_name: 'Walk-in Customer' // You can add customer input
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.status) {
-                        alert(`Transaction processed successfully. Invoice: ${data.data.invoice_number}`);
-                        // Reset order
-                        orderItems = [];
-                        paymentAmount.value = '';
-                        changeAmount.value = '';
-                        updateOrderTable();
-                        
-                        // Optionally print receipt or redirect
-                    } else {
-                        alert(`Error: ${data.message}`);
-                    }
-                } catch (error) {
-                    console.error('Transaction error:', error);
-                    alert('Error processing transaction');
-                } finally {
-                    processBtn.disabled = false;
-                    processBtn.textContent = 'Process Transaction';
+                    console.error('Error loading member details:', error);
+                    createDynamicAlert('danger', 'Gagal memuat detail member');
                 }
             }
+
+            // Inisialisasi event untuk form peserta
+            function initParticipantEvents(participantCard, participantId) {
+                if (!participantCard) return;
+                
+                // Toggle antara member dan non-member
+                const typeRadios = participantCard.querySelectorAll('.participant-type');
+                typeRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const memberFields = participantCard.querySelector('.member-fields');
+                        const nonMemberFields = participantCard.querySelector('.non-member-fields');
+                        const priceElement = participantCard.querySelector('.participant-price');
+                        
+                        if (this.value === 'member') {
+                            if (memberFields) memberFields.style.display = 'block';
+                            if (nonMemberFields) nonMemberFields.style.display = 'none';
+                            if (priceElement) priceElement.textContent = 'Rp 0';
+                            
+                            // Reset data peserta
+                            updateParticipant(participantId, {
+                                type: 'member',
+                                non_member_name: '',
+                                non_member_phone: '',
+                                price: 0
+                            });
+                        } else {
+                            if (memberFields) memberFields.style.display = 'none';
+                            if (nonMemberFields) nonMemberFields.style.display = 'block';
+                            if (priceElement) priceElement.textContent = formatRupiah(selectedClassData.price);
+                            
+                            // Reset data peserta
+                            updateParticipant(participantId, {
+                                type: 'non_member',
+                                member_id: null,
+                                member_name: '',
+                                use_quota: false,
+                                price: selectedClassData.price
+                            });
+                        }
+                    });
+                });
+                
+                // Input nama non-member
+                const nonMemberName = participantCard.querySelector('.non-member-name');
+                if (nonMemberName) {
+                    nonMemberName.addEventListener('input', function() {
+                        updateParticipant(participantId, {
+                            non_member_name: this.value
+                        });
+                    });
+                }
+                
+                // Input telepon non-member
+                const nonMemberPhone = participantCard.querySelector('.non-member-phone');
+                if (nonMemberPhone) {
+                    nonMemberPhone.addEventListener('input', function() {
+                        updateParticipant(participantId, {
+                            non_member_phone: this.value
+                        });
+                    });
+                }
+                
+                // Hapus peserta
+                const removeBtn = participantCard.querySelector('.remove-participant');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', function() {
+                        participantCard.remove();
+                        // Hapus dari array participants
+                        participants = participants.filter(p => p.participantId !== participantId);
+                    });
+                }
+            }
+
+            // Update data peserta
+            function updateParticipant(participantId, data) {
+                const existingIndex = participants.findIndex(p => p.participantId === participantId);
+                
+                if (existingIndex >= 0) {
+                    participants[existingIndex] = { ...participants[existingIndex], ...data };
+                } else {
+                    participants.push({ participantId, ...data });
+                }
+            }
+
+            // Event listener untuk tombol tambah peserta
+            const addParticipantBtn = document.getElementById('addParticipantBtn');
+            if (addParticipantBtn) {
+                addParticipantBtn.addEventListener('click', function() {
+                    addParticipant();
+                });
+            }
+
+            // Event listener untuk konfirmasi peserta
+            const confirmParticipants = document.getElementById('confirmParticipants');
+            if (confirmParticipants) {
+                confirmParticipants.addEventListener('click', function() {
+                    if (participants.length === 0) {
+                        createDynamicAlert('warning', 'Tambahkan setidaknya satu peserta');
+                        return;
+                    }
+                    
+                    // Validasi data peserta
+                    for (const participant of participants) {
+                        if (participant.type === 'member' && !participant.member_id) {
+                            createDynamicAlert('warning', 'Harap pilih member untuk semua peserta yang bertipe member');
+                            return;
+                        }
+                        
+                        if (participant.type === 'non_member' && (!participant.non_member_name || !participant.non_member_phone)) {
+                            createDynamicAlert('warning', 'Harap isi nama dan telepon untuk semua peserta non-member');
+                            return;
+                        }
+                    }
+                    
+                    // Tambahkan ke order summary
+                    addParticipantsToOrder();
+                    
+                    // Tutup modal
+                    if (exerciseModal) {
+                        exerciseModal.hide();
+                    }
+                });
+            }
+
+           // Di fungsi addParticipantsToOrder()
+            function addParticipantsToOrder() {
+                participants.forEach(participant => {
+                    // Generate unique ID untuk class item
+                    const classItemId = `class_${selectedClassData.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                    
+                    if (participant.type === 'member') {
+                        if (participant.use_quota) {
+                            addToOrder(
+                                `Kelas ${selectedClassData.name} - ${participant.member_name} (Pakai Kuota)`,
+                                0,
+                                'class',
+                                classItemId,
+                                Number(participant.member_id) // Pastikan numeric
+                            );
+                        } else {
+                            addToOrder(
+                                `Kelas ${selectedClassData.name} - ${participant.member_name}`,
+                                selectedClassData.price,
+                                'class',
+                                classItemId,
+                                Number(participant.member_id) // Pastikan numeric
+                            );
+                        }
+                    } else {
+                        addToOrder(
+                            `Kelas ${selectedClassData.name} - ${participant.non_member_name} (Non-Member)`,
+                            selectedClassData.price,
+                            'class',
+                            classItemId
+                        );
+                    }
+                });
+                
+                createDynamicAlert('success', `${participants.length} peserta berhasil ditambahkan ke order summary`);
+            }
+
             // ======================
             // ORDER SUMMARY SECTION
             // ======================
@@ -1781,8 +1905,38 @@
                 updateOrderTable();
             }
             
+            // Fungsi addToOrder
+            function addToOrder(name, price, type, id = null, member_id = null) {
+                // Generate ID jika tidak provided
+                const itemId = id || `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                
+                // Check if item exists
+                const existingItem = orderItems.find(item => 
+                    item.name === name && item.type === type && item.member_id === member_id
+                );
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                    existingItem.subtotal = existingItem.quantity * existingItem.price;
+                } else {
+                    orderItems.push({
+                        id: member_id ? Number(member_id) : null,
+                        name: name,
+                        price: price,
+                        quantity: 1,
+                        subtotal: price,
+                        type: type,
+                        member_id: member_id ? Number(member_id) : null // Pastikan numeric
+                    });
+                }
+                
+                updateOrderTable();
+            }
+            
             // Update order table
             function updateOrderTable() {
+                if (!orderTable) return;
+                
                 let html = '';
                 let total = 0;
                 
@@ -1792,15 +1946,15 @@
                     
                     html += `
                         <tr class="${rowClass}">
-                            <td>${item.name}</td>
+                            <td>${item.name}${item.type === 'class' && item.member_id ? ' (Member)' : ''}</td>
                             <td>
                                 ${item.type === 'quota_topup' ? 
                                 '1' : 
                                 `<input type="number" class="form-control-qty form-control-sm quantity-input" 
                                         data-index="${index}" value="${item.quantity}" min="1">`}
                             </td>
-                            <td>Rp ${item.price.toLocaleString('id-ID')}</td>
-                            <td>Rp ${item.subtotal.toLocaleString('id-ID')}</td>
+                            <td>${formatRupiah(item.price)}</td>
+                            <td>${formatRupiah(item.subtotal)}</td>
                             <td>
                                 <button class="btn btn-sm btn-danger remove-item" data-index="${index}">
                                     <i class="fas fa-trash"></i>
@@ -1812,13 +1966,18 @@
                 
                 orderTable.innerHTML = html;
                 
-                if (orderItems.length > 0) {
-                    emptyOrderMessage.style.display = 'none';
-                } else {
-                    emptyOrderMessage.style.display = '';
+                if (emptyOrderMessage) {
+                    if (orderItems.length > 0) {
+                        emptyOrderMessage.style.display = 'none';
+                    } else {
+                        emptyOrderMessage.style.display = '';
+                    }
                 }
                 
-                totalAmount.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+                if (totalAmount) {
+                    totalAmount.textContent = formatRupiah(total);
+                }
+                
                 calculateChange();
             }
             
@@ -1828,7 +1987,9 @@
                 const payment = parseFloat(paymentAmount.value) || 0;
                 const change = payment - total;
                 
-                changeAmount.value = change >= 0 ? `Rp ${change.toLocaleString('id-ID')}` : 'Insufficient payment';
+                if (changeAmount) {
+                    changeAmount.value = change >= 0 ? formatRupiah(change) : 'Pembayaran tidak cukup';
+                }
             }
             
             // Remove item
@@ -1862,12 +2023,12 @@
                 const payment = parseFloat(paymentAmount.value) || 0;
                 
                 if (orderItems.length === 0) {
-                    alert('Please add items to the order');
+                    createDynamicAlert('danger', 'Belum ada item di order');
                     return;
                 }
                 
                 if (payment < total) {
-                    alert('Payment amount is less than total amount');
+                    createDynamicAlert('danger', 'Pembayaran tidak mencukupi');
                     return;
                 }
 
@@ -1875,44 +2036,74 @@
                 const activeTab = document.querySelector('#posTabs .nav-link.active');
                 let businessType = 'coffee'; // default
                 
-                if (activeTab.id === 'services-tab') {
+                if (activeTab && activeTab.id === 'services-tab') {
                     businessType = 'barbershop';
-                } else if (activeTab.id === 'exercise-tab') {
+                } else if (activeTab && activeTab.id === 'exercise-tab') {
                     businessType = 'exercise';
                 }
                 
-                // Prepare the request data
+                // Prepare the request data dengan struktur yang benar
                 const requestData = {
                     business_type: businessType,
                     items: orderItems.map(item => {
-                        let idValue = item.id;
-                        // Untuk quota_topup, id tetap string
-                        if (item.type !== 'quota_topup') {
-                            idValue = Number(item.id);
+                        // Pastikan ID sesuai dengan tipe item
+                        let itemId = item.id;
+                        
+                        // Untuk product dan service, pastikan ID numeric
+                        if (item.type === 'product' || item.type === 'service') {
+                            itemId = parseInt(item.id) || 0;
                         }
-                        return {
-                            ...item,
-                            id: idValue,
+                        
+                        // Untuk class, bisa string atau numeric tergantung kebutuhan
+                        if (item.type === 'class') {
+                            // Jika ID class numeric, konversi ke number
+                            if (!isNaN(item.id)) {
+                                itemId = parseInt(item.id);
+                            }
+                            // Jika ID class string (seperti UUID), biarkan sebagai string
+                        }
+                        
+                        // Siapkan data item
+                        const itemData = {
+                            type: item.type,
+                            id: itemId,
+                            name: item.name,
                             price: Number(item.price),
-                            subtotal: Number(item.subtotal),
-                            quantity: Number(item.quantity || 1)
+                            quantity: Number(item.quantity || 1),
+                            subtotal: Number(item.subtotal)
                         };
+                        
+                        // Tambahkan member_id jika ada (hanya untuk class dengan member)
+                        if (item.type === 'class' && item.member_id) {
+                            itemData.member_id = Number(item.member_id);
+                        }
+                        
+                        // Untuk quota_topup, tambahkan member_id
+                        if (item.type === 'quota_topup' && item.member_id) {
+                            itemData.member_id = Number(item.member_id);
+                        }
+                        
+                        return itemData;
                     }),
-                    payment_method: 'cash', // Default to cash, or get from a select input
+                    payment_method: document.getElementById('paymentMethod').value,
                     payment_amount: payment,
-                    customer_name: 'Walk-in Customer' // Default or get from input
+                    customer_name: 'Walk-in Customer'
                 };
 
-                // Add customer_id if available
+                // Add customer_id jika tersedia
                 if (currentMember) {
-                    requestData.customer_id = currentMember.id;
+                    requestData.customer_id = Number(currentMember.id);
                     requestData.customer_name = currentMember.name;
                 }
                 
-                processBtn.disabled = true;
-                processBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                if (processBtn) {
+                    processBtn.disabled = true;
+                    processBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                }
                 
                 try {
+                    console.log('Sending data:', requestData); // Debugging
+                    
                     const response = await fetch("{{ route('pos.process') }}", {
                         method: 'POST',
                         headers: {
@@ -1925,32 +2116,33 @@
                     const data = await response.json();
                     
                     if (!response.ok) {
-                        // Handle validation errors
                         if (data.errors) {
                             let errorMessages = [];
                             for (const [field, messages] of Object.entries(data.errors)) {
                                 errorMessages.push(...messages);
                             }
-                            alert('Validation errors:\n' + errorMessages.join('\n'));
+                            createDynamicAlert('danger', 'Validation errors:\n' + errorMessages.join('\n'));
                             return;
                         }
                         
                         throw new Error(data.message || 'Failed to process transaction');
                     }
                     
-                    alert(`Transaction processed successfully. Invoice: ${data.data.invoice_number}`);
+                    createDynamicAlert('success', `Transaction processed successfully. Invoice: ${data.data.invoice_number}`);
                     // Reset order
                     orderItems = [];
-                    paymentAmount.value = '';
-                    changeAmount.value = '';
+                    if (paymentAmount) paymentAmount.value = '';
+                    if (changeAmount) changeAmount.value = '';
                     updateOrderTable();
                     
                 } catch (error) {
                     console.error('Transaction error:', error);
-                    alert(error.message || 'Error processing transaction');
+                    createDynamicAlert('danger', error.message || 'Error processing transaction');
                 } finally {
-                    processBtn.disabled = false;
-                    processBtn.textContent = 'Process Transaction';
+                    if (processBtn) {
+                        processBtn.disabled = false;
+                        processBtn.textContent = 'Process Transaction';
+                    }
                 }
             }
 
@@ -1962,58 +2154,52 @@
             }
             
             // Event listeners for all sections
-            productSearch.addEventListener('input', () => loadProducts(productSearch.value));
-            serviceSearch.addEventListener('input', () => loadServices(serviceSearch.value));
-            classSearch.addEventListener('input', function() {
-                loadClasses(this.value);
-            });
+            if (productSearch) {
+                productSearch.addEventListener('input', () => loadProducts(productSearch.value));
+            }
+            
+            if (serviceSearch) {
+                serviceSearch.addEventListener('input', () => loadServices(serviceSearch.value));
+            }
+            
+            if (classSearch) {
+                classSearch.addEventListener('input', function() {
+                    loadClasses('', this.value);
+                });
+            }
             
             // Order summary event listeners
             document.addEventListener('click', handleItemClick);
-            orderTable.addEventListener('click', handleRemoveItem);
-            orderTable.addEventListener('change', handleQuantityChange);
-            paymentAmount.addEventListener('input', calculateChange);
-            processBtn.addEventListener('click', processTransaction);
+            
+            if (orderTable) {
+                orderTable.addEventListener('click', handleRemoveItem);
+                orderTable.addEventListener('change', handleQuantityChange);
+            }
+            
+            if (paymentAmount) {
+                paymentAmount.addEventListener('input', calculateChange);
+            }
+            
+            if (processBtn) {
+                processBtn.addEventListener('click', processTransaction);
+            }
             
             // Initial load
             loadProducts();
             loadServices();
             loadClasses();
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
 
-    <script>
-        function toggleMasterMenu() {
-            const submenu = document.getElementById('masterSubmenu');
-            const icon = document.querySelector('.menu-header .dropdown-icon');
-
-            submenu.classList.toggle('show');
-            icon.classList.toggle('fa-chevron-down');
-            icon.classList.toggle('fa-chevron-up');
-
-            // Toggle active class on header
-            document.querySelector('.menu-header').classList.toggle('active');
+        // Fungsi formatRupiah yang diperbaiki
+        function formatRupiah(angka) {
+            if (!angka) return 'Rp 0';
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
         }
 
-        // Pertahankan dropdown terbuka jika submenu aktif
-        document.addEventListener('DOMContentLoaded', function() {
-            const activeSubmenuItem = document.querySelector('.submenu .nav-link.active');
-            if (activeSubmenuItem) {
-                const submenu = document.getElementById('masterSubmenu');
-                const icon = document.querySelector('.menu-header .dropdown-icon');
-                const header = document.querySelector('.menu-header');
-
-                submenu.classList.add('show');
-                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-                header.classList.add('active');
-            }
-        });
-    </script>
-
-    {{-- allert --}}
-    <script>
         // Buat fungsi global
         window.createDynamicAlert = function(type, message) {
             // Hapus alert sebelumnya jika ada
@@ -2047,7 +2233,7 @@
             }, 5000);
         };
 
-        // Fungsi untuk menampilkan error validasi dalam format list
+        // Fungsi untuk menampilkan error validasi dalam formatRupiah list
         window.showValidationErrors = function(errors) {
             let errorMessages = '<ul class="mb-0">';
             for (const [key, messages] of Object.entries(errors)) {
@@ -2063,7 +2249,40 @@
             ${errorMessages}
         `);
         };
+
+        function toggleMasterMenu() {
+            const submenu = document.getElementById('masterSubmenu');
+            const icon = document.querySelector('.menu-header .dropdown-icon');
+
+            if (submenu && icon) {
+                submenu.classList.toggle('show');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+
+                // Toggle active class on header
+                document.querySelector('.menu-header').classList.toggle('active');
+            }
+        }
+
+        // Pertahankan dropdown terbuka jika submenu aktif
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeSubmenuItem = document.querySelector('.submenu .nav-link.active');
+            if (activeSubmenuItem) {
+                const submenu = document.getElementById('masterSubmenu');
+                const icon = document.querySelector('.menu-header .dropdown-icon');
+                const header = document.querySelector('.menu-header');
+
+                if (submenu && icon && header) {
+                    submenu.classList.add('show');
+                    icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                    header.classList.add('active');
+                }
+            }
+        });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </body>
 
 </html>

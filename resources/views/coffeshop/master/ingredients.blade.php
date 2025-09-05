@@ -67,6 +67,17 @@
                                     <label for="insert_name" class="form-label">Nama Bahan Baku*</label>
                                     <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                                 </div>
+                               
+                                {{--  <div class="mb-3">
+                                    <label for="insert_purchase_price" class="form-label">Harga Beli*</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control" id="insert_purchase_price"
+                                            name="insert_purchase_price" required>
+                                    </div>
+                                </div> --}}
+                            </div> 
+                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_unit_id" class="form-label">Satuan*</label>
                                     <select class="form-control" id="insert_unit_id" name="insert_unit_id" required>
@@ -75,22 +86,10 @@
                                     <small class="text-muted" style="margin-left: 2px;">Satuan dikonversi ke satuan baku
                                         yang sudah ditetapkan</small>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="insert_purchase_price" class="form-label">Harga Beli*</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
-                                        <input type="number" class="form-control" id="insert_purchase_price"
-                                            name="insert_purchase_price" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
+                                {{-- <div class="mb-3">
                                     <label for="insert_quantity" class="form-label">Quantity dalam Satuan*</label>
                                     <input type="number" class="form-control" id="insert_quantity" name="insert_quantity"
                                         step="0.01" required>
-                                    {{-- <small class="text-muted">Satuan dikonversi ke satuan baku yang sudah
-                                        ditetapkan</small> --}}
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Harga per Satuan</label>
@@ -98,8 +97,8 @@
                                         <span class="input-group-text">Rp</span>
                                         <input type="text" class="form-control" id="insert_price_per_unit" readonly>
                                     </div>
-                                </div>
-                            </div>
+                                </div> --}}
+                            </div> 
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -131,7 +130,18 @@
                                     <label for="edit_name" class="form-label">Nama Bahan Baku*</label>
                                     <input type="text" class="form-control" id="edit_name" name="edit_name" required>
                                 </div>
-                                <div class="mb-3">
+                               
+                                {{-- <div class="mb-3">
+                                    <label for="edit_purchase_price" class="form-label">Harga Beli*</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control" id="edit_purchase_price"
+                                            name="edit_purchase_price" required>
+                                    </div>
+                                </div> --}}
+                            </div>
+                            <div class="col-md-6">
+                                 <div class="mb-3">
                                     <label for="edit_unit_id" class="form-label">Satuan*</label>
                                     <select class="form-control" id="edit_unit_id" name="edit_unit_id" required>
                                         <option value="">Pilih Satuan</option>
@@ -139,17 +149,7 @@
                                     <small class="text-muted" style="margin-left: 2px;">Satuan dikonversi ke satuan baku
                                         yang sudah ditetapkan</small>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="edit_purchase_price" class="form-label">Harga Beli*</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
-                                        <input type="number" class="form-control" id="edit_purchase_price"
-                                            name="edit_purchase_price" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
+                                {{-- <div class="mb-3">
                                     <label for="edit_quantity" class="form-label">Quantity dalam Satuan*</label>
                                     <input type="number" class="form-control" id="edit_quantity" name="edit_quantity"
                                         step="0.01" required>
@@ -160,7 +160,7 @@
                                         <span class="input-group-text">Rp</span>
                                         <input type="text" class="form-control" id="edit_price_per_unit" readonly>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -216,9 +216,9 @@
         const edId = document.getElementById('edit_ingredientId');
         const edName = document.getElementById('edit_name');
         const edUnitId = document.getElementById('edit_unit_id');
-        const edPurchasePrice = document.getElementById('edit_purchase_price');
-        const edQuantity = document.getElementById('edit_quantity');
-        const edPricePerUnit = document.getElementById('edit_price_per_unit');
+        // const edPurchasePrice = document.getElementById('edit_purchase_price');
+        // const edQuantity = document.getElementById('edit_quantity');
+        // const edPricePerUnit = document.getElementById('edit_price_per_unit');
 
         // TAMBAH DATA
         const buttonShowModalFormInput = document.getElementById('addIngredientBtn');
@@ -227,9 +227,9 @@
         const ingredientModalFormInsert = document.getElementById('ingredientModalInput');
         const inName = document.getElementById('insert_name');
         const inUnitId = document.getElementById('insert_unit_id');
-        const inPurchasePrice = document.getElementById('insert_purchase_price');
-        const inQuantity = document.getElementById('insert_quantity');
-        const inPricePerUnit = document.getElementById('insert_price_per_unit');
+        // const inPurchasePrice = document.getElementById('insert_purchase_price');
+        // const inQuantity = document.getElementById('insert_quantity');
+        // const inPricePerUnit = document.getElementById('insert_price_per_unit');
 
         // DELETE
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -255,26 +255,26 @@
         }
 
         // Event listener untuk perhitungan harga per unit (Tambah)
-        inPurchasePrice.addEventListener('input', updatePricePerUnit);
-        inQuantity.addEventListener('input', updatePricePerUnit);
+        // inPurchasePrice.addEventListener('input', updatePricePerUnit);
+        // inQuantity.addEventListener('input', updatePricePerUnit);
 
-        function updatePricePerUnit() {
-            const purchasePrice = parseFloat(inPurchasePrice.value) || 0;
-            const quantity = parseFloat(inQuantity.value) || 0;
-            const pricePerUnit = calculatePricePerUnit(purchasePrice, quantity);
-            inPricePerUnit.value = formatCurrency(pricePerUnit);
-        }
+        // function updatePricePerUnit() {
+        //     const purchasePrice = parseFloat(inPurchasePrice.value) || 0;
+        //     const quantity = parseFloat(inQuantity.value) || 0;
+        //     const pricePerUnit = calculatePricePerUnit(purchasePrice, quantity);
+        //     inPricePerUnit.value = formatCurrency(pricePerUnit);
+        // }
 
         // Event listener untuk perhitungan harga per unit (Edit)
-        edPurchasePrice.addEventListener('input', updateEditPricePerUnit);
-        edQuantity.addEventListener('input', updateEditPricePerUnit);
+        // edPurchasePrice.addEventListener('input', updateEditPricePerUnit);
+        // edQuantity.addEventListener('input', updateEditPricePerUnit);
 
-        function updateEditPricePerUnit() {
-            const purchasePrice = parseFloat(edPurchasePrice.value) || 0;
-            const quantity = parseFloat(edQuantity.value) || 0;
-            const pricePerUnit = calculatePricePerUnit(purchasePrice, quantity);
-            edPricePerUnit.value = formatCurrency(pricePerUnit);
-        }
+        // function updateEditPricePerUnit() {
+        //     const purchasePrice = parseFloat(edPurchasePrice.value) || 0;
+        //     const quantity = parseFloat(edQuantity.value) || 0;
+        //     const pricePerUnit = calculatePricePerUnit(purchasePrice, quantity);
+        //     edPricePerUnit.value = formatCurrency(pricePerUnit);
+        // }
 
         // Fungsi untuk memuat data satuan
         async function loadUnits(selectElement) {
@@ -327,8 +327,9 @@
                         <tr>
                             <th class="ps-4" width="50">No</th>
                             <th>Nama Bahan Baku</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Beli per Satuan</th>
+                            <th>Unit</th>
+                            <th hidden>Harga Beli</th>
+                            <th hidden>Harga Beli per Satuan</th>
                             <th class="text-center pe-4" width="120">Aksi</th>
                         </tr>
                     </thead>
@@ -347,13 +348,14 @@
                             <tr>
                                 <td class="ps-4">${index + 1}</td>
                                 <td class="fw-medium">${ingredient.name}</td>
-                                <td>
+                                <td class="fw-medium">${ingredient.unit_name}</td>
+                                <td hidden>
                                     <div class="price-wrapper">
                                         <span class="currency">Rp</span>
                                         <span class="amount">${formatCurrency(ingredient.purchase_price)}</span>
                                     </div>
                                 </td>
-                                <td>
+                                <td hidden>
                                     <div class="price-wrapper">
                                         <span class="currency">Rp</span>
                                         <span class="amount">${formatCurrency(ingredient.price_per_unit)}</span>
@@ -427,9 +429,9 @@
             // Reset form
             inName.value = '';
             inUnitId.value = '';
-            inPurchasePrice.value = '';
-            inQuantity.value = '';
-            inPricePerUnit.value = '';
+            // inPurchasePrice.value = '';
+            // inQuantity.value = '';
+            // inPricePerUnit.value = '';
 
             new bootstrap.Modal(ingredientModalFormInsert).show();
         });
@@ -443,12 +445,12 @@
                 const response = await axios.post(`{{ route('coffeshop.master.ingredients.store') }}`, {
                     name: inName.value,
                     unit_id: inUnitId.value,
-                    purchase_price: inPurchasePrice.value,
-                    quantity_purchase: inQuantity.value,
-                    price_per_unit: calculatePricePerUnit(
-                        parseFloat(inPurchasePrice.value) || 0,
-                        parseFloat(inQuantity.value) || 1
-                    )
+                    // purchase_price: inPurchasePrice.value,
+                    // quantity_purchase: inQuantity.value,
+                    // price_per_unit: calculatePricePerUnit(
+                    //     parseFloat(inPurchasePrice.value) || 0,
+                    //     parseFloat(inQuantity.value) || 1
+                    // )
                 });
 
                 const data = response.data;
@@ -507,9 +509,9 @@
                     edId.value = data.id;
                     edName.value = data.name;
                     edUnitId.value = data.unit_id;
-                    edPurchasePrice.value = data.purchase_price;
-                    edQuantity.value = data.quantity_purchase;
-                    edPricePerUnit.value = formatCurrency(data.price_per_unit);
+                    // edPurchasePrice.value = data.purchase_price;
+                    // edQuantity.value = data.quantity_purchase;
+                    // edPricePerUnit.value = formatCurrency(data.price_per_unit);
 
                     new bootstrap.Modal(ingredientModalFormEdit).show();
 
@@ -539,12 +541,12 @@
                     id: edId.value,
                     name: edName.value,
                     unit_id: edUnitId.value,
-                    purchase_price: edPurchasePrice.value,
-                    quantity_purchase: edQuantity.value,
-                    price_per_unit: calculatePricePerUnit(
-                        parseFloat(edPurchasePrice.value) || 0,
-                        parseFloat(edQuantity.value) || 1
-                    )
+                    // purchase_price: edPurchasePrice.value,
+                    // quantity_purchase: edQuantity.value,
+                    // price_per_unit: calculatePricePerUnit(
+                    //     parseFloat(edPurchasePrice.value) || 0,
+                    //     parseFloat(edQuantity.value) || 1
+                    // )
                 });
 
                 const data = response.data;

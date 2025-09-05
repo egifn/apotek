@@ -12,7 +12,6 @@ class BranchController extends Controller
 {
     public function index()
     {
-        // $branches = DB::table('cs_branches')->get();
         return view('coffeshop.master.branches');
     }
 
@@ -21,33 +20,57 @@ class BranchController extends Controller
         try {
             $id     = $request->input('id');
             $search = $request->input('search');
-            $limit  = $request->input('limit', 100);
+            $limit  = $request->input('limit', 10);
             $status = $request->input('status', 1);
+            $page   = $request->input('page', 1);
 
             // Query dasar
             $query = DB::table('cs_branches')
                 ->select('id', 'name', 'address', 'phone', 'created_at', 'updated_at', 'is_active');
-            // ->where('is_active', )
 
             // Jika by ID
             if ($id) {
                 $branches = $query->where('id', $id)->first();
-            } else if ($search) {
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Data cabang berhasil diambil',
+                    'data'    => [$branches],
+                ]);
+            }
+
+            // Filter status
+            if ($status !== null) {
+                $query->where('is_active', (int)$status);
+            }
+
+            // Filter pencarian
+            if ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%$search%")
                         ->orWhere('address', 'like', "%$search%")
                         ->orWhere('phone', 'like', "%$search%");
                 });
-            } else if ($status !== null) {
-                $query->where('is_active', (int)$status);
             }
 
-            $branches = $query->limit($limit)->get();
+            // Pagination
+            $total = $query->count();
+            $branches = $query
+                ->offset(($page - 1) * $limit)
+                ->limit($limit)
+                ->get();
+
+            $totalPages = ceil($total / $limit);
 
             return response()->json([
-                'status'          => true,
-                'message'         => 'Daftar cabang berhasil diambil',
-                'data'            => $branches,
+                'status'      => true,
+                'message'     => 'Daftar cabang berhasil diambil',
+                'data'        => $branches,
+                'pagination'  => [
+                    'current_page' => $page,
+                    'total_pages'  => $totalPages,
+                    'total_items'  => $total,
+                    'per_page'     => $limit
+                ]
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -62,6 +85,7 @@ class BranchController extends Controller
         }
     }
 
+    // Fungsi store, update, destroy tetap sama seperti sebelumnya
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -80,7 +104,6 @@ class BranchController extends Controller
         }
         DB::beginTransaction();
         try {
-
             DB::table('cs_branches')->insert([
                 'name' => $request->name,
                 'address' => $request->address,
@@ -152,7 +175,6 @@ class BranchController extends Controller
 
     public function destroy(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'action' => 'required|in:delete,deactivate'
@@ -170,7 +192,6 @@ class BranchController extends Controller
         DB::beginTransaction();
         try {
             if ($request->action === 'delete') {
-                // Verifikasi password (sesuaikan dengan sistem Anda)
                 if (!Hash::check($request->password, auth()->user()->password)) {
                     return response()->json([
                         'status' => false,
@@ -178,11 +199,9 @@ class BranchController extends Controller
                     ], 401);
                 }
 
-                // Hapus permanen
                 DB::table('cs_branches')->where('id', $request->id)->delete();
                 $message = 'Data berhasil dihapus permanen';
             } else {
-                // Nonaktifkan data
                 DB::table('cs_branches')
                     ->where('id', $request->id)
                     ->update(['is_active' => 0]);

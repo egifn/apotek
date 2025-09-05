@@ -103,8 +103,28 @@ class PosController extends Controller
         }
     }
 
+
+    private function generateInvoiceNumber($businessType)
+    {
+        $prefixMap = [
+            'coffee' => 'COF',
+            'barbershop' => 'BAR',
+            'exercise' => 'EXE'
+        ];
+        
+        $prefix = $prefixMap[$businessType] ?? 'TXN';
+        $date = date('Ymd');
+        $sequence = DB::table('all_transactions')
+                     ->where('business_type', $businessType)
+                     ->whereDate('created_at', today())
+                     ->count() + 1;
+        
+        return sprintf("%s-%03d-%s", $prefix, $sequence, $date);
+    }
+
     public function processTransaction(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'business_type' => 'required|in:'.implode(',', self::VALID_BUSINESS_TYPES),
             'items' => 'required|array|min:1',
@@ -114,13 +134,15 @@ class PosController extends Controller
             'items.*.price' => 'required|numeric|min:0',
             'items.*.quantity' => 'sometimes|numeric|min:1',
             'items.*.subtotal' => 'required|numeric|min:0',
+            'items.*.member_id' => 'nullable|numeric', // Tambahkan untuk kelas
             'payment_method' => 'required|string|in:'.implode(',', self::VALID_PAYMENT_METHODS),
             'payment_amount' => 'required|numeric|min:0',
             'customer_id' => 'nullable|numeric',
             'customer_name' => 'nullable|string|max:100',
             'notes' => 'nullable|string'
         ], [
-            'items.*.id.numeric' => 'The item ID must be a number.',
+            'items.*.id.required' => 'Item ID is required.',
+            'items.*.id.numeric' => 'The item ID must be a number for products and services.',
             'items.*.price.numeric' => 'The price must be a number.',
             'items.*.subtotal.numeric' => 'The subtotal must be a number.'
         ]);
@@ -203,28 +225,11 @@ class PosController extends Controller
         }
     }
 
-    private function generateInvoiceNumber($businessType)
-    {
-        $prefixMap = [
-            'coffee' => 'COF',
-            'barbershop' => 'BAR',
-            'exercise' => 'EXE'
-        ];
-        
-        $prefix = $prefixMap[$businessType] ?? 'TXN';
-        $date = date('Ymd');
-        $sequence = DB::table('all_transactions')
-                     ->where('business_type', $businessType)
-                     ->whereDate('created_at', today())
-                     ->count() + 1;
-        
-        return sprintf("%s-%03d-%s", $prefix, $sequence, $date);
-    }
-
     private function processTransactionItem($transactionId, $item, $businessType)
     {
         $metadata = [];
         
+        // Handle different item types
         switch ($item['type']) {
             case 'quota_topup':
                 $metadata = [
@@ -233,6 +238,7 @@ class PosController extends Controller
                     'valid_until' => date('Y-m-d', strtotime('+1 month'))
                 ];
                 
+                // Update member quota
                 DB::table('all_member_quotas')
                     ->where('member_id', $item['member_id'])
                     ->where('is_active', true)
@@ -244,17 +250,28 @@ class PosController extends Controller
                 
             case 'class':
                 $metadata = [
-                    'class_time' => $item['class_time'] ?? null,
-                    'instructor' => $item['instructor'] ?? null
+                    'member_id' => $item['member_id'] ?? null,
+                    'class_time' => now(),
+                    'instructor' => 'System' // Default atau ambil dari input jika ada
                 ];
+                
+                // Jika member menggunakan kuota, kurangi kuota
+                if (isset($item['use_quota']) && $item['use_quota'] && isset($item['member_id'])) {
+                    DB::table('all_member_quotas')
+                        ->where('member_id', $item['member_id'])
+                        ->where('is_active', true)
+                        ->decrement('remaining_quota');
+                }
                 break;
         }
 
+        // Untuk item class, ID bisa string (UUID) atau numeric
         $itemId = $item['id'];
-        // Untuk quota_topup, item_id harus integer (member_id)
-        if ($item['type'] === 'quota_topup' && isset($item['member_id'])) {
-            $itemId = $item['member_id'];
+        if ($item['type'] === 'class' && !is_numeric($itemId)) {
+            // Jika ID class bukan numeric, gunakan class_type_id atau buat ID khusus
+            $itemId = isset($item['class_type_id']) ? $item['class_type_id'] : 0;
         }
+
         DB::table('all_transaction_items')->insert([
             'transaction_id' => $transactionId,
             'item_type' => $item['type'],
@@ -267,6 +284,154 @@ class PosController extends Controller
             'created_at' => now()
         ]);
     }
+
+    // public function processTransaction(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $validator = Validator::make($request->all(), [
+    //         'business_type' => 'required|in:'.implode(',', self::VALID_BUSINESS_TYPES),
+    //         'items' => 'required|array|min:1',
+    //         'items.*.type' => 'required|string|in:product,service,class,quota_topup',
+    //         'items.*.id' => 'required',
+    //         'items.*.name' => 'required|string|max:255',
+    //         'items.*.price' => 'required|numeric|min:0',
+    //         'items.*.quantity' => 'sometimes|numeric|min:1',
+    //         'items.*.subtotal' => 'required|numeric|min:0',
+    //         'payment_method' => 'required|string|in:'.implode(',', self::VALID_PAYMENT_METHODS),
+    //         'payment_amount' => 'required|numeric|min:0',
+    //         'customer_id' => 'nullable|numeric',
+    //         'customer_name' => 'nullable|string|max:100',
+    //         'notes' => 'nullable|string'
+    //     ], [
+    //         'items.*.id.numeric' => 'The item ID must be a number.',
+    //         'items.*.price.numeric' => 'The price must be a number.',
+    //         'items.*.subtotal.numeric' => 'The subtotal must be a number.'
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Validation error',
+    //             'errors' => $validator->errors()
+    //         ], 422);
+    //     }
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $businessType = $request->input('business_type');
+    //         $items = $request->input('items');
+    //         $paymentMethod = $request->input('payment_method');
+    //         $paymentAmount = (float)$request->input('payment_amount');
+    //         $customerId = $request->input('customer_id');
+    //         $customerName = $request->input('customer_name');
+    //         $notes = $request->input('notes');
+
+    //         // Calculate totals
+    //         $subtotal = array_reduce($items, function($carry, $item) {
+    //             return $carry + (float)$item['subtotal'];
+    //         }, 0);
+            
+    //         $tax = 0;
+    //         $discount = 0;
+    //         $total = $subtotal + $tax - $discount;
+    //         $changeAmount = $paymentAmount - $total;
+
+    //         // Generate invoice number
+    //         $invoiceNumber = $this->generateInvoiceNumber($businessType);
+
+    //         // Insert transaction
+    //         $transactionId = DB::table('all_transactions')->insertGetId([
+    //             'invoice_number' => $invoiceNumber,
+    //             'business_type' => $businessType,
+    //             'transaction_date' => now(),
+    //             'customer_id' => $customerId,
+    //             'customer_name' => $customerName,
+    //             'subtotal' => $subtotal,
+    //             'tax' => $tax,
+    //             'discount' => $discount,
+    //             'total' => $total,
+    //             'payment_method' => $paymentMethod,
+    //             'payment_amount' => $paymentAmount,
+    //             'change_amount' => $changeAmount,
+    //             'notes' => $notes,
+    //             'created_at' => now(),
+    //             'updated_at' => now()
+    //         ]);
+
+    //         // Process items
+    //         foreach ($items as $item) {
+    //             $this->processTransactionItem($transactionId, $item, $businessType);
+    //         }
+
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Transaction processed successfully',
+    //             'data' => [
+    //                 'invoice_number' => $invoiceNumber,
+    //                 'transaction_id' => $transactionId,
+    //                 'total' => $total,
+    //                 'change_amount' => $changeAmount
+    //             ]
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Transaction failed',
+    //             'error' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+    // private function processTransactionItem($transactionId, $item, $businessType)
+    // {
+    //     $metadata = [];
+        
+    //     switch ($item['type']) {
+    //         case 'quota_topup':
+    //             $metadata = [
+    //                 'member_id' => $item['member_id'],
+    //                 'quota_added' => 4,
+    //                 'valid_until' => date('Y-m-d', strtotime('+1 month'))
+    //             ];
+                
+    //             DB::table('all_member_quotas')
+    //                 ->where('member_id', $item['member_id'])
+    //                 ->where('is_active', true)
+    //                 ->update([
+    //                     'remaining_quota' => DB::raw('remaining_quota + 4'),
+    //                     'updated_at' => now()
+    //                 ]);
+    //             break;
+                
+    //         case 'class':
+    //             $metadata = [
+    //                 'class_time' => $item['class_time'] ?? null,
+    //                 'instructor' => $item['instructor'] ?? null
+    //             ];
+    //             break;
+    //     }
+
+    //     $itemId = $item['id'];
+    //     // Untuk quota_topup, item_id harus integer (member_id)
+    //     if ($item['type'] === 'quota_topup' && isset($item['member_id'])) {
+    //         $itemId = $item['member_id'];
+    //     }
+    //     DB::table('all_transaction_items')->insert([
+    //         'transaction_id' => $transactionId,
+    //         'item_type' => $item['type'],
+    //         'item_id' => $itemId,
+    //         'name' => $item['name'],
+    //         'quantity' => $item['quantity'] ?? 1,
+    //         'price' => $item['price'],
+    //         'subtotal' => $item['subtotal'],
+    //         'metadata' => !empty($metadata) ? json_encode($metadata) : null,
+    //         'created_at' => now()
+    //     ]);
+    // }
 
     private function processItem($transactionId, $item, $businessType)
     {
@@ -419,14 +584,15 @@ class PosController extends Controller
     {
         try {
             $date = $request->input('date', date('Y-m-d'));
-            $search = $request->input('search');
+            // $search = $request->input('search');
 
             $query = DB::table('s_class_schedule as cs')
                 ->join('s_class_types as ct', 'cs.class_type_id', '=', 'ct.id')
-                ->join('s_instructors as i', 'cs.instructor_id', '=', 'i.id')
+                ->leftjoin('s_instructors as i', 'cs.instructor_id', '=', 'i.id')
                 ->join('s_locations as l', 'cs.location_id', '=', 'l.id')
                 ->select(
                     'cs.id',
+                    'cs.price',
                     'cs.class_type_id',
                     'cs.instructor_id',
                     'cs.location_id',
@@ -438,8 +604,6 @@ class PosController extends Controller
                 ->where('cs.is_active', true);
 
             $classes = $query->get();
-
-            // dd($classes);
 
             return response()->json([
                 'status' => true,
@@ -454,6 +618,35 @@ class PosController extends Controller
             ], 500);
         }
     }
+
+    public function searchMembers(Request $request)
+{
+    try {
+        $query = $request->input('search', '');
+        
+        $members = DB::table('s_members')
+            ->select('id', 'name', 'email', 'phone')
+            ->where('is_active', true)
+            ->where(function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('email', 'like', "%{$query}%");
+            })
+            ->orderBy('name')
+            ->limit(20)
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $members
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Failed to search members',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     public function checkMember(Request $request)
     {
@@ -472,10 +665,12 @@ class PosController extends Controller
             }
 
             $member = DB::table('s_members')
-                ->where('name', $request->member_id)
+                ->where('id', $request->member_id)
                 ->where('is_active', true)
                 ->first();
-// dd($member);
+
+                // dd($member);
+
             if (!$member) {
                 return response()->json([
                     'status' => false,
@@ -489,6 +684,8 @@ class PosController extends Controller
                 ->whereDate('start_date', '<=', now())
                 ->whereDate('end_date', '>=', now())
                 ->first();
+
+                // dd($quota);
 
             return response()->json([
                 'status' => true,
@@ -524,21 +721,21 @@ class PosController extends Controller
             }
 
             // Check class availability
-            $class = DB::table('s_class_schedule as cs')
-                ->select(
-                    'cs.id',
-                    'cs.max_participants',
-                    DB::raw('(SELECT COUNT(*) FROM s_class_attendances WHERE class_schedule_id = cs.id) as participants_count')
-                )
-                ->where('cs.id', $request->class_schedule_id)
-                ->first();
+            // $class = DB::table('s_class_schedule as cs')
+            //     ->select(
+            //         'cs.id',
+            //         'cs.max_participants',
+            //         DB::raw('(SELECT COUNT(*) FROM s_class_attendances WHERE class_schedule_id = cs.id) as participants_count')
+            //     )
+            //     ->where('cs.id', $request->class_schedule_id)
+            //     ->first();
 
-            if ($class->participants_count >= $class->max_participants) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Class is full'
-                ], 400);
-            }
+            // if ($class->participants_count >= $class->max_participants) {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Class is full'
+            //     ], 400);
+            // }
 
             // Handle member registration
             if ($request->member_id) {

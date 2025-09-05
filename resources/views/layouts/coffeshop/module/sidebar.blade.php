@@ -36,6 +36,11 @@
                 <i class="fas fa-coffee"></i>
                 <span class="nav-link-text">Stok</span>
             </a>
+            <a class="nav-link {{ request()->routeIs('coffeshop.master.pembelian.index') ? 'active' : '' }}"
+                href="{{ route('coffeshop.master.pembelian.index') }}">
+                <i class="fas fa-coffee"></i>
+                <span class="nav-link-text">Pembelian</span>
+            </a>
 
             <div class="menu-title">Master</div>
 

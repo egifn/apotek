@@ -4,12 +4,10 @@
 @section('content')
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h4 class="mb-0">Master Data Produk</h4>
+            <h4 class="mb-0">Transaksi Pembelian</h4>
         </div>
         <div class="col-md-4 text-end">
-            <button class="btn btn-primary btn-sm" id="addProductBtn">
-                <i class="fas fa-plus me-1"></i> Tambah Produk
-            </button>
+            <a href="{{ route('coffeshop.master.pembelian.create') }}" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus me-1"></i>&nbsp; Tambah Transaksi</a>
         </div>
     </div>
 
@@ -31,9 +29,9 @@
                             <option value="1" selected>Active</option>
                             <option value="0">Non Active</option>
                         </select>
-                        <input type="text" class="form-control form-control-sm" id="short_by_search"
-                            placeholder="search..">
+                        <input type="text" class="form-control form-control-sm" id="short_by_search" placeholder="search..">
                     </div>
+                    
                 </div>
 
                 <div class="table-card-body">
@@ -63,22 +61,22 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
-                                {{-- <div class="mb-3">
+                                <div class="mb-3">
                                     <label for="insert_code" class="form-label">Kode Produk*</label>
                                     <input type="text" class="form-control" id="insert_code" name="insert_code" required>
-                                </div> --}}
+                                </div>
                                 <div class="mb-3">
                                     <label for="insert_name" class="form-label">Nama Produk*</label>
                                     <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_category_id" class="form-label">Kategori*</label>
                                     <select class="form-control" id="insert_category_id" name="insert_category_id" required>
                                         <option value="">Pilih Kategori</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_description" class="form-label">Deskripsi</label>
                                     <textarea class="form-control" id="insert_description" name="insert_description" rows="1"></textarea>
@@ -145,104 +143,55 @@
         </div>
     </div>
 
-    <!-- Modal untuk Edit Produk -->
+    <!-- Modal untuk View Pembelian -->
     <div class="modal fade" id="productModalEdit">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <p class="modal-title" id="productModalLabel">Edit Produk</p>
+                    <h5 class="modal-title">Detail Pembelian</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="productFormEdit" method="POST">
-                    @csrf
-                    <input type="hidden" id="edit_productId" name="id">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_code" class="form-label">Kode Produk*</label>
-                                    <input type="text" class="form-control" id="edit_code" name="edit_code" readonly>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit_name" class="form-label">Nama Produk*</label>
-                                    <input type="text" class="form-control" id="edit_name" name="edit_name" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_category_id" class="form-label">Kategori*</label>
-                                    <select class="form-control" id="edit_category_id" name="edit_category_id" required>
-                                        <option value="">Pilih Kategori</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="edit_description" class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" id="edit_description" name="edit_description" rows="1"></textarea>
-                                </div>
-                            </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Supplier</label>
+                            <p id="view_supplier"></p>
                         </div>
-
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div class="card" style="border: 1px solid #d9d9d9;">
-                                    <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
-                                        <h6 class="card-title">Komposisi Bahan Baku</h6>
-                                        <div>
-                                            <button type="button" class="btn btn-sm btn-warning" id="resetEditCompositionBtn">
-                                                    <i class="fas fa-redo me-1"></i> Buat Ulang 
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-primary" id="addEditIngredientBtn">
-                                                <i class="fas fa-plus me-1"></i> Tambah Bahan
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body" style="padding:0">
-                                        <div class="table-responsive">
-                                            <table class="table" id="editIngredientTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th width="40%">Bahan Baku</th>
-                                                        <th width="30%">Jumlah</th>
-                                                        <th width="20%">Satuan</th>
-                                                        <th width="10%">Aksi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="editIngredientList" style="border-top: 0px;">
-                                                    <!-- Daftar bahan baku akan ditambahkan di sini -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                       
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="mb-3">
-                                <label for="edit_selling_price" class="form-label">Harga Jual*</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="edit_selling_price"
-                                        name="edit_selling_price" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="edit_hpp" class="form-label">Harga Produksi (HPP)*</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="edit_hpp" name="edit_hpp"
-                                        readonly>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Jenis Transaksi</label>
+                            <p id="view_jenis"></p>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" id="button_update" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_update_send" class="btn btn-primary"
-                            style="display: none;">Menyimpan...</button>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tanggal Pembelian</label>
+                            <p id="view_tanggal"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Total</label>
+                            <p id="view_total"></p>
+                        </div>
                     </div>
-                </form>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Bahan Baku</th>
+                                    <th>Jumlah</th>
+                                    <th>Satuan</th>
+                                    <th>Harga</th>
+                                </tr>
+                            </thead>
+                            <tbody id="view_detail">
+                                <!-- Detail akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
             </div>
         </div>
     </div>
@@ -286,7 +235,7 @@
         const buttonUpdate = document.getElementById('button_update');
         const buttonUpdateSend = document.getElementById('button_update_send');
         const edId = document.getElementById('edit_productId');
-        // const edCode = document.getElementById('edit_code');
+        const edCode = document.getElementById('edit_code');
         const edName = document.getElementById('edit_name');
         const edCategoryId = document.getElementById('edit_category_id');
         const edDescription = document.getElementById('edit_description');
@@ -298,7 +247,7 @@
         const buttonInsert = document.getElementById('button_insert');
         const buttonInsertSend = document.getElementById('button_insert_send');
         const productModalFormInsert = document.getElementById('productModalInput');
-        // const inCode = document.getElementById('insert_code');
+        const inCode = document.getElementById('insert_code');
         const inName = document.getElementById('insert_name');
         const inCategoryId = document.getElementById('insert_category_id');
         const inDescription = document.getElementById('insert_description');
@@ -323,28 +272,6 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }).format(amount);
-        }
-
-        // Fungsi untuk memuat data kategori
-        async function loadCategories(selectElement) {
-            try {
-                const response = await axios.get(`{{ route('coffeshop.master.products.categories') }}`);
-                categoryOptions = response.data.data;
-
-                // Kosongkan select
-                selectElement.innerHTML = '<option value="">Pilih Kategori</option>';
-
-                // Tambahkan opsi kategori
-                categoryOptions.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category.id;
-                    option.textContent = category.name;
-                    selectElement.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading categories:', error);
-                createDynamicAlert('danger', 'Gagal memuat data kategori');
-            }
         }
 
         // Fungsi untuk memuat data bahan baku
@@ -499,13 +426,7 @@
             }
         }
 
-        document.getElementById('resetEditCompositionBtn').addEventListener('click', function () {
-            if (confirm("Apakah Anda yakin ingin mereset komposisi? Data lama akan hilang.")) {
-                editIngredients = [];
-                document.getElementById('editIngredientList').innerHTML = '';
-                addIngredientRow(null, true, false); // Tambahkan baris kosong yang bisa diedit
-            }
-        });
+        
         // Perbaikan fungsi calculateHpp
         function calculateHpp(isEdit = false) {
             let totalHpp = 0;
@@ -521,74 +442,91 @@
             hppField.value = totalHpp.toFixed(2);
         }
 
-        // Perbaikan pada bagian edit produk
+        // Event listener untuk view detail
         document.addEventListener('click', async function(event) {
-            const editBtn = event.target.closest('.btn_show_modal_form_edit');
-            if (editBtn) {
+            const viewBtn = event.target.closest('.btn_show_modal_form_view');
+            if (viewBtn) {
                 event.preventDefault();
-                const id = editBtn.dataset.id;
+                const kodePembelian = viewBtn.dataset.id;
                 
                 try {
-                    // Reset form edit
-                    editIngredients = [];
-                    document.getElementById('editIngredientList').innerHTML = '';
-
-                    // Load data produk
-                    const productResponse = await axios.get(`{{ route('coffeshop.master.products.data') }}?id=${id}`);
-                    const product = productResponse.data.data[0];
+                    // Fetch data detail
+                    const response = await axios.get(`{{ route('coffeshop.master.pembelian.detail', '') }}/${kodePembelian}`);
+                    const data = response.data;
                     
-                    // Set values to form fields
-                    edId.value = product.id;
-                    edCode.value = product.code;
-                    edName.value = product.name;
-                    edCategoryId.value = product.category_id || '';
-                    edDescription.value = product.description || '';
-                    edSellingPrice.value = product.selling_price;
-                    edHpp.value = product.hpp || '0';
-
-                    // Load komposisi bahan baku
-                    const compResponse = await axios.get(`{{ route('coffeshop.master.products.compositions', ['product_id' => '']) }}${product.id}`);
-                    const compositions = compResponse.data.data;
-
-                    // Pastikan kita memiliki data bahan baku terbaru
-                    await loadIngredients();
-
-                    // Tambahkan bahan baku ke tabel
-                   if (compositions && compositions.length > 0) {
-                        compositions.forEach(comp => {
-                            const ingredientInfo = ingredientOptions.find(ing => ing.id == comp.ingredient_id);
-                            if (ingredientInfo) {
-                                addIngredientRow({
-                                    ingredient_id: comp.ingredient_id,
-                                    quantity: comp.quantity,
-                                    price_per_unit: ingredientInfo.price_per_unit
-                                }, true, true); // true untuk isEdit, true untuk isReadOnly
-                            }
+                    if (data.success) {
+                        // Isi modal dengan data
+                        document.getElementById('view_supplier').textContent = data.header.nama_supplier;
+                        document.getElementById('view_jenis').textContent = data.header.jenis;
+                        document.getElementById('view_tanggal').textContent = data.header.tanggal;
+                        document.getElementById('view_total').textContent = formatCurrency(data.header.total);
+                        
+                        // Kosongkan dan isi tabel detail
+                        const detailTable = document.getElementById('view_detail');
+                        detailTable.innerHTML = '';
+                        
+                        data.detail.forEach(item => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.ingredient}</td>
+                                <td>${item.qty}</td>
+                                <td>${item.satuan}</td>
+                                <td>${formatCurrency(item.harga)}</td>
+                            `;
+                            detailTable.appendChild(row);
                         });
                         
-                        // Hitung ulang HPP setelah semua bahan dimuat
-                        setTimeout(() => {
-                            calculateHpp(true);
-                        }, 100);
-                    } else {
-                        // Tambahkan satu baris kosong jika tidak ada komposisi
-                        addIngredientRow(null, true, true); 
+                        new bootstrap.Modal(document.getElementById('productModalEdit')).show();
                     }
-
-                    new bootstrap.Modal(productModalFormEdit).show();
-
                 } catch (error) {
-                    console.error('Error fetching data:', error);
-                    createDynamicAlert('danger', 'Gagal memuat data produk');
+                    console.error('Error fetching detail:', error);
+                    createDynamicAlert('danger', 'Gagal memuat detail pembelian');
+                }
+            }
+            
+            // Event listener untuk tombol terima
+            const terimaBtn = event.target.closest('.btn_show_modal_form_terima');
+            if (terimaBtn) {
+                event.preventDefault();
+                const kodePembelian = terimaBtn.dataset.id;
+                
+                if (confirm('Apakah Anda yakin ingin menerima barang ini?')) {
+                    try {
+                        const response = await axios.post(`{{ route('coffeshop.master.pembelian.accept', '') }}/${kodePembelian}`);
+                        
+                        if (response.data.success) {
+                            createDynamicAlert('success', response.data.message);
+                            
+                            // Refresh data table
+                            const syVSearch = sySearch.value;
+                            const syVLimit = syLimit.value;
+                            const syVStatus = syStatus.value;
+                            await fetchData(syVSearch, syVLimit, syVStatus);
+                        } else {
+                            createDynamicAlert('danger', response.data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error menerima barang:', error);
+                        createDynamicAlert('danger', 'Gagal menerima barang');
+                    }
                 }
             }
         });
+
+        // Fungsi format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
 
 
         // Fungsi untuk fetch data produk
         async function fetchData(syVSearch, syVLimit, syVStatus) {
             try {
-                let url = `{{ route('coffeshop.master.products.data') }}`;
+                let url = `{{ route('coffeshop.master.pembelian.data') }}`;
                 let params = new URLSearchParams();
 
                 if (syVSearch && syVSearch.trim() !== '') {
@@ -613,11 +551,13 @@
                     <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
-                            <th>Nama Produk</th>
-                            <th>Harga Jual</th>
-                            <th>Harga Produksi</th>
-                            <th>Kategori</th>
-                            <th>Status</th>
+                            <th>Kode Pembelian</th>
+                            <th>Tanggal</th>
+                            <th hidden>supplier_id</th>
+                            <th>Supplier</th>
+                            <th>Total</th>
+                            <th>Status Pembelian</th>
+                            <th>Status bayar</th>
                             <th class="text-center pe-4" width="120">Aksi</th>
                         </tr>
                     </thead>
@@ -631,40 +571,36 @@
                         </tr>
                     `;
                 } else {
-                    data.forEach((product, index) => {
+                    data.forEach((pembelian, index) => {
                         productsTable.innerHTML += `
                             <tr>
                                 <td class="ps-4">${index + 1}</td>
-                                <td class="fw-medium">${product.name}</td>
+                                <td class="fw-medium">${pembelian.kode_pembelian}</td>
+                                <td class="fw-medium">${pembelian.tanggal}</td>
+                                <td class="fw-medium" hidden>${pembelian.supplier_id}</td>
+                                <td class="fw-medium">${pembelian.nama_supplier}</td>
                                 <td>
                                     <div class="price-wrapper">
-                                        <span class="currency">Rp</span>
-                                        <span class="amount">${formatCurrency(product.selling_price)}</span>
+                                        <span class="amount">${formatCurrency(pembelian.total)}</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="price-wrapper">
-                                        <span class="currency">Rp</span>
-                                        <span class="amount">${formatCurrency(product.hpp)}</span>
-                                    </div>
-                                </td>
-                                <td>${product.category_name || '-'}</td>
-                                <td>
-                                    <span class="badge ${product.is_active ? 'bg-success' : 'bg-secondary'}">
-                                        ${product.is_active ? 'Active' : 'Non Active'}
+                                <td class="fw-medium">
+                                    <span class="badge ${pembelian.status_pembelian == 1 ? 'bg-success' : 'bg-warning'}">
+                                        ${pembelian.status_pembelian == 1 ? 'Diterima' : 'Proses'}
                                     </span>
                                 </td>
-                                <td class="text-center pe-4">
+                                <td class="fw-medium">${pembelian.status_pembayaran}</td>
+                                <td class="fw-medium">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-icon btn-sm btn-outline-secondary btn_show_modal_form_edit" 
-                                            data-id="${product.id}" title="Edit">
-                                            <i class="fas fa-pencil-alt"></i>
+                                        <button class="btn btn-icon btn-sm btn-outline-primary btn_show_modal_form_view" 
+                                            data-id="${pembelian.kode_pembelian}" title="View">View
+                                            
                                         </button>
-                                        <button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                            data-id="${product.id}" 
+                                        <button class="btn btn-icon btn-sm btn-outline-success btn_show_modal_form_terima" 
+                                            data-id="${pembelian.kode_pembelian}" 
                                             data-bs-toggle="tooltip" 
-                                            title="Hapus">
-                                            <i class="fas fa-trash"></i>
+                                            title="Terima">Terima
+                                          
                                         </button>
                                     </div>
                                 </td>
@@ -683,11 +619,6 @@
             const syVSearch = sySearch.value;
             const syVLimit = syLimit.value;
             const syVStatus = syStatus.value;
-
-            // Load data kategori dan bahan baku
-            await loadCategories(inCategoryId);
-            await loadCategories(edCategoryId);
-            await loadIngredients();
 
             // Load data produk
             await fetchData(syVSearch, syVLimit, syVStatus);
@@ -717,33 +648,12 @@
             fetchData(syVSearch, syVLimit, syVStatus);
         });
 
-        // Event listener untuk tombol tambah produk
-        buttonShowModalFormInput.addEventListener('click', function() {
-            // Reset form
-            ingredients = [];
-            document.getElementById('ingredientList').innerHTML = '';
-            // inCode.value = '';
-            inName.value = '';
-            inCategoryId.value = '';
-            inDescription.value = '';
-            inSellingPrice.value = '';
-            inHpp.value = '0';
-
-            // Tambahkan satu baris bahan baku kosong
-            addIngredientRow();
-
-            new bootstrap.Modal(productModalFormInsert).show();
-        });
-
         // Event listener untuk tombol tambah bahan baku (tambah produk)
         document.getElementById('addIngredientBtn').addEventListener('click', function() {
             addIngredientRow();
         });
 
-        // Event listener untuk tombol tambah bahan baku (edit produk)
-        document.getElementById('addEditIngredientBtn').addEventListener('click', function() {
-            addIngredientRow(null, true);
-        });
+        
 
         // Event listener untuk simpan produk baru
         buttonInsert.addEventListener('click', async function() {
@@ -761,7 +671,7 @@
                 }
 
                 const response = await axios.post(`{{ route('coffeshop.master.products.store') }}`, {
-                    // code: inCode.value,
+                    code: inCode.value,
                     name: inName.value,
                     category_id: inCategoryId.value,
                     description: inDescription.value,
@@ -801,77 +711,6 @@
             } finally {
                 buttonInsert.style.display = 'inline-block';
                 buttonInsertSend.style.display = 'none';
-            }
-        });
-
-
-        // Event listener untuk simpan edit produk
-        buttonUpdate.addEventListener('click', async function() {
-            buttonUpdate.style.display = 'none';
-            buttonUpdateSend.style.display = 'inline-block';
-
-            try {
-                // Validasi minimal satu bahan baku
-                if (editIngredients.length === 0 || editIngredients.every(item => !item.ingredient_id || item
-                        .quantity <= 0)) {
-                    createDynamicAlert('danger', 'Minimal harus ada satu bahan baku dengan jumlah yang valid');
-                    buttonUpdate.style.display = 'inline-block';
-                    buttonUpdateSend.style.display = 'none';
-                    return;
-                }
-
-                const response = await axios.post(`{{ route('coffeshop.master.products.update') }}`, {
-                    id: edId.value,
-                    // code: edCode.value,
-                    name: edName.value,
-                    category_id: edCategoryId.value,
-                    description: edDescription.value,
-                    selling_price: edSellingPrice.value,
-                    hpp: edHpp.value,
-                    compositions: editIngredients.filter(item => item.ingredient_id && item.quantity >
-                        0)
-                });
-
-                const data = response.data;
-
-                if (data.status === true) {
-                    createDynamicAlert('success', data.message || 'Data berhasil diperbarui');
-
-                    // Refresh data
-                    const syVSearch = sySearch.value;
-                    const syVLimit = syLimit.value;
-                    const syVStatus = syStatus.value;
-                    await fetchData(syVSearch, syVLimit, syVStatus);
-
-                    // Close modal
-                    bootstrap.Modal.getInstance(productModalFormEdit).hide();
-                } else {
-                    if (data.type === 'validation') {
-                        // Tampilkan error validasi
-                        let errorMessages = '';
-                        for (const field in data.errors) {
-                            errorMessages += data.errors[field].join('<br>') + '<br>';
-                        }
-                        createDynamicAlert('danger', errorMessages);
-                    } else {
-                        createDynamicAlert('danger', data.message || 'Terjadi kesalahan saat memperbarui data');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                createDynamicAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
-            } finally {
-                buttonUpdate.style.display = 'inline-block';
-                buttonUpdateSend.style.display = 'none';
-            }
-        });
-
-        document.addEventListener('click', function(event) {
-            const deleteBtn = event.target.closest('.btn_delete');
-            if (deleteBtn) {
-                const id = deleteBtn.dataset.id;
-                document.getElementById('deleteId').value = id;
-                new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
             }
         });
 

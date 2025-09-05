@@ -1,5 +1,13 @@
 @extends('layouts.coffeshop.admin')
 @section('page-title', 'Cabang')
+@push('styles')
+    <style>
+        .pagination-sm .page-link {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+@endpush
 
 @section('content')
     <div class="row mb-4 align-items-center">
@@ -19,8 +27,8 @@
                 <div class="table-card-header">
                     <div class="col-lg-1">
                         <select class="form-control form-control-sm" id="short_by_limit" style="width: 50px;">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
+                            <option value="2" selected>2</option>
+                            <option value="10" >10</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
                             <option value="500">500</option>
@@ -41,6 +49,17 @@
                         <table id="branch_table" class="table-types-table">
                             <!-- Table content loaded via JavaScript -->
                         </table>
+                    </div>
+                    <!-- Pagination Section -->
+                    <div class="table-card-footer d-flex justify-content-between align-items-center mt-3">
+                        <div class="small text-muted">
+                            Menampilkan <span id="showing-from">0</span> - <span id="showing-to">0</span> dari <span id="total-items">0</span> data
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm mb-0" id="pagination-links">
+                                <!-- Pagination akan diisi oleh JS -->
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -199,12 +218,19 @@
         const inName = document.getElementById('insert_name');
         const inAddress = document.getElementById('insert_address');
         const inPhone = document.getElementById('insert_phone');
+
+        // Pagination
+        let currentPage = 1;
+        const paginationLinks = document.getElementById('pagination-links');
+        const showingFrom = document.getElementById('showing-from');
+        const showingTo = document.getElementById('showing-to');
+        const totalItems = document.getElementById('total-items');
     </script>
     {{-- -------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
     {{-- GET DATA --}}
     {{-- -------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
     <script>
-        async function fetchData(syVSearch, syVLimit, syVStatus) {
+        async function fetchData(syVSearch, syVLimit, syVStatus, page = 1) {
             try {
                 let url = `{{ route('coffeshop.master.branches.data') }}`;
                 let params = new URLSearchParams();
@@ -218,18 +244,17 @@
                 if (syVStatus && syVStatus.trim() !== '') {
                     params.append('status', syVStatus.trim());
                 }
+                params.append('page', page);
 
-                // Hanya tambahkan parameter ke URL jika ada parameter
-                if (params.toString()) {
-                    url += '?' + params.toString();
-                }
+                url += '?' + params.toString();
 
                 const response = await axios.get(url);
                 const data = response.data.data;
+                const pagination = response.data.pagination;
 
                 branchesTable.innerHTML = '';
                 branchesTable.innerHTML += `
-                  <thead>
+                    <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
                             <th>Nama Cabang</th>
@@ -243,68 +268,169 @@
 
                 if (!data || data.length === 0) {
                     branchesTable.innerHTML += `
-                    <tr>
-                        <td colspan="5" class="ps-4 text-center">Tidak ada Data</td>
-                    </tr>
-                `;
+                        <tr>
+                            <td colspan="5" class="ps-4 text-center">Tidak ada Data</td>
+                        </tr>
+                    `;
                 } else {
-
+                    const startIndex = (pagination.current_page - 1) * pagination.per_page;
                     data.forEach((branch, index) => {
                         branchesTable.innerHTML += `
-                   <tr>
-                            <td class="ps-4">${index + 1}</td>
-                            <td class="fw-medium">${branch.name}</td>
-                            <td class="text-muted">${branch.address}</td>
-                            <td>${branch.phone}</td>
-                            <td class="text-center pe-4">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <button class="btn btn-icon btn-sm btn-outline-secondary btn_show_modal_form_edit" 
-                                        data-id="${branch.id}" title="Edit">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                        data-id="${branch.id}" 
-                                        data-bs-toggle="tooltip" 
-                                        title="Non-aktifkan">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td class="ps-4">${startIndex + index + 1}</td>
+                                <td class="fw-medium">${branch.name}</td>
+                                <td class="text-muted">${branch.address}</td>
+                                <td>${branch.phone}</td>
+                                <td class="text-center pe-4">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button class="btn btn-icon btn-sm btn-outline-secondary btn_show_modal_form_edit" 
+                                            data-id="${branch.id}" title="Edit">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
+                                            data-id="${branch.id}" 
+                                            data-bs-toggle="tooltip" 
+                                            title="Non-aktifkan">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                         `;
                     });
                 }
+
+                // Update pagination info
+                showingFrom.textContent = data.length > 0 ? (pagination.current_page - 1) * pagination.per_page + 1 : 0;
+                showingTo.textContent = Math.min(pagination.current_page * pagination.per_page, pagination.total_items);
+                totalItems.textContent = pagination.total_items;
+
+                // Generate pagination links
+                generatePaginationLinks(pagination);
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const syVSearch = sySearch.value;
-            const syVLimit = syLimit.value;
-            const syVStatus = syStatus.value;
-            fetchData(syVSearch, syVLimit, syVStatus);
+        // Function to generate pagination links
+        function generatePaginationLinks(pagination) {
+            const { current_page, total_pages } = pagination;
+            paginationLinks.innerHTML = '';
+
+            if (total_pages <= 1) return;
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${current_page === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `
+                <a class="page-link" href="#" data-page="${current_page - 1}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            `;
+            paginationLinks.appendChild(prevLi);
+
+            // First page
+            if (current_page > 3) {
+                paginationLinks.appendChild(createPageLink(1, current_page));
+                if (current_page > 4) {
+                    paginationLinks.appendChild(createEllipsis());
+                }
+            }
+
+            // Middle pages
+            const start = Math.max(1, current_page - 2);
+            const end = Math.min(total_pages, current_page + 2);
+            for (let i = start; i <= end; i++) {
+                paginationLinks.appendChild(createPageLink(i, current_page));
+            }
+
+            // Last page
+            if (current_page < total_pages - 2) {
+                if (current_page < total_pages - 3) {
+                    paginationLinks.appendChild(createEllipsis());
+                }
+                paginationLinks.appendChild(createPageLink(total_pages, current_page));
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${current_page === total_pages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `
+                <a class="page-link" href="#" data-page="${current_page + 1}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            `;
+            paginationLinks.appendChild(nextLi);
+        }
+
+        function createPageLink(page, currentPage) {
+            const li = document.createElement('li');
+            li.className = `page-item ${page === currentPage ? 'active' : ''}`;
+            li.innerHTML = `<a class="page-link" href="#" data-page="${page}">${page}</a>`;
+            return li;
+        }
+
+        function createEllipsis() {
+            const li = document.createElement('li');
+            li.className = 'page-item disabled';
+            li.innerHTML = '<span class="page-link">...</span>';
+            return li;
+        }
+
+        // Update event listeners for pagination
+        document.addEventListener('click', function(e) {
+            // Handle pagination clicks
+            if (e.target.classList.contains('page-link') || (e.target.parentElement && e.target.parentElement.classList.contains('page-link'))) {
+                e.preventDefault();
+                
+                let link;
+                if (e.target.classList.contains('page-link')) {
+                    link = e.target;
+                } else if (e.target.parentElement.classList.contains('page-link')) {
+                    link = e.target.parentElement;
+                }
+                
+                if (link && link.dataset.page) {
+                    const page = parseInt(link.dataset.page);
+                    if (page && page > 0) {
+                        currentPage = page;
+                        const syVSearch = sySearch.value;
+                        const syVLimit = syLimit.value;
+                        const syVStatus = syStatus.value;
+                        fetchData(syVSearch, syVLimit, syVStatus, currentPage);
+                    }
+                }
+            }
         });
-        // GETDATA BY SEARCH
+
+        // Update existing event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData('', syLimit.value, syStatus.value, 1);
+        });
+
         sySearch.addEventListener('keyup', (event) => {
+            currentPage = 1;
             const syVSearch = event.target.value.trim();
             const syVLimit = syLimit.value;
             const syVStatus = syStatus.value;
-            fetchData(syVSearch, syVLimit, syVStatus);
+            fetchData(syVSearch, syVLimit, syVStatus, currentPage);
         });
-        // GETDATA BY LIMIT
+
         syLimit.addEventListener('change', (event) => {
+            currentPage = 1;
             const syVSearch = sySearch.value;
             const syVLimit = event.target.value.trim();
             const syVStatus = syStatus.value;
-            fetchData(syVSearch, syVLimit, syVStatus);
+            fetchData(syVSearch, syVLimit, syVStatus, currentPage);
         });
-        // GETDATA BY STATUS
+
         syStatus.addEventListener('change', (event) => {
+            currentPage = 1;
             const syVSearch = sySearch.value;
             const syVLimit = syLimit.value;
             const syVStatus = event.target.value.trim();
-            fetchData(syVSearch, syVLimit, syVStatus);
+            fetchData(syVSearch, syVLimit, syVStatus, currentPage);
         });
     </script>
     {{-- -------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
@@ -542,7 +668,6 @@
                 }
             });
         });
-
 
         // Handler tombol delete
         document.addEventListener('click', async function(event) {

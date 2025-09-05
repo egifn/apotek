@@ -1,5 +1,20 @@
 @extends('layouts.senam.admin')
 @section('page-title', 'Produk Jasa')
+@section('style')
+    <style>
+        .instructor-field {
+            transition: all 0.3s ease;
+        }
+
+        .form-check {
+            margin-top: 8px;
+        }
+
+        .form-check-input {
+            margin-top: 0.25rem;
+        }
+    </style>
+@endsection
 
 @section('content')
     <div class="row mb-4 align-items-center">
@@ -77,19 +92,24 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="insert_type_services" class="form-label">Jenis Servis*</label>
-                                    <input type="text" class="form-control" id="insert_type_services" name="insert_type_services" required>
+                                    <label for="insert_class_type_id" class="form-label">Jenis Jasa*</label>
+                                    <select class="form-control" id="insert_class_type_id" name="insert_class_type_id" required>
+                                        <option value="">Pilih Jenis Jasa</option>
+                                        @foreach($classTypes as $classType)
+                                            <option value="{{ $classType->id }}">{{ $classType->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="insert_class_type_id" class="form-label">Jenis Senam*</label>
-                                    <select class="form-control" id="insert_class_type_id" name="insert_class_type_id" required>
-                                        <option value="">Pilih Jenis Senam</option>
-                                        @foreach($classTypes as $classType)
-                                            <option value="{{ $classType->id }}">{{ $classType->name }}</option>
+                                    <label for="insert_location_id" class="form-label">Lokasi*</label>
+                                    <select class="form-control" id="insert_location_id" name="insert_location_id" required>
+                                        <option value="">Pilih Lokasi</option>
+                                        @foreach($locations as $location)
+                                            <option value="{{ $location->id }}">{{ $location->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -104,22 +124,23 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="need_instructor">
+                                        <label class="form-check-label" for="need_instructor">
+                                            Butuh Instruktur?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row instructor-field" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="mb-3">
                                     <label for="insert_instructor_id" class="form-label">Instruktur*</label>
-                                    <select class="form-control" id="insert_instructor_id" name="insert_instructor_id" required>
+                                    <select class="form-control" id="insert_instructor_id" name="insert_instructor_id">
                                         <option value="">Pilih Instruktur</option>
                                         @foreach($instructors as $instructor)
                                             <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="insert_location_id" class="form-label">Lokasi*</label>
-                                    <select class="form-control" id="insert_location_id" name="insert_location_id" required>
-                                        <option value="">Pilih Lokasi</option>
-                                        @foreach($locations as $location)
-                                            <option value="{{ $location->id }}">{{ $location->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -157,15 +178,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_type_services" class="form-label">Jenis Servis*</label>
-                                    <input type="text" class="form-control" id="edit_type_services" name="edit_type_services" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_class_type_id" class="form-label">Jenis Senam*</label>
+                                    <label for="edit_class_type_id" class="form-label">Jenis Jasa*</label>
                                     <select class="form-control" id="edit_class_type_id" name="edit_class_type_id" required>
                                         <option value="">Pilih Jenis Senam</option>
                                         @foreach($classTypes as $classType)
@@ -174,23 +187,12 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="edit_price" class="form-label">Harga*</label>
-                                    <input type="number" class="form-control" id="edit_price" name="edit_price" min="0" required>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="edit_instructor_id" class="form-label">Instruktur*</label>
-                                    <select class="form-control" id="edit_instructor_id" name="edit_instructor_id" required>
-                                        <option value="">Pilih Instruktur</option>
-                                        @foreach($instructors as $instructor)
-                                            <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="edit_price" class="form-label">Harga*</label>
+                                    <input type="number" class="form-control" id="edit_price" name="edit_price" min="0" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -205,12 +207,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit_is_active" class="form-label">Status</label>
-                            <select class="form-control" id="edit_is_active" name="edit_is_active" required>
-                                <option value="1">Aktif</option>
-                                <option value="0">Nonaktif</option>
-                            </select>
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="edit_need_instructor">
+                                    <label class="form-check-label" for="edit_need_instructor">
+                                        Butuh Instruktur?
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row edit-instructor-field" style="display: none;">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="edit_instructor_id" class="form-label">Instruktur*</label>
+                                        <select class="form-control" id="edit_instructor_id" name="edit_instructor_id">
+                                            <option value="">Pilih Instruktur</option>
+                                            @foreach($instructors as $instructor)
+                                                <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -270,7 +288,6 @@
         const buttonInsertSend = document.getElementById('button_insert_send');
         const componentModalFormInsert = document.getElementById('scheduleModalInput');
         const inServicesName = document.getElementById('insert_services_name');
-        const inTypeServices = document.getElementById('insert_type_services');
         const inPrice = document.getElementById('insert_price');
         const inClassTypeId = document.getElementById('insert_class_type_id');
         const inInstructorId = document.getElementById('insert_instructor_id');
@@ -298,6 +315,82 @@
         const deletePassword = document.getElementById('delete_password');
         const buttonDelete = document.getElementById('button_delete');
         const buttonDeleteSend = document.getElementById('button_delete_send');
+    </script>
+
+    {{-- KONTROL TAMPILAN INSTRUKTUR DENGAN CHECKLIST --}}
+    <script>
+        // Variabel
+        const needInstructorCheckbox = document.getElementById('need_instructor');
+        const instructorField = document.querySelector('.instructor-field');
+
+        // Event listener untuk checkbox
+        needInstructorCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                instructorField.style.display = 'block';
+                inInstructorId.setAttribute('required', 'required');
+            } else {
+                instructorField.style.display = 'none';
+                inInstructorId.removeAttribute('required');
+                inInstructorId.value = ''; // Reset nilai
+            }
+
+        const editInstructorField = document.querySelector('.edit-instructor-field');
+            // Event listener untuk checkbox EDIT
+            if (editNeedInstructor && editInstructorField && editInstructorId) {
+                editNeedInstructor.addEventListener('change', function() {
+                    if (this.checked) {
+                        editInstructorField.style.display = 'block';
+                        editInstructorId.setAttribute('required', 'required');
+                    } else {
+                        editInstructorField.style.display = 'none';
+                        editInstructorId.removeAttribute('required');
+                        editInstructorId.value = '';
+                    }
+                });
+            }
+
+            // Reset saat modal EDIT dibuka
+            if (scheduleModalEdit) {
+                scheduleModalEdit.addEventListener('show.bs.modal', function() {
+                    if (editNeedInstructor) {
+                        editNeedInstructor.checked = false;
+                    }
+                    if (editInstructorField) {
+                        editInstructorField.style.display = 'none';
+                    }
+                    if (editInstructorId) {
+                        editInstructorId.removeAttribute('required');
+                        editInstructorId.value = '';
+                    }
+                });
+            }
+
+
+        });
+
+        // Reset saat modal dibuka
+        document.getElementById('scheduleModalInput').addEventListener('show.bs.modal', function() {
+            needInstructorCheckbox.checked = false;
+            instructorField.style.display = 'none';
+            inInstructorId.removeAttribute('required');
+            inInstructorId.value = '';
+        });
+
+
+        // untuk Edit
+        const editNeedInstructor = document.getElementById('edit_need_instructor');
+            const editInstructorField = document.querySelector('.edit-instructor-field');
+
+            editNeedInstructor.addEventListener('change', function() {
+                if (this.checked) {
+                    editInstructorField.style.display = 'block';
+                    editInstructorId.setAttribute('required', 'required');
+                } else {
+                    editInstructorField.style.display = 'none';
+                    editInstructorId.removeAttribute('required');
+                    editInstructorId.value = '';
+                }
+        });
     </script>
 
     {{-- Format --}}
@@ -372,7 +465,7 @@
                             <tr>
                                 <td class="ps-4">${data.from + index}</td>
                                 <td>${schedule.services_name}</td>
-                                <td>${schedule.type_services}</td>
+                                <td>${schedule.class_name}</td>
                                 <td style="text-align: right;">${formatRupiah(schedule.price)}</td>
                                 <td>${statusBadge}</td>
                                 <td class="text-center pe-4">
@@ -383,7 +476,7 @@
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         ${schedule.is_active ? 
-                                            `<button class="btn btn-icon btn-sm btn-outline-warning btn_delete" 
+                                            `<button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
                                                 data-id="${schedule.id}" 
                                                 data-active="${schedule.is_active}"
                                                 title="Nonaktifkan">
@@ -448,7 +541,9 @@
             inClassTypeId.value = '';
             inInstructorId.value = '';
             inLocationId.value = '';
-          
+            inServicesName.value = '';
+            inPrice.value = '';
+
             // Set min datetime to now
             const now = new Date();
             const timezoneOffset = now.getTimezoneOffset() * 60000;
@@ -458,16 +553,22 @@
         });
 
         buttonInsert.addEventListener('click', async function() {
+            // Jika checkbox dicentang, pastikan instruktur dipilih
+            if (needInstructorCheckbox.checked && !inInstructorId.value) {
+                createDynamicAlert('warning', 'Silakan pilih instruktur');
+                return;
+            }
+
+            // Lanjutkan dengan proses simpan...
             buttonInsert.style.display = 'none';
             buttonInsertSend.style.display = 'inline-block';
 
             try {
                 const formData = {
                     class_type_id: inClassTypeId.value,
-                    instructor_id: inInstructorId.value,
+                    instructor_id: needInstructorCheckbox.checked ? inInstructorId.value : null,
                     location_id: inLocationId.value,
                     services_name: inServicesName.value,
-                    type_services: inTypeServices.value,
                     price: inPrice.value
                 };
 
@@ -516,7 +617,7 @@
     {{-- EDIT DATA --}}
     <script>
         document.addEventListener('click', async function(event) {
-            const editBtn = event.target.closest('.btn_edit');
+             const editBtn = event.target.closest('.btn_edit');
             if (editBtn) {
                 event.preventDefault();
                 const id = editBtn.dataset.id;
@@ -526,7 +627,6 @@
                         params: { id: id }
                     });
                     
-                    // Pastikan response.data.data ada dan bukan array
                     if (!response.data.status || !response.data.data) {
                         throw new Error('Data jadwal tidak ditemukan');
                     }
@@ -536,12 +636,12 @@
                     // Fill the form
                     editScheduleId.value = schedule.id;
                     editServicesName.value = schedule.services_name || '';
-                    editTypeServices.value = schedule.type_services || '';
                     editClassTypeId.value = schedule.class_type_id;
                     editInstructorId.value = schedule.instructor_id;
                     editLocationId.value = schedule.location_id;
                     editPrice.value = schedule.price || '';
-                    editIsActive.value = schedule.is_active ? '1' : '0';
+                    // editTypeServices.value = schedule.type_services || '';
+                    // editIsActive.value = schedule.is_active ? '1' : '0';
 
                     // Dalam buttonUpdate event listener
                     const formData = {
@@ -550,42 +650,17 @@
                         instructor_id: editInstructorId.value,
                         location_id: editLocationId.value,
                         services_name: editServicesName.value,
-                        type_services: editTypeServices.value,
                         price: editPrice.value,
-                        is_active: editIsActive.value
+                        // type_services: editTypeServices.value,
+                        // is_active: editIsActive.value
                     };
-
-                    // Format time for input fields (type="time" expects HH:mm)
-                    function toTimeString(val) {
-                        if (!val) return '';
-                        // If already in HH:mm:ss or HH:mm format
-                        if (typeof val === 'string') {
-                            // If format is HH:mm:ss
-                            if (/^\d{2}:\d{2}:\d{2}$/.test(val)) {
-                                return val.slice(0,5);
-                            }
-                            // If format is HH:mm
-                            if (/^\d{2}:\d{2}$/.test(val)) {
-                                return val;
-                            }
-                        }
-                        // Try to parse as Date
-                        const d = new Date(val);
-                        if (!isNaN(d.getTime())) {
-                            return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-                        }
-                        return '';
-                    }
-
-                    let startTime = toTimeString(schedule.start_datetime);
-                    let endTime = toTimeString(schedule.end_datetime);
 
                     // Fill the form
                     editScheduleId.value = schedule.id;
                     editClassTypeId.value = schedule.class_type_id;
                     editInstructorId.value = schedule.instructor_id;
                     editLocationId.value = schedule.location_id;
-                    editIsActive.value = schedule.is_active ? '1' : '0';
+                    // editIsActive.value = schedule.is_active ? '1' : '0';
 
                     new bootstrap.Modal(scheduleModalEdit).show();
                 } catch (error) {
@@ -596,6 +671,12 @@
         });
 
         buttonUpdate.addEventListener('click', async function() {
+
+            if (editNeedInstructor && editNeedInstructor.checked && (!editInstructorId || !editInstructorId.value)) {
+                createDynamicAlert('warning', 'Silakan pilih instruktur');
+                return;
+            }
+
             buttonUpdate.style.display = 'none';
             buttonUpdateSend.style.display = 'inline-block';
 
@@ -603,9 +684,11 @@
                 const formData = {
                     id: editScheduleId.value,
                     class_type_id: editClassTypeId.value,
-                    instructor_id: editInstructorId.value,
+                    instructor_id: editNeedInstructor.checked ? editInstructorId.value : null,
                     location_id: editLocationId.value,
-                    is_active: editIsActive.value
+                    services_name: editServicesName.value,
+                    price: editPrice.value,
+                    // is_active: editIsActive.value
                 };
 
                 const response = await axios.post(`{{ route('senam.master.class-schedule.update') }}`, formData);
