@@ -178,9 +178,10 @@
                             <thead>
                                 <tr>
                                     <th>Bahan Baku</th>
-                                    <th>Jumlah</th>
                                     <th>Satuan</th>
-                                    <th>Harga</th>
+                                    <th>Harga/Satuan</th>
+                                    <th>Jumlah</th>
+                                    <th>Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody id="view_detail">
@@ -466,12 +467,15 @@
                         detailTable.innerHTML = '';
                         
                         data.detail.forEach(item => {
+                            console.log(item);
+                            
                             const row = document.createElement('tr');
                             row.innerHTML = `
                                 <td>${item.ingredient}</td>
-                                <td>${item.qty}</td>
-                                <td>${item.satuan}</td>
+                                <td>${item.qty_unit} ${item.satuan}</td>
                                 <td>${formatCurrency(item.harga)}</td>
+                                <td>${item.qty}</td>
+                                <td>${formatCurrency(item.subtotal)}</td>
                             `;
                             detailTable.appendChild(row);
                         });
@@ -596,7 +600,7 @@
                                             data-id="${pembelian.kode_pembelian}" title="View">View
                                             
                                         </button>
-                                        <button class="btn btn-icon btn-sm btn-outline-success btn_show_modal_form_terima" 
+                                        <button class="btn btn-icon btn-sm btn-outline-success btn_show_modal_form_terima"  ${pembelian.status_pembelian == 1 ? 'disabled' : ''}
                                             data-id="${pembelian.kode_pembelian}" 
                                             data-bs-toggle="tooltip" 
                                             title="Terima">Terima

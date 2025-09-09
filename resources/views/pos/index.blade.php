@@ -1051,61 +1051,61 @@
 
     <!-- Template untuk form peserta (hidden) -->
     <template id="participantTemplate">
-    <div class="card participant-card mb-3">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="card-title mb-0">Peserta #<span class="participant-number">1</span></h6>
-                <button type="button" class="btn btn-sm btn-danger remove-participant">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="memberType_{id}" value="member" checked>
-                        <label class="form-check-label" for="memberType_{id}">Member</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="nonMemberType_{id}" value="non_member">
-                        <label class="form-check-label" for="nonMemberType_{id}">Non-Member</label>
-                    </div>
+        <div class="card participant-card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title mb-0">Peserta #<span class="participant-number">1</span></h6>
+                    <button type="button" class="btn btn-sm btn-danger remove-participant">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-            </div>
 
-            <div class="member-fields">
-                <div class="mb-2 position-relative">
-                    <label class="form-label">Cari Member</label>
-                    <input type="text" class="form-control member-search-input" placeholder="Ketik nama member..." data-participant-id="{id}">
-                    <ul class="list-group position-absolute w-100 mt-1 member-dropdown" style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></ul>
-                </div>
-                <div class="member-details" id="memberDetails_{id}" style="display: none;">
-                    <small class="text-muted">
-                        Sisa Kuota: <span class="quota-remaining">0</span>/<span class="quota-total">0</span>
-                        (Berlaku hingga: <span class="quota-end">-</span>)
-                    </small>
-                </div>
-            </div>
-
-            <div class="non-member-fields" style="display: none;">
                 <div class="row">
                     <div class="col-md-6 mb-2">
-                        <label class="form-label">Nama Non-Member</label>
-                        <input type="text" class="form-control non-member-name" placeholder="Nama lengkap">
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <label class="form-label">No. Telepon</label>
-                        <input type="text" class="form-control non-member-phone" placeholder="No. telepon">
+                        <div class="form-check">
+                            <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="memberType_{id}" value="member" checked>
+                            <label class="form-check-label" for="memberType_{id}">Member</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="nonMemberType_{id}" value="non_member">
+                            <label class="form-check-label" for="nonMemberType_{id}">Non-Member</label>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="price-info mt-2">
-                <strong>Harga: <span class="participant-price">Rp 0</span></strong>
+                <div class="member-fields">
+                    <div class="mb-2 position-relative">
+                        <label class="form-label">Cari Member</label>
+                        <input type="text" class="form-control member-search-input" placeholder="Ketik nama member..." data-participant-id="{id}">
+                        <ul class="list-group position-absolute w-100 mt-1 member-dropdown" style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></ul>
+                    </div>
+                    <div class="member-details" id="memberDetails_{id}" style="display: none;">
+                        <small class="text-muted">
+                            Sisa Kuota: <span class="quota-remaining">0</span>/<span class="quota-total">0</span>
+                            (Berlaku hingga: <span class="quota-end">-</span>)
+                        </small>
+                    </div>
+                </div>
+
+                <div class="non-member-fields" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Nama Non-Member</label>
+                            <input type="text" class="form-control non-member-name" placeholder="Nama lengkap">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">No. Telepon</label>
+                            <input type="text" class="form-control non-member-phone" placeholder="No. telepon">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="price-info mt-2">
+                    <strong>Harga: <span class="participant-price">Rp 0</span></strong>
+                </div>
             </div>
         </div>
-    </div>
-</template>
+    </template>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1561,83 +1561,79 @@
                 });
             }
 
-            // Fungsi debounce untuk membatasi frekuensi pencarian
-           
-            
-
             // Fungsi untuk mencari member
-async function searchMembers(query, dropdownEl, participantId) {
-    if (query.length < 2) {
-        dropdownEl.style.display = 'none';
-        return;
-    }
-
-    try {
-        const response = await fetch("{{ route('pos.search-members') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({ search: query })
-        });
-
-        const data = await response.json();
-        dropdownEl.innerHTML = '';
-
-        if (data.status && data.data.length > 0) {
-            data.data.forEach(member => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item list-group-item-action';
-                li.innerHTML = `
-                    <div>
-                        <strong>${member.name}</strong>
-                        ${member.email ? `<br><small>Email: ${member.email}</small>` : ''}
-                    </div>
-                `;
-                li.dataset.id = member.id;
-                li.dataset.name = member.name;
-                li.addEventListener('click', () => {
-                    const input = dropdownEl.previousElementSibling;
-                    input.value = member.name;
+            async function searchMembers(query, dropdownEl, participantId) {
+                if (query.length < 2) {
                     dropdownEl.style.display = 'none';
-                    loadMemberDetails(member.id, participantId);
-                });
-                dropdownEl.appendChild(li);
+                    return;
+                }
+
+                try {
+                    const response = await fetch("{{ route('pos.search-members') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({ search: query })
+                    });
+
+                    const data = await response.json();
+                    dropdownEl.innerHTML = '';
+
+                    if (data.status && data.data.length > 0) {
+                        data.data.forEach(member => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action';
+                            li.innerHTML = `
+                                <div>
+                                    <strong>${member.name}</strong>
+                                    ${member.email ? `<br><small>Email: ${member.email}</small>` : ''}
+                                </div>
+                            `;
+                            li.dataset.id = member.id;
+                            li.dataset.name = member.name;
+                            li.addEventListener('click', () => {
+                                const input = dropdownEl.previousElementSibling;
+                                input.value = member.name;
+                                dropdownEl.style.display = 'none';
+                                loadMemberDetails(member.id, participantId);
+                            });
+                            dropdownEl.appendChild(li);
+                        });
+                        dropdownEl.style.display = 'block';
+                    } else {
+                        dropdownEl.style.display = 'none';
+                        dropdownEl.innerHTML = '<li class="list-group-item text-muted">No members found</li>';
+                    }
+                } catch (err) {
+                    console.error('Error searching member:', err);
+                    dropdownEl.style.display = 'none';
+                }
+            }
+
+            // Event listener untuk input pencarian member
+            document.addEventListener('input', function (e) {
+                if (e.target.classList.contains('member-search-input')) {
+                    const dropdown = e.target.nextElementSibling;
+                    const participantId = e.target.dataset.participantId;
+                    const debouncedSearch = debounce(searchMembers, 300);
+                    debouncedSearch(e.target.value, dropdown, participantId);
+                }
             });
-            dropdownEl.style.display = 'block';
-        } else {
-            dropdownEl.style.display = 'none';
-            dropdownEl.innerHTML = '<li class="list-group-item text-muted">No members found</li>';
-        }
-    } catch (err) {
-        console.error('Error searching member:', err);
-        dropdownEl.style.display = 'none';
-    }
-}
 
-// Event listener untuk input pencarian member
-document.addEventListener('input', function (e) {
-    if (e.target.classList.contains('member-search-input')) {
-        const dropdown = e.target.nextElementSibling;
-        const participantId = e.target.dataset.participantId;
-        const debouncedSearch = debounce(searchMembers, 300);
-        debouncedSearch(e.target.value, dropdown, participantId);
-    }
-});
-
-// Fungsi debounce
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
+            // Fungsi debounce
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
 
             // Tutup dropdown saat klik di luar
             document.addEventListener('click', function (e) {
@@ -1812,19 +1808,30 @@ function debounce(func, wait) {
                         return;
                     }
                     
-                    // Validasi data peserta
+                    let isValid = true;
+                    let errorMessage = '';
+                    
                     for (const participant of participants) {
                         if (participant.type === 'member' && !participant.member_id) {
-                            createDynamicAlert('warning', 'Harap pilih member untuk semua peserta yang bertipe member');
-                            return;
+                            isValid = false;
+                            errorMessage = 'Harap pilih member untuk semua peserta yang bertipe member';
+                            break;
                         }
                         
-                        if (participant.type === 'non_member' && (!participant.non_member_name || !participant.non_member_phone)) {
-                            createDynamicAlert('warning', 'Harap isi nama dan telepon untuk semua peserta non-member');
-                            return;
+                        if (participant.type === 'non_member') {
+                            if (!participant.non_member_name) {
+                                isValid = false;
+                                errorMessage = 'Harap isi nama untuk semua peserta non-member';
+                                break;
+                            }
+                            
+                            if (!participant.non_member_phone) {
+                                isValid = false;
+                                errorMessage = 'Harap isi telepon untuk semua peserta non-member';
+                                break;
+                            }
                         }
                     }
-                    
                     // Tambahkan ke order summary
                     addParticipantsToOrder();
                     
@@ -1907,6 +1914,8 @@ function debounce(func, wait) {
             
             // Fungsi addToOrder
             function addToOrder(name, price, type, id = null, member_id = null) {
+                console.log('Adding to order:', { name, price, type, id, member_id });
+                
                 // Generate ID jika tidak provided
                 const itemId = id || `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
                 
@@ -1920,7 +1929,7 @@ function debounce(func, wait) {
                     existingItem.subtotal = existingItem.quantity * existingItem.price;
                 } else {
                     orderItems.push({
-                        id: member_id ? Number(member_id) : null,
+                        id: member_id ? Number(member_id) : 0,
                         name: name,
                         price: price,
                         quantity: 1,
@@ -2189,7 +2198,10 @@ function debounce(func, wait) {
             loadServices();
             loadClasses();
         });
-
+    </script>
+    
+    {{-- // --------------------------Lain-lain-------------------------- --}}
+    <script>
         // Fungsi formatRupiah yang diperbaiki
         function formatRupiah(angka) {
             if (!angka) return 'Rp 0';

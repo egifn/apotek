@@ -107,7 +107,7 @@ class IngredientController extends Controller
 
         DB::beginTransaction();
         try {
-            // $pricePerUnit = $request->purchase_price / $request->quantity_purchase;
+            $pricePerUnit = $request->purchase_price / $request->quantity_purchase;
             $kode = 'ING-' . strtoupper(substr($request->name, 0, 3)) . '-' . date('YmdHis');
             $user = Auth::user()->kd_lokasi;
             
@@ -115,6 +115,9 @@ class IngredientController extends Controller
                 'name'              => $request->name,
                 'code_ingredient'   => $kode,
                 'unit_id'           => $request->unit_id,
+                'purchase_price'    => $request->purchase_price,
+                'quantity_purchase' => $request->quantity_purchase,
+                'price_per_unit'    => $pricePerUnit,
                 'is_active'         => 1,
                 'created_at'        => now(),
                 'updated_at'        => now(),
@@ -161,16 +164,16 @@ class IngredientController extends Controller
 
         DB::beginTransaction();
         try {
-            // $pricePerUnit = $request->purchase_price / $request->quantity_purchase;
+            $pricePerUnit = $request->purchase_price / $request->quantity_purchase;
 
             DB::table('cs_ingredients')
                 ->where('id', $request->id)
                 ->update([
                     'name'              => $request->name,
                     'unit_id'           => $request->unit_id,
-                    // 'purchase_price'    => $request->purchase_price,
-                    // 'quantity_purchase' => $request->quantity_purchase,
-                    // 'price_per_unit'    => $pricePerUnit,
+                    'purchase_price'    => $request->purchase_price,
+                    'quantity_purchase' => $request->quantity_purchase,
+                    'price_per_unit'    => $pricePerUnit,
                     'updated_at'        => now(),
                 ]);
             DB::commit();

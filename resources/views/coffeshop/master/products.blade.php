@@ -286,7 +286,7 @@
         const buttonUpdate = document.getElementById('button_update');
         const buttonUpdateSend = document.getElementById('button_update_send');
         const edId = document.getElementById('edit_productId');
-        // const edCode = document.getElementById('edit_code');
+        const edCode = document.getElementById('edit_code');
         const edName = document.getElementById('edit_name');
         const edCategoryId = document.getElementById('edit_category_id');
         const edDescription = document.getElementById('edit_description');
@@ -315,12 +315,13 @@
         let editIngredients = [];
         let ingredientOptions = [];
         let categoryOptions = [];   
+        
 
         // Fungsi untuk format mata uang
         function formatCurrency(amount) {
             return new Intl.NumberFormat('id-ID', {
                 style: 'decimal',
-                minimumFractionDigits: 2,
+                minimumFractionDigits: 0,
                 maximumFractionDigits: 2
             }).format(amount);
         }

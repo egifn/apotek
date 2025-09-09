@@ -77,13 +77,13 @@
                                 <table id="datatabel" class="table table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Kode Produk</th>
+                                        <th hidden>Kode Produk</th>
                                         <th>Nama Produk</th>
                                         <th>Stok Gudang</th>
-                                        <th>Harga Beli</th>
-                                        <th>Jml</th>
+                                        <th>Harga/Satuan</th>
                                         <th>Satuan</th>
-                                        <th>Jml Beli</th>
+                                        <th></th>
+                                        <th>Qty</th>
                                         <th>Diskon (%)</th>
                                         <th>Diskon (Rp)</th>
                                         <th>PPN (%)</th>
@@ -100,7 +100,6 @@
                                         <th colspan="10" style="text-align: right;">Total:</th>
                                         <th></th>
                                         <th style="text-align: right;" id="grand_total">0</th>
-                                        <th></th>
                                     </tr>
                                     <tr>
                                         <td colspan="8"></td>
@@ -260,11 +259,12 @@
         // Event listener untuk pemilihan produk
         $('#cari_produk').on('select2:select', function (e) {
             var data = e.params.data.data;
+            console.log(data);
             
             var stock_available = data.stock_available || 0;
             var produk_id = data.code_ingredient;
             var nama_produk = data.name;
-            var unit = data.nama_unit || 'Unit';
+            var unit = data.symbol || 'Unit';
 
             // Cek apakah produk sudah ada di tabel
             if ($("#row_"+produk_id).length > 0) {
@@ -277,7 +277,7 @@
             // Tambahkan baris baru
             var row = `
                 <tr id="row_${produk_id}">
-                    <td>${produk_id}</td>
+                    <td hidden>${produk_id}</td>
                     <td>${nama_produk}</td>
                     <td>${stock_available} ${unit}</td>
                     <td>
@@ -288,9 +288,9 @@
                     </td>
                     <td>
                         <input type="number" name="produk[${produk_id}][jumlah]" placeholder="1" 
-                               class="form-control form-control-sm jumlah" step="1" min="1" required oninput="validateNumber(this)">
+                               class="form-control form-control-sm jumlah" step="1" min="1" required oninput="validateNumber(this)"> 
                     </td>
-                    <td>${unit}</td>
+                    <td >${unit}</td>
                     <td>
                         <input type="number" name="produk[${produk_id}][jumlah_beli]" placeholder="1" 
                                class="form-control form-control-sm jumlah_beli" step="1" min="1" required oninput="validateNumber(this)">

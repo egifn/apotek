@@ -37,7 +37,7 @@ Route::prefix('coffeshop')->name('coffeshop.')->group(function () {
             Route::get('/create', 'Coffeshop\PembelianController@create')->name('create');
             Route::get('/create/getSupplier', 'Coffeshop\PembelianController@getSupplier')->name('getSupplier');
             Route::get('/create/getProduk', 'Coffeshop\PembelianController@getProduk')->name('getProduk');
-            Route::post('/in', 'Coffeshop\PembelianController@store')->name('store')->name('store');
+            Route::post('/in', 'Coffeshop\PembelianController@store')->name('store');
             Route::get('/pembelian/detail/{kode}', 'Coffeshop\PembelianController@getTransaksiDataDetail')->name('detail');
             Route::post('/pembelian/terima/{kode}', 'Coffeshop\PembelianController@terimaBarang')->name('accept');
             // Route::post('/up', 'Coffeshop\BranchController@update')->name('update');

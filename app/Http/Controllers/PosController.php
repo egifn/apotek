@@ -228,7 +228,7 @@ class PosController extends Controller
     private function processTransactionItem($transactionId, $item, $businessType)
     {
         $metadata = [];
-        
+        dd($item);
         // Handle different item types
         switch ($item['type']) {
             case 'quota_topup':
@@ -239,7 +239,7 @@ class PosController extends Controller
                 ];
                 
                 // Update member quota
-                DB::table('all_member_quotas')
+                DB::table('s_member_quotas')
                     ->where('member_id', $item['member_id'])
                     ->where('is_active', true)
                     ->update([
@@ -249,6 +249,7 @@ class PosController extends Controller
                 break;
                 
             case 'class':
+                // dd($item);
                 $metadata = [
                     'member_id' => $item['member_id'] ?? null,
                     'class_time' => now(),
@@ -256,8 +257,9 @@ class PosController extends Controller
                 ];
                 
                 // Jika member menggunakan kuota, kurangi kuota
-                if (isset($item['use_quota']) && $item['use_quota'] && isset($item['member_id'])) {
-                    DB::table('all_member_quotas')
+                if (isset($item['member_id'])) {
+                    // dd($item['member_id']);
+                    DB::table('s_member_quotas')
                         ->where('member_id', $item['member_id'])
                         ->where('is_active', true)
                         ->decrement('remaining_quota');
@@ -284,154 +286,6 @@ class PosController extends Controller
             'created_at' => now()
         ]);
     }
-
-    // public function processTransaction(Request $request)
-    // {
-    //     // dd($request->all());
-    //     $validator = Validator::make($request->all(), [
-    //         'business_type' => 'required|in:'.implode(',', self::VALID_BUSINESS_TYPES),
-    //         'items' => 'required|array|min:1',
-    //         'items.*.type' => 'required|string|in:product,service,class,quota_topup',
-    //         'items.*.id' => 'required',
-    //         'items.*.name' => 'required|string|max:255',
-    //         'items.*.price' => 'required|numeric|min:0',
-    //         'items.*.quantity' => 'sometimes|numeric|min:1',
-    //         'items.*.subtotal' => 'required|numeric|min:0',
-    //         'payment_method' => 'required|string|in:'.implode(',', self::VALID_PAYMENT_METHODS),
-    //         'payment_amount' => 'required|numeric|min:0',
-    //         'customer_id' => 'nullable|numeric',
-    //         'customer_name' => 'nullable|string|max:100',
-    //         'notes' => 'nullable|string'
-    //     ], [
-    //         'items.*.id.numeric' => 'The item ID must be a number.',
-    //         'items.*.price.numeric' => 'The price must be a number.',
-    //         'items.*.subtotal.numeric' => 'The subtotal must be a number.'
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Validation error',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-
-    //     DB::beginTransaction();
-    //     try {
-    //         $businessType = $request->input('business_type');
-    //         $items = $request->input('items');
-    //         $paymentMethod = $request->input('payment_method');
-    //         $paymentAmount = (float)$request->input('payment_amount');
-    //         $customerId = $request->input('customer_id');
-    //         $customerName = $request->input('customer_name');
-    //         $notes = $request->input('notes');
-
-    //         // Calculate totals
-    //         $subtotal = array_reduce($items, function($carry, $item) {
-    //             return $carry + (float)$item['subtotal'];
-    //         }, 0);
-            
-    //         $tax = 0;
-    //         $discount = 0;
-    //         $total = $subtotal + $tax - $discount;
-    //         $changeAmount = $paymentAmount - $total;
-
-    //         // Generate invoice number
-    //         $invoiceNumber = $this->generateInvoiceNumber($businessType);
-
-    //         // Insert transaction
-    //         $transactionId = DB::table('all_transactions')->insertGetId([
-    //             'invoice_number' => $invoiceNumber,
-    //             'business_type' => $businessType,
-    //             'transaction_date' => now(),
-    //             'customer_id' => $customerId,
-    //             'customer_name' => $customerName,
-    //             'subtotal' => $subtotal,
-    //             'tax' => $tax,
-    //             'discount' => $discount,
-    //             'total' => $total,
-    //             'payment_method' => $paymentMethod,
-    //             'payment_amount' => $paymentAmount,
-    //             'change_amount' => $changeAmount,
-    //             'notes' => $notes,
-    //             'created_at' => now(),
-    //             'updated_at' => now()
-    //         ]);
-
-    //         // Process items
-    //         foreach ($items as $item) {
-    //             $this->processTransactionItem($transactionId, $item, $businessType);
-    //         }
-
-    //         DB::commit();
-
-    //         return response()->json([
-    //             'status' => true,
-    //             'message' => 'Transaction processed successfully',
-    //             'data' => [
-    //                 'invoice_number' => $invoiceNumber,
-    //                 'transaction_id' => $transactionId,
-    //                 'total' => $total,
-    //                 'change_amount' => $changeAmount
-    //             ]
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => 'Transaction failed',
-    //             'error' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
-    // private function processTransactionItem($transactionId, $item, $businessType)
-    // {
-    //     $metadata = [];
-        
-    //     switch ($item['type']) {
-    //         case 'quota_topup':
-    //             $metadata = [
-    //                 'member_id' => $item['member_id'],
-    //                 'quota_added' => 4,
-    //                 'valid_until' => date('Y-m-d', strtotime('+1 month'))
-    //             ];
-                
-    //             DB::table('all_member_quotas')
-    //                 ->where('member_id', $item['member_id'])
-    //                 ->where('is_active', true)
-    //                 ->update([
-    //                     'remaining_quota' => DB::raw('remaining_quota + 4'),
-    //                     'updated_at' => now()
-    //                 ]);
-    //             break;
-                
-    //         case 'class':
-    //             $metadata = [
-    //                 'class_time' => $item['class_time'] ?? null,
-    //                 'instructor' => $item['instructor'] ?? null
-    //             ];
-    //             break;
-    //     }
-
-    //     $itemId = $item['id'];
-    //     // Untuk quota_topup, item_id harus integer (member_id)
-    //     if ($item['type'] === 'quota_topup' && isset($item['member_id'])) {
-    //         $itemId = $item['member_id'];
-    //     }
-    //     DB::table('all_transaction_items')->insert([
-    //         'transaction_id' => $transactionId,
-    //         'item_type' => $item['type'],
-    //         'item_id' => $itemId,
-    //         'name' => $item['name'],
-    //         'quantity' => $item['quantity'] ?? 1,
-    //         'price' => $item['price'],
-    //         'subtotal' => $item['subtotal'],
-    //         'metadata' => !empty($metadata) ? json_encode($metadata) : null,
-    //         'created_at' => now()
-    //     ]);
-    // }
 
     private function processItem($transactionId, $item, $businessType)
     {

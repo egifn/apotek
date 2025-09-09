@@ -94,7 +94,7 @@ class PembelianController extends Controller
         $data_produk = DB::table('cs_ingredients')
                     ->join('cs_units','cs_ingredients.unit_id','=','cs_units.id')
                     ->join('cs_stocks','cs_ingredients.code_ingredient','=','cs_stocks.id_ingredients')
-                    ->select('cs_ingredients.id','cs_ingredients.name','cs_ingredients.unit_id', 'cs_stocks.stock_available','cs_units.name AS nama_unit', 'code_ingredient')
+                    ->select('cs_ingredients.id','cs_ingredients.name','cs_ingredients.unit_id', 'cs_stocks.stock_available','cs_units.name AS nama_unit', 'code_ingredient', 'cs_units.symbol')
                     ->where('cs_ingredients.name','like','%'.$request->q.'%');
                     
         $data = $data_produk->get();
