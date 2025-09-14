@@ -230,7 +230,7 @@ class PosController extends Controller
         $metadata = [];
         // Handle different item types
         if ($item['price'] != 0) {
-        //    dd($item['price']);
+        
             $metadata = [
                 'member_id' => $item['member_id'],
                 'quota_added' => 4,
