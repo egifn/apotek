@@ -440,34 +440,63 @@ class PembelianController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Update status pembelian
+            // Hitung total dari detail
+            $totalPembelian = 0;
+            foreach ($request->detail as $d) {
+                $totalPembelian += $d['subtotal'];
+            }
+
+            // Update status pembelian dan total
             DB::table('cs_pembelian')
                 ->where('kode_pembelian', $kode)
                 ->update([
                     'status_pembelian' => 1, // Diterima
+                    'total' => $totalPembelian,
                     'updated_at' => Carbon::now()
                 ]);
 
-            $data = DB::table('cs_pembelian_detail')
-                ->where('kode_pembelian', $kode)
-                ->get();
+            // Update detail jika sudah ada, insert jika belum
+            foreach ($request->detail as $d) {
+                $existing = DB::table('cs_pembelian_detail')
+                    ->where('kode_pembelian', $kode)
+                    ->where('ingredient_id', $d['ingredient_id'])
+                    ->first();
+                $detailData = [
+                    'harga'          => $d['harga'],
+                    'qty_unit'       => $d['satuan'],
+                    'qty'            => $d['qty'],
+                    'diskon_persen'  => $d['diskon_persen'],
+                    'diskon_rp'      => $d['diskon_rp'],
+                    'ppn_persen'     => $d['ppn_persen'],
+                    'ppn_rp'         => $d['ppn_rp'],
+                    'subtotal'       => $d['subtotal'],
+                    'updated_at'     => Carbon::now(),
+                ];
+                if ($existing) {
+                    DB::table('cs_pembelian_detail')
+                        ->where('kode_pembelian', $kode)
+                        ->where('ingredient_id', $d['ingredient_id'])
+                        ->update($detailData);
+                } else {
+                    $detailData['kode_pembelian'] = $kode;
+                    $detailData['ingredient_id'] = $d['ingredient_id'];
+                    $detailData['created_at'] = Carbon::now();
+                    DB::table('cs_pembelian_detail')->insert($detailData);
+                }
 
-            foreach ($data as $d) {
-                $id = $d->ingredient_id;
-                $jumlah = $d->qty_unit;
-                $jumlahBeli = $d->qty;
-                $harga = $d->harga;
-            
-                $unitQty = $jumlah * $jumlahBeli;          // jumlah satuan kecil
+                // Update stock
+                $jumlah = is_numeric($d['satuan']) ? (float)$d['satuan'] : 1;
+                $jumlahBeli = (int)$d['qty'];
+                $unitQty = $jumlah * $jumlahBeli;
+                $harga = (float)$d['harga'];
                 $pricePerUnit = $jumlah > 0 ? $harga / $jumlah : $harga;
 
                 DB::table('cs_stocks')
-                    ->where('id_ingredients', $id)          // INT = INT (tanpa kutip)
+                    ->where('id_ingredients', $d['ingredient_id'])
                     ->increment('stock_available', $unitQty);
 
-
                 DB::table('cs_ingredients')
-                    ->where('code_ingredient', $id)
+                    ->where('code_ingredient', $d['ingredient_id'])
                     ->update([
                         'purchase_price'   => $harga,
                         'quantity_purchase'=> $unitQty,
@@ -475,10 +504,8 @@ class PembelianController extends Controller
                         'updated_at'       => Carbon::now(),
                     ]);
             }
-            
 
             DB::commit();
-            
             return response()->json([
                 'success' => true,
                 'message' => 'Barang berhasil diterima'

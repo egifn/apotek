@@ -14,8 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    
+
 
     <style>
         /* ========== ROOT VARIABLES ========== */
@@ -749,7 +750,7 @@
             padding: 5px;
             transition: border-color 0.2s;
         }
-        
+
         .form-control-qty {
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -764,14 +765,16 @@
         }
 
         /* Product and Service Cards */
-        .product-card, .service-card {
+        .product-card,
+        .service-card {
             cursor: pointer;
             transition: transform 0.2s;
         }
 
-        .product-card:hover, .service-card:hover {
+        .product-card:hover,
+        .service-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Exercise Class Table */
@@ -821,12 +824,12 @@
             .modal-content {
                 border-radius: 0;
             }
-            
-            .table-types-table th, 
+
+            .table-types-table th,
             .table-types-table td {
                 padding: 0.5rem;
             }
-            
+
             .header-title {
                 font-size: 1rem;
             }
@@ -836,7 +839,7 @@
 
 <body>
     <div class="main-content flex-grow-1" id="mainContent">
-            <!-- Top Navbar -->
+        <!-- Top Navbar -->
         <nav class="top-navbar navbar navbar-expand-lg navbar-light bg-white">
             <button class="navbar-toggler" type="button" id="sidebarToggle">
                 <span class="navbar-toggler-icon"></span>
@@ -888,23 +891,27 @@
                             <div class="card-header">
                                 <ul class="nav nav-tabs" id="posTabs" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Kopi Tiga</button>
+                                        <button class="nav-link active" id="products-tab" data-bs-toggle="tab"
+                                            data-bs-target="#products" type="button" role="tab">Kopi Tiga</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" >Barbershop</button>
+                                        <button class="nav-link" id="services-tab" data-bs-toggle="tab"
+                                            data-bs-target="#services" type="button" role="tab">Barbershop</button>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise" type="button" role="tab">Senam</button>
+                                        <button class="nav-link" id="exercise-tab" data-bs-toggle="tab"
+                                            data-bs-target="#exercise" type="button" role="tab">Senam</button>
                                     </li>
                                 </ul>
                             </div>
                             <div class="card-body">
                                 <div class="tab-content" id="posTabsContent">
-                                    
+
                                     <!-- Coffee Products Tab -->
                                     <div class="tab-pane fade show active" id="products" role="tabpanel">
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" id="productSearch" placeholder="Search coffee products...">
+                                            <input type="text" class="form-control" id="productSearch"
+                                                placeholder="Search coffee products...">
                                         </div>
                                         <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
                                         </ul>
@@ -912,11 +919,12 @@
                                             <!-- Products will be loaded here by category -->
                                         </div>
                                     </div>
-                    
+
                                     <!-- Barbershop Services Tab -->
                                     <div class="tab-pane fade" id="services" role="tabpanel">
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" id="serviceSearch" placeholder="Search barbershop services...">
+                                            <input type="text" class="form-control" id="serviceSearch"
+                                                placeholder="Search barbershop services...">
                                         </div>
                                         <div class="row" id="serviceList">
                                             <div class="col-12 text-center py-3">
@@ -926,12 +934,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Exercise Classes Tab -->
                                     <div class="tab-pane fade" id="exercise" role="tabpanel">
-                                        <div class="row mb-3">
-                                           <div class="col-md-12">
-                                                <input type="text" class="form-control" id="classSearch" placeholder="Search exercise classes...">
+                                        <div class="row mb-3" style="display: flex;align-items: center;">
+                                            <div class="col-md-4">
+                                                <button class="btn btn-primary btn-sm" id="addMemberBtn"
+                                                    style="width: 100%;">
+                                                    <i class="fas fa-plus me-1"></i> Tambah Member
+                                                </button>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" id="classSearch"
+                                                    placeholder="Search exercise classes...">
                                             </div>
                                         </div>
                                         <div class="table-responsive">
@@ -959,7 +974,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Order Summary Section -->
                     <div class="col-md-4">
                         <div class="card">
@@ -980,7 +995,8 @@
                                         </thead>
                                         <tbody>
                                             <tr id="emptyOrderMessage">
-                                                <td colspan="5" class="text-center text-muted py-3">No items added</td>
+                                                <td colspan="5" class="text-center text-muted py-3">No items added
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -997,13 +1013,14 @@
                             <div class="card-footer">
                                 <div class="mb-3">
                                     <label for="paymentAmount" class="form-label">Jumlah Pembayaran</label>
-                                    <input type="number" class="form-control" id="paymentAmount" placeholder="Masukkan jumlah pembayaran">
+                                    <input type="number" class="form-control" id="paymentAmount"
+                                        placeholder="Masukkan jumlah pembayaran">
                                 </div>
                                 <div class="mb-3">
                                     <label for="changeAmount" class="form-label">Kembalian</label>
                                     <input type="text" class="form-control" id="changeAmount" readonly>
                                 </div>
-                                <div class="mb-3">  
+                                <div class="mb-3">
                                     <label for="paymentMethod" class="form-label">Metode Pembayaran</label>
                                     <select class="form-control" id="paymentMethod">
                                         <option value="cash">Cash</option>
@@ -1013,7 +1030,8 @@
                                         <option value="qris">QRIS</option>
                                     </select>
                                 </div>
-                                <button class="btn btn-primary w-100" id="processTransaction">Process Transaction</button>
+                                <button class="btn btn-primary w-100" id="processTransaction">Process
+                                    Transaction</button>
                             </div>
                         </div>
                     </div>
@@ -1022,12 +1040,13 @@
         </div>
     </div>
 
-        <!-- Modal untuk Input Peserta Kelas -->
-    <div class="modal fade" id="exerciseModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <!-- Modal untuk Input Peserta Kelas -->
+    <div class="modal fade" id="exerciseModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exerciseModalLabel">Daftar Peserta Kelas: <span id="modalClassName"></span></h5>
+                    <h5 class="modal-title" id="exerciseModalLabel">Daftar Peserta Kelas</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -1036,7 +1055,6 @@
                             <i class="fas fa-plus"></i> Tambah Peserta
                         </button>
                     </div>
-                    
                     <div id="participantsContainer">
                         <!-- Participant forms will be added here -->
                     </div>
@@ -1051,10 +1069,11 @@
 
     <!-- Template untuk form peserta (hidden) -->
     <template id="participantTemplate">
-        <div class="card participant-card mb-3">
+        <div class="card participant-card mb-3" data-participant-id="{id}">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="card-title mb-0">Peserta #<span class="participant-number">1</span></h6>
+                    <h6 class="card-title mb-0">Peserta #<span class="participant-number">{participantNumber}</span>
+                    </h6>
                     <button type="button" class="btn btn-sm btn-danger remove-participant">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1063,11 +1082,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-2">
                         <div class="form-check">
-                            <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="memberType_{id}" value="member" checked>
+                            <input class="form-check-input participant-type" type="radio"
+                                name="participantType_{id}" id="memberType_{id}" value="member" checked>
                             <label class="form-check-label" for="memberType_{id}">Member</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input participant-type" type="radio" name="participantType_{id}" id="nonMemberType_{id}" value="non_member">
+                            <input class="form-check-input participant-type" type="radio"
+                                name="participantType_{id}" id="nonMemberType_{id}" value="non_member">
                             <label class="form-check-label" for="nonMemberType_{id}">Non-Member</label>
                         </div>
                     </div>
@@ -1076,8 +1097,10 @@
                 <div class="member-fields">
                     <div class="mb-2 position-relative">
                         <label class="form-label">Cari Member</label>
-                        <input type="text" class="form-control member-search-input" placeholder="Ketik nama member..." data-participant-id="{id}">
-                        <ul class="list-group position-absolute w-100 mt-1 member-dropdown" style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></ul>
+                        <input type="text" class="form-control member-search-input"
+                            placeholder="Ketik nama member..." data-participant-id="{id}">
+                        <ul class="list-group position-absolute w-100 mt-1 member-dropdown"
+                            style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;"></ul>
                     </div>
                     <div class="member-details" id="memberDetails_{id}" style="display: none;">
                         <small class="text-muted">
@@ -1107,24 +1130,91 @@
         </div>
     </template>
 
+    {{-- modal tambah member --}}
+    <div class="modal fade" id="memberModalInput">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title" id="memberModalLabel">Tambah Member</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="memberFormInput" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="insert_name" class="form-label">Nama Member</label>
+                                <input type="text" class="form-control" id="insert_name" name="insert_name"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="insert_phone" class="form-label">No. Telepon</label>
+                                <input type="text" class="form-control" id="insert_phone" name="insert_phone"
+                                    required>
+                            </div>
+                        </div>
+                        <input type="date" class="form-control" id="insert_join_date" name="insert_join_date"
+                            required hidden>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="insert_start_date" class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control" id="insert_start_date"
+                                    name="insert_start_date" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="insert_end_date" class="form-label">Tanggal Berakhir</label>
+                                <input type="date" class="form-control" id="insert_end_date"
+                                    name="insert_end_date" required>
+                            </div>
+                            <div class="col-md-4 mb-3" hidden>
+                                <label for="insert_total_quota" class="form-label">Kuota</label>
+                                <input type="number" class="form-control" id="insert_total_quota"
+                                    name="insert_total_quota" min="1" required readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">Batal</button>
+                        <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
+                        <button type="button" id="button_insert_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             let orderItems = [];
             let currentMember = null;
             let selectedClassData = null;
-            
+
+            // DOM Elements - Member Modal
+            const buttonShowModalFormInput = document.getElementById('addMemberBtn');
+            const buttonInsert = document.getElementById('button_insert');
+            const buttonInsertSend = document.getElementById('button_insert_send');
+            const componentModalFormInsert = document.getElementById('memberModalInput');
+            const inName = document.getElementById('insert_name');
+            const inPhone = document.getElementById('insert_phone');
+            const inJoinDate = document.getElementById('insert_join_date');
+            const inTotalQuota = document.getElementById('insert_total_quota');
+            const inStartDate = document.getElementById('insert_start_date');
+            const inEndDate = document.getElementById('insert_end_date');
+
             // DOM Elements - Coffee Products
             const productSearch = document.getElementById('productSearch');
-            
+
             // DOM Elements - Barbershop Services
             const serviceSearch = document.getElementById('serviceSearch');
             const serviceList = document.getElementById('serviceList');
-            
+
             // DOM Elements - Exercise Classes
             const classSearch = document.getElementById('classSearch');
             const classList = document.getElementById('classList');
-            
+
             // DOM Elements - Order Summary
             const orderTable = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
             const emptyOrderMessage = document.getElementById('emptyOrderMessage');
@@ -1153,7 +1243,7 @@
                 try {
                     const response = await fetch(`{{ route('pos.categories') }}`);
                     const data = await response.json();
-                    
+
                     if (data.status) {
                         categories = data.data;
                         renderCategoryTabs();
@@ -1167,17 +1257,17 @@
             function renderCategoryTabs() {
                 const categoryTabs = document.getElementById('categoryTabs');
                 if (!categoryTabs) return;
-                
+
                 let tabsHtml = `
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active category-tab" 
+                        <button class="nav-link active" 
                                 data-category="all" 
                                 type="button">
                             All Products
                         </button>
                     </li>
                 `;
-                
+
                 categories.forEach(category => {
                     tabsHtml += `
                         <li class="nav-item" role="presentation">
@@ -1189,14 +1279,14 @@
                         </li>
                     `;
                 });
-                
+
                 categoryTabs.innerHTML = tabsHtml;
             }
 
             async function loadProducts(search = '') {
                 const categoryTabContent = document.getElementById('categoryTabContent');
                 if (!categoryTabContent) return;
-                
+
                 if (selectedCategory === 'all') {
                     categoryTabContent.innerHTML = `
                         <div class="tab-pane fade show active" id="all-products" role="tabpanel">
@@ -1218,16 +1308,16 @@
                         </div>
                     `;
                 }
-                
+
                 try {
                     let url = `{{ route('pos.products') }}?search=${encodeURIComponent(search)}`;
                     if (selectedCategory !== 'all') {
                         url += `&category_id=${selectedCategory}`;
                     }
-                    
+
                     const response = await fetch(url);
                     const data = await response.json();
-                    
+
                     if (data.status) {
                         renderProductsByCategory(data.data);
                     }
@@ -1239,24 +1329,26 @@
             function renderProductsByCategory(products) {
                 const categoryTabContent = document.getElementById('categoryTabContent');
                 if (!categoryTabContent) return;
-                
+
                 let html = '';
                 if (selectedCategory === 'all') {
                     html = '<div class="tab-pane fade show active" id="all-products" role="tabpanel">';
                 } else {
-                    html = `<div class="tab-pane fade show active" id="category-${selectedCategory}" role="tabpanel">`;
+                    html =
+                        `<div class="tab-pane fade show active" id="category-${selectedCategory}" role="tabpanel">`;
                 }
-                
+
                 const category = categories.find(c => c.id == selectedCategory);
-                const categoryName = selectedCategory === 'all' ? 'All Products' : (category ? category.name : 'Products');
-                
+                const categoryName = selectedCategory === 'all' ? 'All Products' : (category ? category.name :
+                    'Products');
+
                 html += `
                     <h5 class="mb-3">${categoryName}</h5>
                     <div class="row">
                         ${renderProductCards(products)}
                     </div>
                 </div>`;
-                
+
                 categoryTabContent.innerHTML = html;
             }
 
@@ -1264,7 +1356,7 @@
                 if (!products || products.length === 0) {
                     return '<div class="col-12 text-center py-3 text-muted">No products found</div>';
                 }
-                
+
                 return products.map(product => `
                     <div class="col-md-4 mb-3">
                         <div class="card product-card h-100" data-id="${product.id}" 
@@ -1272,14 +1364,14 @@
                             data-price="${product.selling_price}" 
                             data-type="product">
                             ${product.image ? `
-                                <img src="${product.image}" class="card-img-top" alt="${product.name}" 
-                                    style="height: 150px; object-fit: cover;">
-                            ` : `
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                    style="height: 150px;">
-                                    <i class="fas fa-coffee fa-3x text-muted"></i>
-                                </div>
-                            `}
+                                                                                                                                                                                                                                                                    <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                                                                                                                                                                                                                                                        style="height: 150px; object-fit: cover;">
+                                                                                                                                                                                                                                                                ` : `
+                                                                                                                                                                                                                                                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                                                                                                                                                                                                                                                        style="height: 150px;">
+                                                                                                                                                                                                                                                                        <i class="fas fa-coffee fa-3x text-muted"></i>
+                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
                                 <p class="card-text">${formatRupiah(product.selling_price)}</p>
@@ -1301,13 +1393,13 @@
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('category-tab')) {
                     e.preventDefault();
-                    
+
                     // Update active class
                     document.querySelectorAll('.category-tab').forEach(tab => {
                         tab.classList.remove('active');
                     });
                     e.target.classList.add('active');
-                    
+
                     // Panggil selectCategory
                     const categoryId = e.target.dataset.category;
                     selectedCategory = categoryId;
@@ -1321,7 +1413,7 @@
             // ======================
             async function loadServices(search = '') {
                 if (!serviceList) return;
-                
+
                 serviceList.innerHTML = `
                     <div class="col-12 text-center py-3">
                         <div class="spinner-border text-primary" role="status">
@@ -1329,11 +1421,12 @@
                         </div>
                     </div>
                 `;
-                
+
                 try {
-                    const response = await fetch(`{{ route('pos.services') }}?search=${encodeURIComponent(search)}`);
+                    const response = await fetch(
+                        `{{ route('pos.services') }}?search=${encodeURIComponent(search)}`);
                     const data = await response.json();
-                    
+
                     if (data.status) {
                         let html = '';
                         data.data.forEach(service => {
@@ -1351,12 +1444,14 @@
                                 </div>
                             `;
                         });
-                        
-                        serviceList.innerHTML = html || '<div class="col-12 text-center py-3 text-muted">No services found</div>';
+
+                        serviceList.innerHTML = html ||
+                            '<div class="col-12 text-center py-3 text-muted">No services found</div>';
                     }
                 } catch (error) {
                     console.error('Error loading services:', error);
-                    serviceList.innerHTML = '<div class="col-12 text-center py-3 text-danger">Error loading services</div>';
+                    serviceList.innerHTML =
+                        '<div class="col-12 text-center py-3 text-danger">Error loading services</div>';
                 }
             }
 
@@ -1370,7 +1465,7 @@
             // Modifikasi fungsi loadClasses
             async function loadClasses(date = '', search = '') {
                 if (!classList) return;
-                
+
                 classList.innerHTML = `
                     <tr>
                         <td colspan="3" class="text-center py-3">
@@ -1380,18 +1475,18 @@
                         </td>
                     </tr>
                 `;
-                
+
                 try {
                     const params = new URLSearchParams();
                     if (date) params.append('date', date);
                     if (search) params.append('search', search);
-                    
+
                     const response = await fetch(`{{ route('pos.exercise-classes') }}?${params.toString()}`);
                     const data = await response.json();
 
                     if (data.status) {
                         let html = '';
-                        
+
                         if (data.data.length === 0) {
                             html = `
                                 <tr>
@@ -1403,7 +1498,7 @@
                         } else {
                             data.data.forEach(cls => {
                                 // console.log(cls.id);
-                                
+
                                 html += `
                                     <tr>
                                         <td>${cls.class_name}</td>
@@ -1420,7 +1515,7 @@
                                 `;
                             });
                         }
-                        
+
                         classList.innerHTML = html;
                     }
                 } catch (error) {
@@ -1436,7 +1531,7 @@
             }
 
             // Modifikasi event handler untuk tombol pilih kelas
-            document.addEventListener('click', function (e) {
+            document.addEventListener('click', function(e) {
                 const btn = e.target.closest('.select-class-btn');
                 if (btn) {
                     selectedClassData = {
@@ -1444,7 +1539,7 @@
                         name: btn.dataset.name,
                         price: parseInt(btn.dataset.price)
                     };
-                    
+
                     // Tampilkan modal untuk input peserta
                     showExerciseModal();
                 }
@@ -1456,18 +1551,18 @@
                 if (modalClassName) {
                     modalClassName.textContent = selectedClassData.name;
                 }
-                
+
                 const participantsContainer = document.getElementById('participantsContainer');
                 if (participantsContainer) {
                     participantsContainer.innerHTML = '';
                 }
-                
+
                 participants = [];
                 participantCount = 0;
-                
+
                 // Tambahkan peserta pertama
                 addParticipant();
-                
+
                 const modalElement = document.getElementById('exerciseModal');
                 if (modalElement) {
                     // Inisialisasi modal hanya sekali
@@ -1477,14 +1572,14 @@
                             keyboard: false
                         });
                     }
-                    
+
                     // Tambahkan event listener untuk menutup modal
                     modalElement.addEventListener('hidden.bs.modal', function() {
                         // Reset state modal jika diperlukan
                         participants = [];
                         participantCount = 0;
                     });
-                    
+
                     exerciseModal.show();
                 }
             }
@@ -1508,18 +1603,29 @@
                 if (participantsContainer) {
                     participantsContainer.appendChild(card);
 
-                    // Pasang ulang event listener untuk tombol hapus
+                    // Event listener untuk tombol hapus
                     const removeBtn = card.querySelector('.remove-participant');
                     if (removeBtn) {
-                        removeBtn.addEventListener('click', function () {
+                        removeBtn.addEventListener('click', function() {
                             card.remove();
                             participants = participants.filter(p => p.participantId !== participantCount);
+                            updateParticipantNumbers();
                         });
                     }
 
-                    // Pasang ulang event listener untuk radio button toggle
+                    // Event listener untuk radio button toggle
                     initParticipantEvents(card, participantCount);
+                    updateParticipantNumbers();
                 }
+            }
+
+            // Fungsi untuk update nomor peserta setelah tambah/hapus
+            function updateParticipantNumbers() {
+                const cards = document.querySelectorAll('#participantsContainer .participant-card');
+                cards.forEach((card, idx) => {
+                    const numberSpan = card.querySelector('.participant-number');
+                    if (numberSpan) numberSpan.textContent = idx + 1;
+                });
             }
 
             // Inisialisasi select2 untuk pencarian member
@@ -1536,12 +1642,12 @@
                         headers: {
                             'X-CSRF-TOKEN': csrfToken
                         },
-                        data: function (params) {
+                        data: function(params) {
                             return {
                                 search: params.term
                             };
                         },
-                        processResults: function (data) {
+                        processResults: function(data) {
                             return {
                                 results: data.data.map(member => ({
                                     id: member.id,
@@ -1555,9 +1661,11 @@
                     dropdownParent: $('#exerciseModal') // penting agar tidak tertutup modal
                 });
 
-                $(selectElement).on('select2:select', function (e) {
+                $(selectElement).on('select2:select', function(e) {
                     const memberId = e.params.data.id;
+                    // PATCH: panggil loadMemberDetails dan updateParticipant agar data quota sinkron
                     loadMemberDetails(memberId, participantId);
+                    // updateParticipant akan dipanggil di dalam loadMemberDetails setelah quota dicek
                 });
             }
 
@@ -1575,7 +1683,9 @@
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': csrfToken
                         },
-                        body: JSON.stringify({ search: query })
+                        body: JSON.stringify({
+                            search: query
+                        })
                     });
 
                     const data = await response.json();
@@ -1613,7 +1723,7 @@
             }
 
             // Event listener untuk input pencarian member
-            document.addEventListener('input', function (e) {
+            document.addEventListener('input', function(e) {
                 if (e.target.classList.contains('member-search-input')) {
                     const dropdown = e.target.nextElementSibling;
                     const participantId = e.target.dataset.participantId;
@@ -1636,7 +1746,7 @@
             }
 
             // Tutup dropdown saat klik di luar
-            document.addEventListener('click', function (e) {
+            document.addEventListener('click', function(e) {
                 if (!e.target.closest('.member-fields')) {
                     document.querySelectorAll('.member-dropdown').forEach(dd => dd.style.display = 'none');
                 }
@@ -1651,26 +1761,32 @@
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': csrfToken
                         },
-                        body: JSON.stringify({ member_id: memberId })
+                        body: JSON.stringify({
+                            member_id: memberId
+                        })
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.status) {
                         const member = data.member;
                         const memberDetails = document.getElementById(`memberDetails_${participantId}`);
-                        const quotaRemaining = document.querySelector(`#memberDetails_${participantId} .quota-remaining`);
-                        const quotaTotal = document.querySelector(`#memberDetails_${participantId} .quota-total`);
+                        const quotaRemaining = document.querySelector(
+                            `#memberDetails_${participantId} .quota-remaining`);
+                        const quotaTotal = document.querySelector(
+                            `#memberDetails_${participantId} .quota-total`);
                         const quotaEnd = document.querySelector(`#memberDetails_${participantId} .quota-end`);
-                        const priceElement = document.querySelector(`.participant-card:nth-child(${participantId}) .participant-price`);
-                        
+                        const priceElement = document.querySelector(
+                            `.participant-card:nth-child(${participantId}) .participant-price`);
+
                         if (data.quota && data.quota.remaining_quota > 0) {
                             // Member memiliki kuota
                             if (quotaRemaining) quotaRemaining.textContent = data.quota.remaining_quota;
                             if (quotaTotal) quotaTotal.textContent = data.quota.total_quota;
-                            if (quotaEnd) quotaEnd.textContent = new Date(data.quota.end_date).toLocaleDateString('id-ID');
+                            if (quotaEnd) quotaEnd.textContent = new Date(data.quota.end_date)
+                                .toLocaleDateString('id-ID');
                             if (priceElement) priceElement.textContent = 'Rp 0 (Pakai Kuota)';
-                            
+
                             // Simpan data peserta
                             updateParticipant(participantId, {
                                 type: 'member',
@@ -1685,7 +1801,7 @@
                             if (quotaTotal) quotaTotal.textContent = '0';
                             if (quotaEnd) quotaEnd.textContent = 'Tidak ada kuota aktif';
                             if (priceElement) priceElement.textContent = formatRupiah(selectedClassData.price);
-                            
+
                             // Simpan data peserta
                             updateParticipant(participantId, {
                                 type: 'member',
@@ -1695,7 +1811,15 @@
                                 price: selectedClassData.price
                             });
                         }
-                        
+
+                        // Set data-member-id pada input member-search
+                        const memberInput = document.querySelector(
+                            `.participant-card[data-participant-id="${participantId}"] .member-search-input`
+                        );
+                        if (memberInput) {
+                            memberInput.dataset.memberId = member.id;
+                        }
+
                         if (memberDetails) {
                             memberDetails.style.display = 'block';
                         }
@@ -1711,7 +1835,7 @@
             // Inisialisasi event untuk form peserta
             function initParticipantEvents(participantCard, participantId) {
                 if (!participantCard) return;
-                
+
                 // Toggle antara member dan non-member
                 const typeRadios = participantCard.querySelectorAll('.participant-type');
                 typeRadios.forEach(radio => {
@@ -1719,12 +1843,13 @@
                         const memberFields = participantCard.querySelector('.member-fields');
                         const nonMemberFields = participantCard.querySelector('.non-member-fields');
                         const priceElement = participantCard.querySelector('.participant-price');
-                        
+                        const memberInput = participantCard.querySelector('.member-search-input');
+
                         if (this.value === 'member') {
                             if (memberFields) memberFields.style.display = 'block';
                             if (nonMemberFields) nonMemberFields.style.display = 'none';
                             if (priceElement) priceElement.textContent = 'Rp 0';
-                            
+
                             // Reset data peserta
                             updateParticipant(participantId, {
                                 type: 'member',
@@ -1732,11 +1857,17 @@
                                 non_member_phone: '',
                                 price: 0
                             });
+
+                            // PATCH: jika input member sudah terisi, panggil ulang loadMemberDetails
+                            if (memberInput && memberInput.value && memberInput.dataset.memberId) {
+                                loadMemberDetails(memberInput.dataset.memberId, participantId);
+                            }
                         } else {
                             if (memberFields) memberFields.style.display = 'none';
                             if (nonMemberFields) nonMemberFields.style.display = 'block';
-                            if (priceElement) priceElement.textContent = formatRupiah(selectedClassData.price);
-                            
+                            if (priceElement) priceElement.textContent = formatRupiah(
+                                selectedClassData.price);
+
                             // Reset data peserta
                             updateParticipant(participantId, {
                                 type: 'non_member',
@@ -1748,7 +1879,7 @@
                         }
                     });
                 });
-                
+
                 // Input nama non-member
                 const nonMemberName = participantCard.querySelector('.non-member-name');
                 if (nonMemberName) {
@@ -1758,7 +1889,7 @@
                         });
                     });
                 }
-                
+
                 // Input telepon non-member
                 const nonMemberPhone = participantCard.querySelector('.non-member-phone');
                 if (nonMemberPhone) {
@@ -1768,7 +1899,7 @@
                         });
                     });
                 }
-                
+
                 // Hapus peserta
                 const removeBtn = participantCard.querySelector('.remove-participant');
                 if (removeBtn) {
@@ -1783,11 +1914,17 @@
             // Update data peserta
             function updateParticipant(participantId, data) {
                 const existingIndex = participants.findIndex(p => p.participantId === participantId);
-                
+
                 if (existingIndex >= 0) {
-                    participants[existingIndex] = { ...participants[existingIndex], ...data };
+                    participants[existingIndex] = {
+                        ...participants[existingIndex],
+                        ...data
+                    };
                 } else {
-                    participants.push({ participantId, ...data });
+                    participants.push({
+                        participantId,
+                        ...data
+                    });
                 }
             }
 
@@ -1807,24 +1944,24 @@
                         createDynamicAlert('warning', 'Tambahkan setidaknya satu peserta');
                         return;
                     }
-                    
+
                     let isValid = true;
                     let errorMessage = '';
-                    
+
                     for (const participant of participants) {
                         if (participant.type === 'member' && !participant.member_id) {
                             isValid = false;
                             errorMessage = 'Harap pilih member untuk semua peserta yang bertipe member';
                             break;
                         }
-                        
+
                         if (participant.type === 'non_member') {
                             if (!participant.non_member_name) {
                                 isValid = false;
                                 errorMessage = 'Harap isi nama untuk semua peserta non-member';
                                 break;
                             }
-                            
+
                             if (!participant.non_member_phone) {
                                 isValid = false;
                                 errorMessage = 'Harap isi telepon untuk semua peserta non-member';
@@ -1834,7 +1971,7 @@
                     }
                     // Tambahkan ke order summary
                     addParticipantsToOrder();
-                    
+
                     // Tutup modal
                     if (exerciseModal) {
                         exerciseModal.hide();
@@ -1842,42 +1979,148 @@
                 });
             }
 
-           // Di fungsi addParticipantsToOrder()
+            // Fungsi addParticipantsToOrder
             function addParticipantsToOrder() {
-                participants.forEach(participant => {
-                    // Generate unique ID untuk class item
-                    const classItemId = `class_${selectedClassData.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                    
-                    if (participant.type === 'member') {
-                        if (participant.use_quota) {
-                            addToOrder(
-                                `Kelas ${selectedClassData.name} - ${participant.member_name} (Pakai Kuota)`,
-                                0,
-                                'class',
-                                classItemId,
-                                Number(participant.member_id) // Pastikan numeric
-                            );
-                        } else {
-                            addToOrder(
-                                `Kelas ${selectedClassData.name} - ${participant.member_name}`,
-                                selectedClassData.price,
-                                'class',
-                                classItemId,
-                                Number(participant.member_id) // Pastikan numeric
-                            );
+                const cards = document.querySelectorAll('#participantsContainer .participant-card');
+                cards.forEach(card => {
+                    // Ambil id peserta dari data attribute
+                    const participantId = Number(card.getAttribute('data-participant-id'));
+
+                    // Ambil tipe peserta
+                    const radioMember = card.querySelector(
+                        `input[name="participantType_${participantId}"]:checked`);
+                    const type = radioMember ? radioMember.value : 'member';
+
+                    let id_member = 0;
+                    let memberName = '';
+                    let price = selectedClassData ? selectedClassData.price : 0;
+                    let priceLabel = card.querySelector('.participant-price');
+                    let priceText = priceLabel ? priceLabel.textContent : '';
+                    if (priceText.includes('Pakai Kuota') || priceText.trim() === 'Rp 0') {
+                        price = 0;
+                    }
+
+                    if (type === 'member') {
+                        const memberInput = card.querySelector('.member-search-input');
+                        memberName = memberInput ? memberInput.value : '';
+                        let participantData = participants.find(p => p.participantId === participantId);
+                        id_member = participantData && participantData.member_id ? participantData
+                            .member_id : 0;
+                        if (!id_member && memberInput && memberInput.dataset.memberId) {
+                            id_member = memberInput.dataset.memberId;
                         }
-                    } else {
                         addToOrder(
-                            `Kelas ${selectedClassData.name} - ${participant.non_member_name} (Non-Member)`,
-                            selectedClassData.price,
+                            `Kelas ${selectedClassData.name} - ${memberName}${price === 0 ? ' (Pakai Kuota)' : ''}`,
+                            price,
                             'class',
-                            classItemId
+                            selectedClassData.id,
+                            id_member
+                        );
+                    } else if (type === 'non_member') {
+                        const nonMemberName = card.querySelector('.non-member-name')?.value || '';
+                        const nonMemberPhone = card.querySelector('.non-member-phone')?.value || '';
+                        addToOrder(
+                            `Kelas ${selectedClassData.name} - ${nonMemberName} (Non-Member)`,
+                            price,
+                            'class',
+                            selectedClassData.id,
+                            0
                         );
                     }
                 });
-                
-                createDynamicAlert('success', `${participants.length} peserta berhasil ditambahkan ke order summary`);
             }
+
+            // Event listener untuk radio button
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('participant-type')) {
+                    const memberFields = document.querySelector('.member-fields');
+                    const nonMemberFields = document.querySelector('.non-member-fields');
+                    const searchInput = document.querySelector('.member-search-input');
+
+                    if (e.target.value === 'member') {
+                        memberFields.style.display = 'block';
+                        nonMemberFields.style.display = 'none';
+                        searchInput.value = ''; // Kosongkan kolom pencarian member
+                    } else {
+                        memberFields.style.display = 'none';
+                        nonMemberFields.style.display = 'block';
+                    }
+                }
+            });
+
+            // js tambah member
+            buttonShowModalFormInput.addEventListener('click', function() {
+                // Reset form
+                inName.value = '';
+                inPhone.value = '';
+                inJoinDate.value = '';
+                inTotalQuota.value = '4';
+                inStartDate.value = '';
+                inEndDate.value = '';
+
+                // Set default dates
+                const today = new Date().toISOString().split('T')[0];
+                inJoinDate.value = today;
+                inStartDate.value = today;
+
+                // Set end date to 1 month from today
+                const endDate = new Date();
+                endDate.setMonth(endDate.getMonth() + 1);
+                inEndDate.value = endDate.toISOString().split('T')[0];
+
+                new bootstrap.Modal(componentModalFormInsert).show();
+            });
+
+            buttonInsert.addEventListener('click', async function() {
+                buttonInsert.style.display = 'none';
+                buttonInsertSend.style.display = 'inline-block';
+
+                try {
+                    const formData = {
+                        name: inName.value,
+                        phone: inPhone.value,
+                        join_date: inJoinDate.value,
+                        total_quota: inTotalQuota.value,
+                        start_date: inStartDate.value,
+                        end_date: inEndDate.value
+                    };
+
+                    const response = await axios.post(`{{ route('senam.master.members.store') }}`,
+                        formData);
+                    const data = response.data;
+
+                    if (data.status === true) {
+                        createDynamicAlert('success', data.message || 'Member berhasil ditambahkan');
+
+                        // Close the modal
+                        bootstrap.Modal.getInstance(componentModalFormInsert).hide();
+
+                    } else {
+                        if (data.type === 'validation') {
+                            showValidationErrors(data.errors);
+                        } else {
+                            createDynamicAlert('danger', data.message ||
+                                'Terjadi kesalahan saat menambahkan member');
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    if (error.response && error.response.data) {
+                        const errorData = error.response.data;
+                        if (errorData.type === 'validation') {
+                            showValidationErrors(errorData.errors);
+                        } else {
+                            createDynamicAlert('danger', errorData.message || 'Terjadi kesalahan');
+                        }
+                    } else {
+                        createDynamicAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
+                    }
+                } finally {
+                    buttonInsert.style.display = 'inline-block';
+                    buttonInsertSend.style.display = 'none';
+                }
+            });
 
             // ======================
             // ORDER SUMMARY SECTION
@@ -1886,15 +2129,15 @@
             function handleItemClick(event) {
                 const card = event.target.closest('.product-card, .service-card');
                 if (!card) return;
-                
+
                 const id = card.dataset.id;
                 const name = card.dataset.name;
                 const price = parseFloat(card.dataset.price);
                 const type = card.dataset.type;
-                
+
                 // Check if item exists
                 const existingItem = orderItems.find(item => item.id === id && item.type === type);
-                
+
                 if (existingItem) {
                     existingItem.quantity += 1;
                     existingItem.subtotal = existingItem.quantity * existingItem.price;
@@ -1908,51 +2151,86 @@
                         type: type
                     });
                 }
-                
+
                 updateOrderTable();
             }
-            
+
             // Fungsi addToOrder
             function addToOrder(name, price, type, id = null, member_id = null) {
-                console.log('Adding to order:', { name, price, type, id, member_id });
-                
                 // Generate ID jika tidak provided
-                const itemId = id || `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                
+                // Untuk class, id adalah id kelas
+                const itemId = type === 'class' ? id : (id ||
+                    `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+
+                // Untuk class, tambahkan detail peserta
+                let participantType = null;
+                let className = null;
+                let memberId = member_id ? Number(member_id) : 0;
+                let nonMemberName = null;
+                let nonMemberPhone = null;
+
+                if (type === 'class') {
+                    // Parse tipe peserta dari name string
+                    if (name.includes('(Non-Member)')) {
+                        participantType = 'non_member';
+                        memberId = 0;
+                        // Ambil nama non-member
+                        const match = name.match(/- (.*?) \(Non-Member\)/);
+                        nonMemberName = match ? match[1] : '';
+                    } else {
+                        participantType = 'member';
+                        // Ambil nama member
+                        const match = name.match(/- (.*?)( \(Pakai Kuota\))?$/);
+                        nonMemberName = '';
+                    }
+                    // Ambil nama class dari name string
+                    const classMatch = name.match(/^Kelas (.*?) -/);
+                    className = classMatch ? classMatch[1] : '';
+                }
+
                 // Check if item exists
-                const existingItem = orderItems.find(item => 
+                const existingItem = orderItems.find(item =>
                     item.name === name && item.type === type && item.member_id === member_id
                 );
-                
+
                 if (existingItem) {
                     existingItem.quantity += 1;
                     existingItem.subtotal = existingItem.quantity * existingItem.price;
                 } else {
-                    orderItems.push({
-                        id: member_id ? Number(member_id) : 0,
+                    let itemObj = {
+                        id: itemId,
                         name: name,
                         price: price,
                         quantity: 1,
                         subtotal: price,
                         type: type,
-                        member_id: member_id ? Number(member_id) : null // Pastikan numeric
-                    });
+                        member_id: memberId
+                    };
+                    // Tambahkan detail peserta untuk class
+                    if (type === 'class') {
+                        itemObj.tipe_peserta = participantType;
+                        itemObj.class_name = className;
+                        itemObj.non_member_name = nonMemberName;
+                        itemObj.non_member_phone = nonMemberPhone;
+                        itemObj.id_member = memberId;
+                    }
+                    orderItems.push(itemObj);
                 }
-                
+
                 updateOrderTable();
             }
-            
+
             // Update order table
             function updateOrderTable() {
                 if (!orderTable) return;
-                
+
                 let html = '';
                 let total = 0;
-                
+
                 orderItems.forEach((item, index) => {
                     total += item.subtotal;
                     const rowClass = item.type === 'quota_topup' ? 'quota-item' : '';
-                    
+
                     html += `
                         <tr class="${rowClass}">
                             <td>${item.name}${item.type === 'class' && item.member_id ? ' (Member)' : ''}</td>
@@ -1960,7 +2238,7 @@
                                 ${item.type === 'quota_topup' ? 
                                 '1' : 
                                 `<input type="number" class="form-control-qty form-control-sm quantity-input" 
-                                        data-index="${index}" value="${item.quantity}" min="1">`}
+                                                                                                                                                                                                                                                                            data-index="${index}" value="${item.quantity}" min="1">`}
                             </td>
                             <td>${formatRupiah(item.price)}</td>
                             <td>${formatRupiah(item.subtotal)}</td>
@@ -1972,9 +2250,9 @@
                         </tr>
                     `;
                 });
-                
+
                 orderTable.innerHTML = html;
-                
+
                 if (emptyOrderMessage) {
                     if (orderItems.length > 0) {
                         emptyOrderMessage.style.display = 'none';
@@ -1982,41 +2260,41 @@
                         emptyOrderMessage.style.display = '';
                     }
                 }
-                
+
                 if (totalAmount) {
                     totalAmount.textContent = formatRupiah(total);
                 }
-                
+
                 calculateChange();
             }
-            
+
             // Calculate change
             function calculateChange() {
                 const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
                 const payment = parseFloat(paymentAmount.value) || 0;
                 const change = payment - total;
-                
+
                 if (changeAmount) {
                     changeAmount.value = change >= 0 ? formatRupiah(change) : 'Pembayaran tidak cukup';
                 }
             }
-            
+
             // Remove item
             function handleRemoveItem(event) {
                 if (!event.target.closest('.remove-item')) return;
-                
+
                 const index = event.target.closest('.remove-item').dataset.index;
                 orderItems.splice(index, 1);
                 updateOrderTable();
             }
-            
+
             // Update quantity
             function handleQuantityChange(event) {
                 if (!event.target.classList.contains('quantity-input')) return;
-                
+
                 const index = event.target.dataset.index;
                 const quantity = parseInt(event.target.value);
-                
+
                 if (quantity > 0) {
                     orderItems[index].quantity = quantity;
                     orderItems[index].subtotal = quantity * orderItems[index].price;
@@ -2025,17 +2303,17 @@
                     event.target.value = orderItems[index].quantity;
                 }
             }
-            
+
             // Process transaction (for coffee and barbershop)
             async function processTransaction() {
                 const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
                 const payment = parseFloat(paymentAmount.value) || 0;
-                
+
                 if (orderItems.length === 0) {
                     createDynamicAlert('danger', 'Belum ada item di order');
                     return;
                 }
-                
+
                 if (payment < total) {
                     createDynamicAlert('danger', 'Pembayaran tidak mencukupi');
                     return;
@@ -2044,25 +2322,25 @@
                 // Get the current active tab to determine business type
                 const activeTab = document.querySelector('#posTabs .nav-link.active');
                 let businessType = 'coffee'; // default
-                
+
                 if (activeTab && activeTab.id === 'services-tab') {
                     businessType = 'barbershop';
                 } else if (activeTab && activeTab.id === 'exercise-tab') {
                     businessType = 'exercise';
                 }
-                
+
                 // Prepare the request data dengan struktur yang benar
                 const requestData = {
                     business_type: businessType,
                     items: orderItems.map(item => {
                         // Pastikan ID sesuai dengan tipe item
                         let itemId = item.id;
-                        
+
                         // Untuk product dan service, pastikan ID numeric
                         if (item.type === 'product' || item.type === 'service') {
                             itemId = parseInt(item.id) || 0;
                         }
-                        
+
                         // Untuk class, bisa string atau numeric tergantung kebutuhan
                         if (item.type === 'class') {
                             // Jika ID class numeric, konversi ke number
@@ -2071,7 +2349,7 @@
                             }
                             // Jika ID class string (seperti UUID), biarkan sebagai string
                         }
-                        
+
                         // Siapkan data item
                         const itemData = {
                             type: item.type,
@@ -2081,17 +2359,27 @@
                             quantity: Number(item.quantity || 1),
                             subtotal: Number(item.subtotal)
                         };
-                        
-                        // Tambahkan member_id jika ada (hanya untuk class dengan member)
-                        if (item.type === 'class' && item.member_id) {
-                            itemData.member_id = Number(item.member_id);
+
+                        // Tambahkan member_id dan quota info untuk class
+                        if (item.type === 'class') {
+                            itemData.member_id = item.member_id ? Number(item.member_id) : 0;
+                            // Jika peserta member
+                            if (item.tipe_peserta === 'member') {
+                                // available_quota jika masih punya quota
+                                if (item.quota && item.quota > 0) {
+                                    itemData.available_quota = item.quota;
+                                } else {
+                                    // quota_topup jika tidak punya quota
+                                    itemData.quota_topup = true;
+                                }
+                            }
                         }
-                        
+
                         // Untuk quota_topup, tambahkan member_id
                         if (item.type === 'quota_topup' && item.member_id) {
                             itemData.member_id = Number(item.member_id);
                         }
-                        
+
                         return itemData;
                     }),
                     payment_method: document.getElementById('paymentMethod').value,
@@ -2104,15 +2392,16 @@
                     requestData.customer_id = Number(currentMember.id);
                     requestData.customer_name = currentMember.name;
                 }
-                
+
                 if (processBtn) {
                     processBtn.disabled = true;
-                    processBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                    processBtn.innerHTML =
+                        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
                 }
-                
+
                 try {
                     console.log('Sending data:', requestData); // Debugging
-                    
+
                     const response = await fetch("{{ route('pos.process') }}", {
                         method: 'POST',
                         headers: {
@@ -2121,9 +2410,9 @@
                         },
                         body: JSON.stringify(requestData)
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (!response.ok) {
                         if (data.errors) {
                             let errorMessages = [];
@@ -2133,17 +2422,18 @@
                             createDynamicAlert('danger', 'Validation errors:\n' + errorMessages.join('\n'));
                             return;
                         }
-                        
+
                         throw new Error(data.message || 'Failed to process transaction');
                     }
-                    
-                    createDynamicAlert('success', `Transaction processed successfully. Invoice: ${data.data.invoice_number}`);
+
+                    createDynamicAlert('success',
+                        `Transaction processed successfully. Invoice: ${data.data.invoice_number}`);
                     // Reset order
                     orderItems = [];
                     if (paymentAmount) paymentAmount.value = '';
                     if (changeAmount) changeAmount.value = '';
                     updateOrderTable();
-                    
+
                 } catch (error) {
                     console.error('Transaction error:', error);
                     createDynamicAlert('danger', error.message || 'Error processing transaction');
@@ -2161,45 +2451,45 @@
                 bookingTimeInput.min = '09:00';
                 bookingTimeInput.max = '17:00';
             }
-            
+
             // Event listeners for all sections
             if (productSearch) {
                 productSearch.addEventListener('input', () => loadProducts(productSearch.value));
             }
-            
+
             if (serviceSearch) {
                 serviceSearch.addEventListener('input', () => loadServices(serviceSearch.value));
             }
-            
+
             if (classSearch) {
                 classSearch.addEventListener('input', function() {
                     loadClasses('', this.value);
                 });
             }
-            
+
             // Order summary event listeners
             document.addEventListener('click', handleItemClick);
-            
+
             if (orderTable) {
                 orderTable.addEventListener('click', handleRemoveItem);
                 orderTable.addEventListener('change', handleQuantityChange);
             }
-            
+
             if (paymentAmount) {
                 paymentAmount.addEventListener('input', calculateChange);
             }
-            
+
             if (processBtn) {
                 processBtn.addEventListener('click', processTransaction);
             }
-            
+
             // Initial load
             loadProducts();
             loadServices();
             loadClasses();
         });
     </script>
-    
+
     {{-- // --------------------------Lain-lain-------------------------- --}}
     <script>
         // Fungsi formatRupiah yang diperbaiki
@@ -2249,6 +2539,7 @@
         window.showValidationErrors = function(errors) {
             let errorMessages = '<ul class="mb-0">';
             for (const [key, messages] of Object.entries(errors)) {
+
                 messages.forEach(message => {
                     errorMessages += `<li>${message}</li>`;
                 });
@@ -2292,6 +2583,7 @@
             }
         });
     </script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

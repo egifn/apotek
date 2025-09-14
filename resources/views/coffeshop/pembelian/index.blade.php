@@ -7,7 +7,8 @@
             <h4 class="mb-0">Transaksi Pembelian</h4>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('coffeshop.master.pembelian.create') }}" class="btn btn-primary btn-sm float-right"><i class="fas fa-plus me-1"></i>&nbsp; Tambah Transaksi</a>
+            <a href="{{ route('coffeshop.master.pembelian.create') }}" class="btn btn-primary btn-sm float-right"><i
+                    class="fas fa-plus me-1"></i>&nbsp; Tambah Transaksi</a>
         </div>
     </div>
 
@@ -29,9 +30,10 @@
                             <option value="1" selected>Active</option>
                             <option value="0">Non Active</option>
                         </select>
-                        <input type="text" class="form-control form-control-sm" id="short_by_search" placeholder="search..">
+                        <input type="text" class="form-control form-control-sm" id="short_by_search"
+                            placeholder="search..">
                     </div>
-                    
+
                 </div>
 
                 <div class="table-card-body">
@@ -52,6 +54,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
+                    {{-- // Event listener untuk tombol terima --}}
                     <p class="modal-title" id="productModalLabel">Tambah Produk Baru</p>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -87,7 +90,8 @@
                         <div class="row mt-3">
                             <div class="col-12">
                                 <div class="card" style="border: 1px solid #d9d9d9;">
-                                    <div class="card-header" style="display: flex;justify-content: space-between;align-items: center;">
+                                    <div class="card-header"
+                                        style="display: flex;justify-content: space-between;align-items: center;">
                                         <h6 class="card-title">Komposisi Bahan Baku</h6>
                                         <button type="button" class="btn btn-sm btn-primary" id="addIngredientBtn">
                                             <i class="fas fa-plus me-1"></i> Tambah Bahan
@@ -131,7 +135,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    data-bs-dismiss="modal">Batal</button>
                                 <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
                                 <button type="button" id="button_insert_send" class="btn btn-primary"
                                     style="display: none;">Menyimpan...</button>
@@ -144,6 +149,64 @@
     </div>
 
     <!-- Modal untuk View Pembelian -->
+    <!-- Modal untuk Terima Pembelian (editable) -->
+    <div class="modal fade" id="productModalTerima">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terima & Edit Pembelian</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Supplier</label>
+                            <p id="terima_supplier"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Jenis Transaksi</label>
+                            <p id="terima_jenis"></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tanggal Pembelian</label>
+                            <p id="terima_tanggal"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Total</label>
+                            <p id="terima_total"></p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Bahan Baku</th>
+                                    <th>Harga/Pack</th>
+                                    <th>Satuan/Pack</th>
+                                    <th>Jumlah</th>
+                                    <th>Diskon (%)</th>
+                                    <th>Diskon (Rp)</th>
+                                    <th>PPN (%)</th>
+                                    <th>PPN (Rp)</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="terima_detail">
+                                <!-- Detail diisi JS, harga/satuan/pack editable -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" id="btnTerimaSubmit">Simpan & Terima</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="productModalEdit">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -172,15 +235,19 @@
                             <p id="view_total"></p>
                         </div>
                     </div>
-                    
+
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Bahan Baku</th>
-                                    <th>Satuan</th>
-                                    <th>Harga/Satuan</th>
+                                    <th>Harga/Pack</th>
+                                    <th>Satuan/Pack</th>
                                     <th>Jumlah</th>
+                                    <th>Diskon (%)</th>
+                                    <th>Diskon (Rp)</th>
+                                    <th>PPN (%)</th>
+                                    <th>PPN (Rp)</th>
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
@@ -264,7 +331,7 @@
         let ingredients = [];
         let editIngredients = [];
         let ingredientOptions = [];
-        let categoryOptions = [];   
+        let categoryOptions = [];
 
         // Fungsi untuk format mata uang
         function formatCurrency(amount) {
@@ -288,7 +355,8 @@
 
         // Fungsi untuk menambahkan baris bahan baku
         function addIngredientRow(ingredient = null, isEdit = false, isReadOnly = false) {
-            const ingredientList = isEdit ? document.getElementById('editIngredientList') : document.getElementById('ingredientList');
+            const ingredientList = isEdit ? document.getElementById('editIngredientList') : document.getElementById(
+                'ingredientList');
             const rowId = isEdit ? `edit_${Date.now()}` : `new_${Date.now()}`;
             const row = document.createElement('tr');
             row.id = rowId;
@@ -350,7 +418,7 @@
             deleteButton.type = 'button';
             deleteButton.className = 'btn btn-sm btn-danger';
             deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
-            deleteButton.onclick = function () {
+            deleteButton.onclick = function() {
                 if (isEdit) {
                     editIngredients = editIngredients.filter(item => item.rowId !== rowId);
                 } else {
@@ -384,7 +452,7 @@
 
             // Hanya tambahkan event listener jika bukan readonly
             if (!isReadOnly) {
-                ingredientSelect.addEventListener('change', function () {
+                ingredientSelect.addEventListener('change', function() {
                     const selectedOption = this.options[this.selectedIndex];
                     const unitSymbol = selectedOption.dataset.unitSymbol || '';
                     const pricePerUnit = parseFloat(selectedOption.dataset.pricePerUnit) || 0;
@@ -407,7 +475,7 @@
                     calculateHpp(isEdit);
                 });
 
-                quantityInput.addEventListener('input', function () {
+                quantityInput.addEventListener('input', function() {
                     const row = this.closest('tr');
                     const rowId = row.id;
                     const quantity = parseFloat(this.value) || 0;
@@ -427,7 +495,7 @@
             }
         }
 
-        
+
         // Perbaikan fungsi calculateHpp
         function calculateHpp(isEdit = false) {
             let totalHpp = 0;
@@ -449,37 +517,43 @@
             if (viewBtn) {
                 event.preventDefault();
                 const kodePembelian = viewBtn.dataset.id;
-                
+
                 try {
                     // Fetch data detail
-                    const response = await axios.get(`{{ route('coffeshop.master.pembelian.detail', '') }}/${kodePembelian}`);
+                    const response = await axios.get(
+                        `{{ route('coffeshop.master.pembelian.detail', '') }}/${kodePembelian}`);
                     const data = response.data;
-                    
+
                     if (data.success) {
                         // Isi modal dengan data
                         document.getElementById('view_supplier').textContent = data.header.nama_supplier;
                         document.getElementById('view_jenis').textContent = data.header.jenis;
                         document.getElementById('view_tanggal').textContent = data.header.tanggal;
                         document.getElementById('view_total').textContent = formatCurrency(data.header.total);
-                        
+
                         // Kosongkan dan isi tabel detail
                         const detailTable = document.getElementById('view_detail');
                         detailTable.innerHTML = '';
-                        
+
                         data.detail.forEach(item => {
-                            console.log(item);
-                            
+                            // console.log(item);
+
                             const row = document.createElement('tr');
                             row.innerHTML = `
+                                <td hidden>${item.ingredient_id}</td>
                                 <td>${item.ingredient}</td>
-                                <td>${item.qty_unit} ${item.satuan}</td>
                                 <td>${formatCurrency(item.harga)}</td>
+                                <td>${item.qty_unit} ${item.satuan}</td>
                                 <td>${item.qty}</td>
+                                <td>${item.diskon_persen}%</td>
+                                <td>${item.diskon_rp ? formatCurrency(item.diskon_rp) : '0.00'}</td>
+                                <td>${item.ppn_persen ? item.ppn_persen + '%' : '0%'}</td>
+                                <td>${item.ppn_rp ? formatCurrency(item.ppn_rp) : '0.00'}</td>
                                 <td>${formatCurrency(item.subtotal)}</td>
                             `;
                             detailTable.appendChild(row);
                         });
-                        
+
                         new bootstrap.Modal(document.getElementById('productModalEdit')).show();
                     }
                 } catch (error) {
@@ -487,32 +561,174 @@
                     createDynamicAlert('danger', 'Gagal memuat detail pembelian');
                 }
             }
-            
+
             // Event listener untuk tombol terima
             const terimaBtn = event.target.closest('.btn_show_modal_form_terima');
             if (terimaBtn) {
                 event.preventDefault();
                 const kodePembelian = terimaBtn.dataset.id;
-                
-                if (confirm('Apakah Anda yakin ingin menerima barang ini?')) {
-                    try {
-                        const response = await axios.post(`{{ route('coffeshop.master.pembelian.accept', '') }}/${kodePembelian}`);
-                        
-                        if (response.data.success) {
-                            createDynamicAlert('success', response.data.message);
-                            
-                            // Refresh data table
-                            const syVSearch = sySearch.value;
-                            const syVLimit = syLimit.value;
-                            const syVStatus = syStatus.value;
-                            await fetchData(syVSearch, syVLimit, syVStatus);
-                        } else {
-                            createDynamicAlert('danger', response.data.message);
-                        }
-                    } catch (error) {
-                        console.error('Error menerima barang:', error);
-                        createDynamicAlert('danger', 'Gagal menerima barang');
+
+                // Fetch detail pembelian untuk modal terima
+                try {
+                    const response = await axios.get(
+                        `{{ route('coffeshop.master.pembelian.detail', '') }}/${kodePembelian}`);
+                    const data = response.data;
+                    console.log('ini data : ');
+                    console.log(data);
+
+
+                    if (data.success) {
+                        // Isi modal terima dengan data
+                        document.getElementById('terima_supplier').textContent = data.header.nama_supplier;
+                        document.getElementById('terima_jenis').textContent = data.header.jenis;
+                        document.getElementById('terima_tanggal').textContent = data.header.tanggal;
+                        document.getElementById('terima_total').textContent = formatCurrency(data.header.total);
+
+                        // Isi tabel detail dengan input editable
+                        const detailTable = document.getElementById('terima_detail');
+                        detailTable.innerHTML = '';
+                        data.detail.forEach((item, idx) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${item.ingredient}</td>
+                                <td><input type="number" class="form-control form-control-sm input-harga" value="${item.harga}" min="0" data-idx="${idx}"></td>
+                                <td style="display: flex; align-items: center;"><input style="width: 60px;" type="text" class="form-control form-control-sm input-satuan" value="${item.qty_unit}" data-idx="${idx}">&nbsp;${item.satuan}</td>
+                                <td><input type="number" class="form-control form-control-sm input-jumlah" value="${item.qty}" min="0" data-idx="${idx}"></td>
+                                <td><input type="number" class="form-control form-control-sm input-diskon-persen" value="${item.diskon_persen || 0}" min="0" max="100" data-idx="${idx}"></td>
+                                <td><input type="number" class="form-control form-control-sm input-diskon-rp" value="${item.diskon_rp || 0}" min="0" data-idx="${idx}"></td>
+                                <td><input type="number" class="form-control form-control-sm input-ppn-persen" value="${item.ppn_persen || 0}" min="0" max="100" data-idx="${idx}"></td>
+                                <td><input type="number" class="form-control form-control-sm input-ppn-rp" value="${item.ppn_rp || 0}" min="0" data-idx="${idx}"></td>
+                                <td><span class="subtotal-cell">${formatCurrency(item.subtotal)}</span></td>
+                            `;
+                            detailTable.appendChild(row);
+                        });
+
+                        // Show modal terima
+                        new bootstrap.Modal(document.getElementById('productModalTerima')).show();
+
+                        // Hitung subtotal saat input berubah
+                        detailTable.querySelectorAll('input').forEach(input => {
+                            input.addEventListener('input', function() {
+                                const tr = this.closest('tr');
+                                const harga = Number(tr.querySelector('.input-harga').value) ||
+                                    0;
+                                const jumlah = Number(tr.querySelector('.input-jumlah')
+                                    .value) || 0;
+                                const diskonPersen = Number(tr.querySelector(
+                                    '.input-diskon-persen').value) || 0;
+                                const diskonRp = Number(tr.querySelector('.input-diskon-rp')
+                                    .value) || 0;
+                                const ppnPersen = Number(tr.querySelector('.input-ppn-persen')
+                                    .value) || 0;
+                                const ppnRp = Number(tr.querySelector('.input-ppn-rp').value) ||
+                                    0;
+
+                                // Perhitungan harus sama persis dengan backend
+                                let total = harga * jumlah;
+                                let diskonValue = (total * diskonPersen / 100) + diskonRp;
+                                let ppnValue = (total * ppnPersen / 100) + ppnRp;
+                                let subtotal = total - diskonValue + ppnValue;
+                                if (subtotal < 0) subtotal = 0;
+                                tr.querySelector('.subtotal-cell').textContent = formatCurrency(
+                                    subtotal);
+                            });
+                        });
+
+                        // Handler tombol Simpan & Terima
+                        const btnTerimaSubmit = document.getElementById('btnTerimaSubmit');
+                        btnTerimaSubmit.onclick = async function() {
+                            // Ambil data dari tabel
+                            const rows = detailTable.querySelectorAll('tr');
+                            const detailData = [];
+                            rows.forEach((tr, idx) => {
+                                // Ambil ingredient_id dari data.detail (idx sama dengan urutan render)
+                                let ingredientId = '';
+                                if (typeof data !== 'undefined' && data.detail && data.detail[
+                                        idx]) {
+                                    ingredientId = data.detail[idx].ingredient_id;
+                                }
+                                // Ambil ingredient_code dari data attribute atau hidden cell jika ada
+                                let ingredientCode = '';
+                                if (tr.children.length > 5 && tr.children[0].hasAttribute(
+                                        'hidden')) {
+                                    ingredientCode = tr.children[0].textContent.trim();
+                                } else if (tr.dataset.ingredientCode) {
+                                    ingredientCode = tr.dataset.ingredientCode;
+                                } else {
+                                    ingredientCode = '';
+                                }
+                                // Ambil nama bahan baku dari cell kedua jika cell pertama hidden
+                                let ingredientName = '';
+                                if (tr.children.length > 5 && tr.children[0].hasAttribute(
+                                        'hidden')) {
+                                    ingredientName = tr.children[1].textContent;
+                                } else {
+                                    ingredientName = tr.children[0].textContent;
+                                }
+                                // Perhitungan subtotal harus sama persis dengan backend
+                                const harga = Number(tr.querySelector('.input-harga').value) ||
+                                    0;
+                                const jumlah = Number(tr.querySelector('.input-jumlah')
+                                    .value) || 0;
+                                const diskonPersen = Number(tr.querySelector(
+                                    '.input-diskon-persen').value) || 0;
+                                const diskonRp = Number(tr.querySelector('.input-diskon-rp')
+                                    .value) || 0;
+                                const ppnPersen = Number(tr.querySelector('.input-ppn-persen')
+                                    .value) || 0;
+                                const ppnRp = Number(tr.querySelector('.input-ppn-rp').value) ||
+                                    0;
+                                let total = harga * jumlah;
+                                let diskonValue = (total * diskonPersen / 100) + diskonRp;
+                                let ppnValue = (total * ppnPersen / 100) + ppnRp;
+                                let subtotal = total - diskonValue + ppnValue;
+                                if (subtotal < 0) subtotal = 0;
+                                detailData.push({
+                                    kode_pembelian: kodePembelian,
+                                    ingredient_id: ingredientId,
+                                    ingredient_code: ingredientCode,
+                                    ingredient: ingredientName,
+                                    harga: harga,
+                                    satuan: tr.querySelector('.input-satuan').value,
+                                    qty: jumlah,
+                                    diskon_persen: diskonPersen,
+                                    diskon_rp: diskonRp,
+                                    ppn_persen: ppnPersen,
+                                    ppn_rp: ppnRp,
+                                    subtotal: subtotal
+                                });
+                            });
+
+                            // Submit ke backend
+                            try {
+                                const response = await axios.post(
+                                    `{{ route('coffeshop.master.pembelian.accept', '') }}/${kodePembelian}`, {
+                                        detail: detailData
+                                    }
+                                );
+                                if (response.data.success) {
+                                    createDynamicAlert('success', response.data.message);
+                                    // Tutup modal
+                                    bootstrap.Modal.getInstance(document.getElementById(
+                                        'productModalTerima')).hide();
+                                    // Refresh data table
+                                    const syVSearch = sySearch.value;
+                                    const syVLimit = syLimit.value;
+                                    const syVStatus = syStatus.value;
+                                    await fetchData(syVSearch, syVLimit, syVStatus);
+                                } else {
+                                    createDynamicAlert('danger', response.data.message ||
+                                        'Gagal menerima barang');
+                                }
+                            } catch (error) {
+                                console.error('Error accepting pembelian:', error);
+                                createDynamicAlert('danger', 'Gagal menerima barang');
+                            }
+                        };
                     }
+                } catch (error) {
+                    console.error('Error fetching detail:', error);
+                    createDynamicAlert('danger', 'Gagal memuat detail pembelian');
                 }
             }
         });
@@ -657,7 +873,7 @@
             addIngredientRow();
         });
 
-        
+
 
         // Event listener untuk simpan produk baru
         buttonInsert.addEventListener('click', async function() {

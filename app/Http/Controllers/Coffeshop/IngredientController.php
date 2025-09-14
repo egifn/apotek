@@ -126,7 +126,7 @@ class IngredientController extends Controller
             DB::table('cs_stocks')->insert([
                 'id_branch'         => $user,
                 'id_ingredients'    => $kode,
-                'stock_available'   => 0,
+                'stock_available'   => $request->quantity_purchase,
                 'min_stock'         => 0,
                 'created_at'        => now(),
             ]);

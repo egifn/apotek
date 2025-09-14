@@ -228,43 +228,38 @@ class PosController extends Controller
     private function processTransactionItem($transactionId, $item, $businessType)
     {
         $metadata = [];
-        dd($item);
+        // dd($item);
         // Handle different item types
-        switch ($item['type']) {
-            case 'quota_topup':
-                $metadata = [
-                    'member_id' => $item['member_id'],
-                    'quota_added' => 4,
-                    'valid_until' => date('Y-m-d', strtotime('+1 month'))
-                ];
-                
-                // Update member quota
+       if ($item['price'] != 0) {
+            $metadata = [
+                'member_id' => $item['member_id'],
+                'quota_added' => 4,
+                'valid_until' => date('Y-m-d', strtotime('+1 month'))
+            ];
+            
+            // Update member quota
+            DB::table('s_member_quotas')
+                ->where('member_id', $item['member_id'])
+                ->where('is_active', true)
+                ->update([
+                    'remaining_quota' => DB::raw('remaining_quota + 4'),
+                    'updated_at' => now()
+                ]);
+              
+        } else {
+            $metadata = [
+                'member_id' => $item['member_id'] ?? null,
+                'class_time' => now(),
+                'instructor' => 'System' 
+            ];
+            
+            // Jika member menggunakan kuota, kurangi kuota
+            if (isset($item['member_id'])) {
                 DB::table('s_member_quotas')
                     ->where('member_id', $item['member_id'])
                     ->where('is_active', true)
-                    ->update([
-                        'remaining_quota' => DB::raw('remaining_quota + 4'),
-                        'updated_at' => now()
-                    ]);
-                break;
-                
-            case 'class':
-                // dd($item);
-                $metadata = [
-                    'member_id' => $item['member_id'] ?? null,
-                    'class_time' => now(),
-                    'instructor' => 'System' // Default atau ambil dari input jika ada
-                ];
-                
-                // Jika member menggunakan kuota, kurangi kuota
-                if (isset($item['member_id'])) {
-                    // dd($item['member_id']);
-                    DB::table('s_member_quotas')
-                        ->where('member_id', $item['member_id'])
-                        ->where('is_active', true)
-                        ->decrement('remaining_quota');
-                }
-                break;
+                    ->decrement('remaining_quota');
+            }
         }
 
         // Untuk item class, ID bisa string (UUID) atau numeric

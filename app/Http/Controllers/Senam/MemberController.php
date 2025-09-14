@@ -78,13 +78,11 @@ class MemberController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:s_members,email',
             'phone' => 'required|string|max:20',
-            'address' => 'nullable|string',
             'join_date' => 'required|date',
-            'membership_type' => 'required|in:regular,premium,vip',
             'total_quota' => 'required|integer|min:1',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date'
@@ -103,26 +101,23 @@ class MemberController extends Controller
         try {
             $memberId = DB::table('s_members')->insertGetId([
                 'name' => $request->name,
-                'email' => $request->email,
                 'phone' => $request->phone,
-                'address' => $request->address,
                 'join_date' => $request->join_date,
+                'quota' => 0,
                 'membership_type' => $request->membership_type,
                 'is_active' => true,
                 'created_at' => now(),
-                'updated_at' => now()
             ]);
 
             // Add initial quota
             DB::table('s_member_quotas')->insert([
                 'member_id' => $memberId,
                 'total_quota' => $request->total_quota,
-                'remaining_quota' => $request->total_quota,
+                'remaining_quota' => 0,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
+                'created_at' => now()
             ]);
 
             DB::commit();
