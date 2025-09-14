@@ -25,6 +25,7 @@ class PembelianController extends Controller
             $id     = $request->input('id');
             $search = $request->input('search');
             $limit  = $request->input('limit', 100);
+            $status = $request->input('status', 0);
 
             $query = DB::table('cs_pembelian as p')
                 ->select(
@@ -53,6 +54,10 @@ class PembelianController extends Controller
                     $q->where('p.kode_pembelian', 'like', "%$search%")
                       ->orWhere('p.nama_supplier', 'like', "%$search%");
                 });
+            }
+
+            if ($status !== null) {
+                $query->where('p.status_pembelian', $status);
             }
 
             $data = $query->orderBy('p.id')->paginate($limit);
@@ -261,54 +266,49 @@ class PembelianController extends Controller
 
     public function terimaBarang(Request $request, $kode)
     {
-        dd($request->all());
+        // dd($request->kode);
         DB::beginTransaction();
         try {
             // Hitung total dari detail
+            
+            DB::table('cs_pembelian')
+            ->where('kode_pembelian', $kode)
+            ->update([
+                'status_pembelian' => 1, 
+                'updated_at' => Carbon::now()
+            ]);
+
             $totalPembelian = 0;
             foreach ($request->detail as $d) {
                 $totalPembelian += $d['subtotal'];
             }
 
+            $kode_terima = 'TB-' . date('ymd') . '-' . rand(1000, 9999); //TRM-20250905185318
             // Update status pembelian dan total
-            DB::table('cs_pembelian')
-                ->where('kode_pembelian', $kode)
-                ->update([
-                    'no_faktur' => $request->no_faktur, 
-                    'status_pembelian' => 1, // Diterima
-                    'total' => $totalPembelian,
-                    'updated_at' => Carbon::now()
+            DB::table('cs_terima')
+                ->insert([
+                    'kode_terima'      => $kode_terima,
+                    'tgl_terima'       => date('Y-m-d'),
+                    'no_faktur'        => $request->no_faktur ?? '',
+                    'kode_pembelian'   => $request->kodePembelian,
+                    'id_user_input'    => Auth::id(),
+                    'kode_cabang'      => Auth::user()->kd_lokasi,
+                    'total'            => $totalPembelian,
+                    'updated_at'       => Carbon::now(),
                 ]);
+
 
             // Update detail jika sudah ada, insert jika belum
             foreach ($request->detail as $d) {
-                $existing = DB::table('cs_pembelian_detail')
-                    ->where('kode_pembelian', $kode)
-                    ->where('ingredient_id', $d['ingredient_id'])
-                    ->first();
-
-                $detailData = [
-                    'harga'          => $d['harga'],
-                    'qty_unit'       => $d['satuan'],
-                    'qty'            => $d['qty'],
-                    'diskon_persen'  => $d['diskon_persen'],
-                    'diskon_rp'      => $d['diskon_rp'],
-                    'ppn_persen'     => $d['ppn_persen'],
-                    'ppn_rp'         => $d['ppn_rp'],
-                    'subtotal'       => $d['subtotal'],
-                    'updated_at'     => Carbon::now(),
-                ];
-                if ($existing) {
-                    DB::table('cs_pembelian_detail')
-                        ->where('kode_pembelian', $kode)
-                        ->where('ingredient_id', $d['ingredient_id'])
-                        ->update($detailData);
-                } else {
-                    $detailData['kode_pembelian'] = $kode;
-                    $detailData['ingredient_id'] = $d['ingredient_id'];
-                    $detailData['created_at'] = Carbon::now();
-                    DB::table('cs_pembelian_detail')->insert($detailData);
-                }
+                DB::table('cs_terima_detail')
+                    ->insert([
+                        'kode_terima'    => $kode_terima,
+                        'ingredient_id'  => $d['ingredient_id'],
+                        'qty_unit'       => $d['satuan'],
+                        'qty'            => $d['qty'],
+                        'subtotal'       => $d['subtotal'],
+                        'created_at'     => Carbon::now(),
+                ]);
 
                 // Update stock
                 $jumlah = is_numeric($d['satuan']) ? (float)$d['satuan'] : 1;
@@ -348,3 +348,4 @@ class PembelianController extends Controller
 }
 
 
+ 

@@ -27,8 +27,8 @@
                     </div>
                     <div class="col-4" style="display: flex; gap:5px;">
                         <select class="form-control form-control-sm" id="short_by_status" style="width: 150px;">
-                            <option value="1" selected>Active</option>
-                            <option value="0">Non Active</option>
+                            <option value="0" selected>Belum Diterima</option>
+                            <option value="1">Di Terima</option>
                         </select>
                         <input type="text" class="form-control form-control-sm" id="short_by_search"
                             placeholder="search..">
@@ -149,7 +149,6 @@
     </div>
 
     <!-- Modal untuk View Pembelian -->
-    <!-- Modal untuk Terima Pembelian (editable) -->
     <div class="modal fade" id="productModalTerima">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -681,7 +680,6 @@
                             });
                         });
 
-
                         // Handler tombol Simpan & Terima
                         const btnTerimaSubmit = document.getElementById('btnTerimaSubmit');
                         btnTerimaSubmit.onclick = async function() {
@@ -757,7 +755,8 @@
                                 const response = await axios.post(
                                     `{{ route('coffeshop.master.pembelian.accept', '') }}/${kodePembelian}`, {
                                         detail: detailData,
-                                        no_faktur: noFaktur
+                                        no_faktur: noFaktur,
+                                        kodePembelian: kodePembelian
                                     }
                                 );
                                 if (response.data.success) {
@@ -769,6 +768,7 @@
                                     const syVSearch = sySearch.value;
                                     const syVLimit = syLimit.value;
                                     const syVStatus = syStatus.value;
+                                    document.getElementById('no_faktur').value = '';
                                     await fetchData(syVSearch, syVLimit, syVStatus);
                                 } else {
                                     createDynamicAlert('danger', response.data.message ||
@@ -863,7 +863,7 @@
                                         ${pembelian.status_pembelian == 1 ? 'Diterima' : 'Proses'}
                                     </span>
                                 </td>
-                                <td class="fw-medium">${pembelian.status_pembayaran}</td>
+                                <td class="fw-medium">${pembelian.status_pembayaran ?? '-'}</td>
                                 <td class="fw-medium">
                                     <div class="d-flex justify-content-center gap-2">
                                         <button class="btn btn-icon btn-sm btn-outline-primary btn_show_modal_form_view" 
