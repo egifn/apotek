@@ -228,23 +228,26 @@ class PosController extends Controller
     private function processTransactionItem($transactionId, $item, $businessType)
     {
         $metadata = [];
-        // dd($item);
         // Handle different item types
-       if ($item['price'] != 0) {
+        if ($item['price'] != 0) {
+        //    dd($item['price']);
             $metadata = [
                 'member_id' => $item['member_id'],
                 'quota_added' => 4,
                 'valid_until' => date('Y-m-d', strtotime('+1 month'))
             ];
             
-            // Update member quota
-            DB::table('s_member_quotas')
-                ->where('member_id', $item['member_id'])
-                ->where('is_active', true)
-                ->update([
-                    'remaining_quota' => DB::raw('remaining_quota + 4'),
-                    'updated_at' => now()
-                ]);
+            // Insert new member quota
+            DB::table('s_member_quotas')->insert([
+                'member_id' => $item['member_id'],
+                'total_quota' => 4,
+                'remaining_quota' => 4,
+                'start_date' => now(),
+                'end_date' => now()->addMonth(),
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
               
         } else {
             $metadata = [
@@ -469,33 +472,33 @@ class PosController extends Controller
     }
 
     public function searchMembers(Request $request)
-{
-    try {
-        $query = $request->input('search', '');
-        
-        $members = DB::table('s_members')
-            ->select('id', 'name', 'email', 'phone')
-            ->where('is_active', true)
-            ->where(function($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('email', 'like', "%{$query}%");
-            })
-            ->orderBy('name')
-            ->limit(20)
-            ->get();
+    {
+        try {
+            $query = $request->input('search', '');
+            
+            $members = DB::table('s_members')
+                ->select('id', 'name', 'email', 'phone')
+                ->where('is_active', true)
+                ->where(function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('email', 'like', "%{$query}%");
+                })
+                ->orderBy('name')
+                ->limit(20)
+                ->get();
 
-        return response()->json([
-            'status' => true,
-            'data' => $members
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Failed to search members',
-            'error' => $e->getMessage()
-        ], 500);
+            return response()->json([
+                'status' => true,
+                'data' => $members
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to search members',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function checkMember(Request $request)
     {

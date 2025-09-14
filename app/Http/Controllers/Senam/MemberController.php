@@ -23,12 +23,13 @@ class MemberController extends Controller
             $id = $request->input('id');
 
             $query = DB::table('s_members')
-                    ->join('s_member_quotas as mq', 's_members.id', '=', 'mq.member_id')
-                    ->select(
-                        's_members.*',
-                        'mq.total_quota',    
-                        'mq.remaining_quota' 
-                    );
+                ->join('s_member_quotas as mq', 's_members.id', '=', 'mq.member_id')
+                ->select(
+                    's_members.*',
+                    'mq.total_quota',
+                    'mq.remaining_quota'
+                )
+                ->groupBy('s_members.id', 'mq.total_quota', 'mq.remaining_quota');
 
             if ($id) {
                 $query->where('s_members.id', $id);

@@ -19,7 +19,8 @@
                 <div class="table-card-header g-2">
                     <div style="width: 100%; display: flex; gap: 5px;">
                         <div class="col-lg-4">
-                            <input type="text" class="form-control form-control-sm" id="filter_search" placeholder="Cari...">
+                            <input type="text" class="form-control form-control-sm" id="filter_search"
+                                placeholder="Cari...">
                         </div>
                         <div class="col-lg-3">
                             <select class="form-control form-control-sm" id="filter_status">
@@ -73,26 +74,31 @@
                                 <input type="text" class="form-control" id="insert_phone" name="insert_phone" required>
                             </div>
                         </div>
-                        <input type="date" class="form-control" id="insert_join_date" name="insert_join_date" required hidden>
+                        <input type="date" class="form-control" id="insert_join_date" name="insert_join_date" required
+                            hidden>
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="insert_start_date" class="form-label">Tanggal Mulai</label>
-                                <input type="date" class="form-control" id="insert_start_date" name="insert_start_date" required>
+                                <input type="date" class="form-control" id="insert_start_date" name="insert_start_date"
+                                    required>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="insert_end_date" class="form-label">Tanggal Berakhir</label>
-                                <input type="date" class="form-control" id="insert_end_date" name="insert_end_date" required>
+                                <input type="date" class="form-control" id="insert_end_date" name="insert_end_date"
+                                    required>
                             </div>
-                             <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="insert_total_quota" class="form-label">Kuota</label>
-                                <input type="number" class="form-control" id="insert_total_quota" name="insert_total_quota" min="1"  required readonly>
+                                <input type="number" class="form-control" id="insert_total_quota" name="insert_total_quota"
+                                    min="1" required readonly>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_insert_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_insert_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -132,7 +138,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_update" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_update_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_update_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -153,24 +160,28 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="insert_additional_quota" class="form-label">Jumlah Kuota Tambahan</label>
-                            <input type="number" class="form-control" id="insert_additional_quota" name="insert_additional_quota" min="1" required>
+                            <input type="number" class="form-control" id="insert_additional_quota"
+                                name="insert_additional_quota" min="1" required>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="insert_quota_start_date" class="form-label">Tanggal Mulai</label>
-                                <input type="date" class="form-control" id="insert_quota_start_date" name="insert_quota_start_date" required>
+                                <input type="date" class="form-control" id="insert_quota_start_date"
+                                    name="insert_quota_start_date" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="insert_quota_end_date" class="form-label">Tanggal Berakhir</label>
-                                <input type="date" class="form-control" id="insert_quota_end_date" name="insert_quota_end_date" required>
+                                <input type="date" class="form-control" id="insert_quota_end_date"
+                                    name="insert_quota_end_date" required>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_insert_quota" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_insert_quota_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_insert_quota_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -221,7 +232,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_delete" class="btn btn-danger btn-sm">Konfirmasi</button>
-                        <button type="button" id="button_delete_send" class="btn btn-danger" style="display: none;">Memproses...</button>
+                        <button type="button" id="button_delete_send" class="btn btn-danger"
+                            style="display: none;">Memproses...</button>
                     </div>
                 </form>
             </div>
@@ -232,13 +244,13 @@
 @push('scripts')
     {{-- GLOBAL DEBOUNCE FUNCTION --}}
     <script>
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
     </script>
     {{-- SET VARIABLE --}}
     <script>
@@ -343,10 +355,10 @@
                     data.data.forEach((member, index) => {
                         // Format status
                         console.log(member);
-                        
-                        const statusBadge = member.is_active 
-                            ? '<span class="badge bg-success">Aktif</span>' 
-                            : '<span class="badge bg-danger">Nonaktif</span>';
+
+                        const statusBadge = member.is_active ?
+                            '<span class="badge bg-success">Aktif</span>' :
+                            '<span class="badge bg-danger">Nonaktif</span>';
 
                         memberTable.innerHTML += `
                             <tr>
@@ -396,9 +408,11 @@
         async function fetchQuotaHistory(memberId) {
             try {
                 const response = await axios.get(`{{ route('senam.master.members.quota-history') }}`, {
-                    params: { member_id: memberId }
+                    params: {
+                        member_id: memberId
+                    }
                 });
-                
+
                 const data = response.data.data;
 
                 quotaHistoryTable.innerHTML = '';
@@ -424,9 +438,9 @@
                 } else {
                     data.data.forEach((quota, index) => {
                         // Format status
-                        const statusBadge = quota.is_active 
-                            ? '<span class="badge bg-success">Aktif</span>' 
-                            : '<span class="badge bg-secondary">Tidak Aktif</span>';
+                        const statusBadge = quota.is_active ?
+                            '<span class="badge bg-success">Aktif</span>' :
+                            '<span class="badge bg-secondary">Tidak Aktif</span>';
 
                         // Format dates
                         const startDate = new Date(quota.start_date).toLocaleDateString('id-ID');
@@ -491,17 +505,17 @@
             inTotalQuota.value = '4';
             inStartDate.value = '';
             inEndDate.value = '';
-            
+
             // Set default dates
             const today = new Date().toISOString().split('T')[0];
             inJoinDate.value = today;
             inStartDate.value = today;
-            
+
             // Set end date to 1 month from today
             const endDate = new Date();
             endDate.setMonth(endDate.getMonth() + 1);
             inEndDate.value = endDate.toISOString().split('T')[0];
-            
+
             new bootstrap.Modal(componentModalFormInsert).show();
         });
 
@@ -529,7 +543,7 @@
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
-                    await fetchData(search, status, membershipType, limit);
+                    await fetchData(search, status, limit);
 
                     // Close the modal
                     bootstrap.Modal.getInstance(componentModalFormInsert).hide();
@@ -538,7 +552,8 @@
                     if (data.type === 'validation') {
                         showValidationErrors(data.errors);
                     } else {
-                        createDynamicAlert('danger', data.message || 'Terjadi kesalahan saat menambahkan member');
+                        createDynamicAlert('danger', data.message ||
+                            'Terjadi kesalahan saat menambahkan member');
                     }
                 }
 
@@ -577,7 +592,9 @@
                     editIsActive.value = '1';
 
                     const response = await axios.get(`{{ route('senam.master.members.data') }}`, {
-                        params: { id: id }
+                        params: {
+                            id: id
+                        }
                     });
 
                     // Ambil data member dari response (selalu ambil dari data.member)
@@ -622,12 +639,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message || 'Member berhasil diperbarui');
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
-                    
+
                     bootstrap.Modal.getInstance(memberModalEdit).hide();
                 } else {
                     createDynamicAlert('danger', data.message || 'Gagal memperbarui member');
@@ -654,18 +671,18 @@
             if (addQuotaBtn) {
                 event.preventDefault();
                 const id = addQuotaBtn.dataset.id;
-                
+
                 quotaMemberId.value = id;
-                
+
                 // Set default dates
                 const today = new Date().toISOString().split('T')[0];
                 inQuotaStartDate.value = today;
-                
+
                 // Set end date to 1 month from today
                 const endDate = new Date();
                 endDate.setMonth(endDate.getMonth() + 1);
                 inQuotaEndDate.value = endDate.toISOString().split('T')[0];
-                
+
                 new bootstrap.Modal(quotaModalInput).show();
             }
 
@@ -673,7 +690,7 @@
             if (quotaHistoryBtn) {
                 event.preventDefault();
                 const id = quotaHistoryBtn.dataset.id;
-                
+
                 await fetchQuotaHistory(id);
                 new bootstrap.Modal(quotaHistoryModal).show();
             }
@@ -696,12 +713,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message || 'Kuota berhasil ditambahkan');
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
-                    
+
                     bootstrap.Modal.getInstance(quotaModalInput).hide();
                     inAdditionalQuota.value = '';
                 } else {
@@ -730,9 +747,9 @@
                 event.preventDefault();
                 const id = deleteBtn.dataset.id;
                 const isActive = deleteBtn.dataset.active === '1';
-                
+
                 deleteMemberId.value = id;
-                
+
                 if (isActive) {
                     deleteAction.value = 'deactivate';
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan member ini?';
@@ -742,7 +759,7 @@
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen member ini?';
                     passwordContainer.style.display = 'block';
                 }
-                
+
                 new bootstrap.Modal(memberModalDelete).show();
             }
         });
@@ -763,12 +780,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message);
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, membershipType, limit);
-                    
+
                     bootstrap.Modal.getInstance(memberModalDelete).hide();
                     deletePassword.value = '';
                 } else {
