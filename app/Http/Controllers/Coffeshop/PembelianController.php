@@ -20,11 +20,11 @@ class PembelianController extends Controller
 
     public function getTransaksiData(Request $request)
     {
+        // dd($request->all());
         try {
             $id     = $request->input('id');
             $search = $request->input('search');
             $limit  = $request->input('limit', 100);
-            $status = $request->input('status', 1);
 
             $query = DB::table('cs_pembelian as p')
                 ->select(
@@ -46,15 +46,23 @@ class PembelianController extends Controller
                 )
                 ->join('m_supplier as s', 'p.supplier_id', '=', 's.id')
                 ->join('users as u','p.id_user_input', '=', 'u.id')
-                ->join('cs_branches as c', 'c.id', '=', 'p.kode_cabang')
-                ->get();
+                ->join('cs_branches as c', 'c.id', '=', 'p.kode_cabang');
+
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('p.kode_pembelian', 'like', "%$search%")
+                      ->orWhere('p.nama_supplier', 'like', "%$search%");
+                });
+            }
+
+            $data = $query->orderBy('p.id')->paginate($limit);
 
             // $pembelian = $query->limit($limit)->get();
 
             return response()->json([
                 'status'  => true,
                 'message' => 'Daftar produk berhasil diambil',
-                'data'    => $query,
+                'data'    => $data,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -210,191 +218,6 @@ class PembelianController extends Controller
         }
     }
 
-    // public function store1(Request $request)
-    // {
-    //     // dd($request->all());
-    //     DB::beginTransaction();
-    //     try {
-    //         $kode = 'PO-'.date('ymd').'-'.rand(1000,9999);
-    //         $tglJt = $request->filled('jt') ? Carbon::createFromFormat('d/m/Y', $request->jt)->format('Y-m-d') : Carbon::today()->format('Y-m-d');
-
-    //         $pembelian_id = DB::table('cs_pembelian')->insertGetId([
-    //             'kode_pembelian' => $kode,
-    //             'tanggal'        => Carbon::now()->format('Y-m-d'),
-    //             'supplier_id'    => $request->supplier_id,
-    //             'jenis'          => $request->jenis,
-    //             'termin'         => $request->termin ?? 0,
-    //             'tgl_jatuh_tempo'=> $tglJt,
-    //             'total'          => $this->hitungTotal($request),
-    //             'keterangan'     => 'Transaksi Pembelian',
-    //             'id_user_input'  => Auth::user()->id,
-    //             'kode_cabang'    => Auth::user()->kd_lokasi,
-    //             'created_at'     => now(),
-    //             'updated_at'     => now(),
-    //         ]);
-
-    //         // simpan detail
-    //         foreach ($request->produk as $produk_id => $item) {
-    //             $id = $produk_id;
-    //             $harga = isset($item['harga']) ? (float) $item['harga'] : 0;
-    //             $jumlah = isset($item['jumlah']) ? (int) $item['jumlah'] : 1;
-    //             $jumlahBeli = isset($item['jumlah_beli']) ? (int) $item['jumlah_beli'] : 0;
-    //             $diskonPersen = isset($item['diskon_persen']) ? (float) $item['diskon_persen'] : 0;
-    //             $diskonRp = isset($item['diskon_rp']) ? (float) $item['diskon_rp'] : 0;
-    //             $ppnPersen = isset($item['ppn_persen']) ? (float) $item['ppn_persen'] : 0;
-    //             $ppnRp = isset($item['ppn_rp']) ? (float) $item['ppn_rp'] : 0;
-
-    //             $total = $harga * $jumlahBeli;
-    //             $subtotal = ($total - (($total * $diskonPersen/100) + $diskonRp)) + (($total * $ppnPersen/100) + $ppnRp);
-
-    //             DB::table('cs_pembelian_detail')->insert([
-    //                 'kode_pembelian'    => $kode,
-    //                 'ingredient_id'     => $id,
-    //                 'qty_unit'          => $jumlah,
-    //                 'harga'             => $harga,
-    //                 'qty'               => $jumlahBeli,
-    //                 'diskon_persen'     => $diskonPersen,
-    //                 'diskon_rp'         => $diskonRp,
-    //                 'ppn_persen'        => $ppnPersen,
-    //                 'ppn_rp'            => $ppnRp,
-    //                 'subtotal'          => $subtotal,
-    //                 'created_at'        => now(),
-    //                 'updated_at'        => now(),
-    //             ]);
-                
-    //             $stockRow = DB::table('cs_stocks')
-    //                 ->select('stock_available')
-    //                 ->where('id_ingredients', $produk_id)
-    //                 ->first();
-
-    //             $stock = ($jumlahBeli * $jumlah) + $stockRow->stock_available;
-
-    //             // dd($stock); 
-    //             DB::table('cs_stocks')
-    //                 ->where('id_ingredients', $id)
-    //                 ->update([
-    //                     'stock_available' => $stock,
-    //                     'purchase_price' => $harga,
-    //                     'quantity_purchase' => $jumlah,
-    //                     'price_per_unit' => $harga / $jumlah
-    //                 ]);
-    //         }
-
-    //         DB::commit();
-
-    //         return response()->json([
-    //             'status'  => true,
-    //             'message' => 'Pembelian berhasil Buat'
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json([
-    //             'status'  => false,
-    //             'message' => 'Gagal menambahkan Pembelian: ' . $e->getMessage()
-    //         ]);
-    //     }
-    // }
-
-    private function hitungTotal($request)
-    {
-        $grand = 0;
-        foreach ($request->jumlah as $produk_id => $jumlah) {
-            $id = $request->id[$produk_id] ?? 0;
-            $harga = $request->harga[$produk_id] ?? 0;
-            $jumlah_beli = $request->jumlah_beli[$produk_id] ?? 0;
-            $diskonPersen = $request->diskon_persen[$produk_id] ?? 0;
-            $diskonRp = $request->diskon_rp[$produk_id] ?? 0;
-            $ppnPersen = $request->ppn_persen[$produk_id] ?? 0;
-            $ppnRp = $request->ppn_rp[$produk_id] ?? 0;
-
-            $total = $harga * $jumlah_beli;
-            $subtotal = ($total - (($total * $diskonPersen/100)+$diskonRp)) 
-                        + (($total * $ppnPersen/100)+$ppnRp);
-            $grand += $subtotal;
-        }
-        return $grand;
-    }
-
-    public function simpanTerima(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'kode_terima' => 'required|string|max:50',
-            'detail' => 'required|array|min:1',
-            'detail.*.ingredient' => 'required|string',
-            'detail.*.qty' => 'required|numeric|min:1',
-            'detail.*.satuan' => 'required|string',
-            'detail.*.harga' => 'required|numeric|min:0',
-            'detail.*.subtotal' => 'required|numeric|min:0',
-            'total' => 'required|numeric|min:0',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            // Simpan header penerimaan
-            $idPenerimaan = DB::table('cs_terima')->insertGetId([
-                'kode_terima' => $request->kode_terima,
-                'tgl_terima' => now(),
-                'no_faktur' => $request->no_faktur,
-                'kode_pembelian' => $request->kode_pembelian,
-                'subtotal' => $request->total,
-                'id_user_input'  => Auth::user()->id,
-                'kode_cabang'    => Auth::user()->kd_lokasi
-            ]);
-
-            // Simpan detail penerimaan
-            foreach ($request->detail as $d) {
-                DB::table('cs_terima_detail')->insert([
-                    'kode_terima' => $idPenerimaan,
-                    'ingredient_id' => $d['ingredient'],
-                    'qty' => $d['qty'],
-                    'harga' => $d['harga'],
-                    'subtotal' => $d['subtotal'],
-                ]);
-
-                // === UPDATE / INSERT STOK ===
-                $stokLama = DB::table('cs_stocks')->where('id_ingredient', $d->produk_id)->first();
-
-                if ($stokLama) {
-                    // update stok & harga beli terakhir
-                    DB::table('cs_stocks')->where('id_ingredient', $d->produk_id)->update([
-                        'stock_available' => $stokLama->stock_available + $d->jumlah,
-                      //  'harga_satuan_beli' => $harga,
-                        'updated_at' => now(),
-                    ]);
-                } else {
-                    // insert baru kalau produk belum ada di stok
-                    DB::table('cs_stocks')->insert([
-                        'id' => '',
-                        'id_branch' => '',
-                        'id_ingredients' => '', 
-                        'stock_available' => $d->jumlah,
-                        'min_stock' => '0',
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data penerimaan berhasil disimpan'
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal simpan penerimaan: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-
     public function getTransaksiDataDetail($kode)
     {
         try {
@@ -438,6 +261,7 @@ class PembelianController extends Controller
 
     public function terimaBarang(Request $request, $kode)
     {
+        dd($request->all());
         DB::beginTransaction();
         try {
             // Hitung total dari detail
@@ -450,6 +274,7 @@ class PembelianController extends Controller
             DB::table('cs_pembelian')
                 ->where('kode_pembelian', $kode)
                 ->update([
+                    'no_faktur' => $request->no_faktur, 
                     'status_pembelian' => 1, // Diterima
                     'total' => $totalPembelian,
                     'updated_at' => Carbon::now()
@@ -461,6 +286,7 @@ class PembelianController extends Controller
                     ->where('kode_pembelian', $kode)
                     ->where('ingredient_id', $d['ingredient_id'])
                     ->first();
+
                 $detailData = [
                     'harga'          => $d['harga'],
                     'qty_unit'       => $d['satuan'],

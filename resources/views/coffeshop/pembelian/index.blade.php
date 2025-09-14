@@ -159,23 +159,29 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label fw-bold">Supplier</label>
                             <p id="terima_supplier"></p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label fw-bold">Jenis Transaksi</label>
                             <p id="terima_jenis"></p>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="form-label fw-bold">Tanggal Pembelian</label>
                             <p id="terima_tanggal"></p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4" hidden>
                             <label class="form-label fw-bold">Total</label>
                             <p id="terima_total"></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="no_faktur" class="form-label fw-bold">No. Faktur</label>
+                            <input type="text" name="no_faktur" class="form-control" id="no_faktur"
+                                placeholder="No. Faktur">
                         </div>
                     </div>
 
@@ -598,10 +604,49 @@
                                 <td><input type="number" class="form-control form-control-sm input-diskon-rp" value="${item.diskon_rp || 0}" min="0" data-idx="${idx}"></td>
                                 <td><input type="number" class="form-control form-control-sm input-ppn-persen" value="${item.ppn_persen || 0}" min="0" max="100" data-idx="${idx}"></td>
                                 <td><input type="number" class="form-control form-control-sm input-ppn-rp" value="${item.ppn_rp || 0}" min="0" data-idx="${idx}"></td>
-                                <td><span class="subtotal-cell">${formatCurrency(item.subtotal)}</span></td>
+                                <td><span class="subtotal-cell" data-raw="${item.subtotal}">${formatCurrency(item.subtotal)}</span></td>
                             `;
                             detailTable.appendChild(row);
                         });
+
+
+                        // Tambahkan baris total subtotal
+                        const totalRow = document.createElement('tr');
+                        totalRow.innerHTML = `
+                            <td colspan="8" class="text-end fw-bold">Total</td>
+                            <td class="fw-bold"><span id="total-subtotal-cell"></span></td>
+                        `;
+                        detailTable.appendChild(totalRow);
+
+                        // Fungsi untuk update total subtotal
+                        function parseCurrency(str) {
+                            // Remove all non-digit and non-separator characters
+                            str = str.replace(/[^\d.,-]/g, '');
+                            // If string contains both dot and comma, assume dot is thousands separator, comma is decimal
+                            if (str.indexOf('.') > -1 && str.indexOf(',') > -1) {
+                                str = str.replace(/\./g, ''); // remove thousands dot
+                                str = str.replace(/,/g, '.'); // replace decimal comma with dot
+                            } else if (str.indexOf('.') > -1) {
+                                // If only dot, treat as decimal
+                                // nothing to do
+                            } else if (str.indexOf(',') > -1) {
+                                // If only comma, treat as decimal
+                                str = str.replace(/,/g, '.');
+                            }
+                            return parseFloat(str) || 0;
+                        }
+
+                        function updateTotalSubtotal() {
+                            let totalSubtotal = 0;
+                            detailTable.querySelectorAll('.subtotal-cell').forEach(cell => {
+                                // Use raw value for calculation
+                                const raw = cell.getAttribute('data-raw');
+                                totalSubtotal += parseFloat(raw) || 0;
+                            });
+                            document.getElementById('total-subtotal-cell').textContent = formatCurrency(
+                                totalSubtotal);
+                        }
+                        updateTotalSubtotal();
 
                         // Show modal terima
                         new bootstrap.Modal(document.getElementById('productModalTerima')).show();
@@ -629,18 +674,23 @@
                                 let ppnValue = (total * ppnPersen / 100) + ppnRp;
                                 let subtotal = total - diskonValue + ppnValue;
                                 if (subtotal < 0) subtotal = 0;
-                                tr.querySelector('.subtotal-cell').textContent = formatCurrency(
-                                    subtotal);
+                                const subtotalCell = tr.querySelector('.subtotal-cell');
+                                subtotalCell.textContent = formatCurrency(subtotal);
+                                subtotalCell.setAttribute('data-raw', subtotal);
+                                updateTotalSubtotal();
                             });
                         });
+
 
                         // Handler tombol Simpan & Terima
                         const btnTerimaSubmit = document.getElementById('btnTerimaSubmit');
                         btnTerimaSubmit.onclick = async function() {
-                            // Ambil data dari tabel
+                            // Ambil data dari tabel, skip total row
                             const rows = detailTable.querySelectorAll('tr');
                             const detailData = [];
                             rows.forEach((tr, idx) => {
+                                // Only process rows that have input fields (skip total row)
+                                if (!tr.querySelector('.input-harga')) return;
                                 // Ambil ingredient_id dari data.detail (idx sama dengan urutan render)
                                 let ingredientId = '';
                                 if (typeof data !== 'undefined' && data.detail && data.detail[
@@ -699,11 +749,15 @@
                                 });
                             });
 
+                            // Ambil nilai no_faktur
+                            const noFaktur = document.getElementById('no_faktur').value;
+
                             // Submit ke backend
                             try {
                                 const response = await axios.post(
                                     `{{ route('coffeshop.master.pembelian.accept', '') }}/${kodePembelian}`, {
-                                        detail: detailData
+                                        detail: detailData,
+                                        no_faktur: noFaktur
                                     }
                                 );
                                 if (response.data.success) {
@@ -764,7 +818,7 @@
                 }
 
                 const response = await axios.get(url);
-                const data = response.data.data;
+                const data = response.data.data.data;
 
                 productsTable.innerHTML = '';
                 productsTable.innerHTML += `
