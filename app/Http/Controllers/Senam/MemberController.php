@@ -50,7 +50,6 @@ class MemberController extends Controller
             if ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('s_members.name', 'like', "%$search%")
-                      ->orWhere('s_members.email', 'like', "%$search%")
                       ->orWhere('s_members.phone', 'like', "%$search%");
                 });
             }
@@ -84,9 +83,10 @@ class MemberController extends Controller
             'name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
             'join_date' => 'required|date',
-            'total_quota' => 'required|integer|min:1',
+            'total_quota' => 'required|integer',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date'
+            'end_date' => 'required|date|after:start_date',
+            'membership_type' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -104,7 +104,7 @@ class MemberController extends Controller
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'join_date' => $request->join_date,
-                'quota' => 0,
+                // 'quota' => 0,
                 'membership_type' => $request->membership_type,
                 'is_active' => true,
                 'created_at' => now(),
@@ -113,7 +113,7 @@ class MemberController extends Controller
             // Add initial quota
             DB::table('s_member_quotas')->insert([
                 'member_id' => $memberId,
-                'total_quota' => $request->total_quota,
+                'total_quota' => 4,
                 'remaining_quota' => 0,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
@@ -141,9 +141,7 @@ class MemberController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:s_members,id',
             'name' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:s_members,email,'.$request->id,
             'phone' => 'required|string|max:20',
-            'address' => 'nullable|string',
             'membership_type' => 'required|in:regular,premium,vip',
             'is_active' => 'required|boolean'
         ]);
@@ -159,11 +157,11 @@ class MemberController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('s_members')->where('id', $request->id)->update([
+            DB::table('s_members')
+            ->where('id', $request->id)
+            ->update([
                 'name' => $request->name,
-                'email' => $request->email,
                 'phone' => $request->phone,
-                'address' => $request->address,
                 'membership_type' => $request->membership_type,
                 'is_active' => $request->is_active,
                 'updated_at' => now()
@@ -215,7 +213,7 @@ class MemberController extends Controller
                 DB::table('s_members')
                 ->where('id', $request->id)
                 ->update(['is_active' => false]);
-                // DB::table('s_member_quotas')->where('member_id', $request->id)->delete();
+                DB::table('s_member_quotas')->where('member_id', $request->id)->delete();
                 // DB::table('s_members')->where('id', $request->id)->delete();
            
                 // $message = 'Member berhasil dihapus';
@@ -239,6 +237,7 @@ class MemberController extends Controller
 
     public function addQuota(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'member_id' => 'required|exists:s_members,id',
             'additional_quota' => 'required|integer|min:1',
@@ -257,15 +256,21 @@ class MemberController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('s_member_quotas')->insert([
-                'member_id' => $request->member_id,
-                'total_quota' => $request->additional_quota,
-                'remaining_quota' => $request->additional_quota,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
+            DB::table('s_member_quotas')
+                ->where('member_id', $request->member_id)
+                ->update([
+                    'remaining_quota' => DB::raw('remaining_quota + ' . $request->additional_quota),
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'updated_at' => now()
+            ]);
+
+            DB::table('s_quota_history')
+                ->insert([
+                    'member_id' => $request->member_id,
+                    'quota' => $request->additional_quota,
+                    'notes' => 'Ditambahkan oleh admin + '. $request->additional_quota,
+                    'created_at' => now(),
             ]);
 
             DB::commit();
@@ -289,12 +294,14 @@ class MemberController extends Controller
             $memberId = $request->input('member_id');
             $limit = $request->input('limit', 10);
 
-            $query = DB::table('s_member_quotas')
-                ->where('member_id', $memberId)
-                ->orderBy('start_date', 'desc');
+            $data = DB::table('s_quota_history')
+                ->join('s_members', 's_quota_history.member_id', '=', 's_members.id')
+                ->select('s_quota_history.*', 's_members.name')
+                ->where('s_quota_history.member_id', $memberId)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-            $data = $query->paginate($limit);
-
+            // dd($data->get());
             return response()->json([
                 'status' => true,
                 'message' => 'History kuota berhasil diambil',

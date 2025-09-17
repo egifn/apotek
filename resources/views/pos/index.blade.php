@@ -1157,6 +1157,15 @@
                             required hidden>
                         <div class="row">
                             <div class="col-md-4 mb-3">
+                                <label for="insert_membership_type" class="form-label">Jenis Membership</label>
+                                <select class="form-select" id="insert_membership_type" name="insert_membership_type"
+                                    required>
+                                    <option value="">Pilih Jenis Membership</option>
+                                    <option value="senam">Senam</option>
+                                    <option value="studio">Studio</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
                                 <label for="insert_start_date" class="form-label">Tanggal Mulai</label>
                                 <input type="date" class="form-control" id="insert_start_date"
                                     name="insert_start_date" required>
@@ -1200,6 +1209,7 @@
             const inName = document.getElementById('insert_name');
             const inPhone = document.getElementById('insert_phone');
             const inJoinDate = document.getElementById('insert_join_date');
+            const inMembershipType = document.getElementById('insert_membership_type');
             const inTotalQuota = document.getElementById('insert_total_quota');
             const inStartDate = document.getElementById('insert_start_date');
             const inEndDate = document.getElementById('insert_end_date');
@@ -1233,7 +1243,6 @@
             let selectedCategory = 'all';
             // 2. Function selectCategory harus didefinisikan sebelum dipanggil
             function selectCategory(categoryId) {
-                // console.log('Selecting category:', categoryId);
                 selectedCategory = categoryId;
                 const searchTerm = document.getElementById('productSearch').value;
                 loadProducts(searchTerm);
@@ -1364,14 +1373,14 @@
                             data-price="${product.selling_price}" 
                             data-type="product">
                             ${product.image ? `
-                                                                                                                                                                                                                                                                    <img src="${product.image}" class="card-img-top" alt="${product.name}" 
-                                                                                                                                                                                                                                                                        style="height: 150px; object-fit: cover;">
-                                                                                                                                                                                                                                                                ` : `
-                                                                                                                                                                                                                                                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                                                                                                                                                                                                                                                        style="height: 150px;">
-                                                                                                                                                                                                                                                                        <i class="fas fa-coffee fa-3x text-muted"></i>
-                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                `}
+                                                                                                                                                                                                                                                                                                                                                                                        <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                                                                                                                                                                                                                                                                                                                                                                            style="height: 150px; object-fit: cover;">
+                                                                                                                                                                                                                                                                                                                                                                                    ` : `
+                                                                                                                                                                                                                                                                                                                                                                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                                                                                                                                                                                                                                                                                                                                                                            style="height: 150px;">
+                                                                                                                                                                                                                                                                                                                                                                                            <i class="fas fa-coffee fa-3x text-muted"></i>
+                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                    `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
                                 <p class="card-text">${formatRupiah(product.selling_price)}</p>
@@ -1698,7 +1707,6 @@
                             li.innerHTML = `
                                 <div>
                                     <strong>${member.name}</strong>
-                                    ${member.email ? `<br><small>Email: ${member.email}</small>` : ''}
                                 </div>
                             `;
                             li.dataset.id = member.id;
@@ -2054,7 +2062,8 @@
                 inName.value = '';
                 inPhone.value = '';
                 inJoinDate.value = '';
-                inTotalQuota.value = '4';
+                inMembershipType.value = '';
+                inTotalQuota.value = '0';
                 inStartDate.value = '';
                 inEndDate.value = '';
 
@@ -2080,6 +2089,7 @@
                         name: inName.value,
                         phone: inPhone.value,
                         join_date: inJoinDate.value,
+                        membership_type: inMembershipType.value,
                         total_quota: inTotalQuota.value,
                         start_date: inStartDate.value,
                         end_date: inEndDate.value
@@ -2216,6 +2226,7 @@
                     }
                     orderItems.push(itemObj);
                 }
+                // console.log('orderItems', orderItems);
 
                 updateOrderTable();
             }
@@ -2238,7 +2249,7 @@
                                 ${item.type === 'quota_topup' ? 
                                 '1' : 
                                 `<input type="number" class="form-control-qty form-control-sm quantity-input" 
-                                                                                                                                                                                                                                                                            data-index="${index}" value="${item.quantity}" min="1">`}
+                                                                                                                                                                                                                                                                                                                                                                                                data-index="${index}" value="${item.quantity}" min="1">`}
                             </td>
                             <td>${formatRupiah(item.price)}</td>
                             <td>${formatRupiah(item.subtotal)}</td>
@@ -2308,6 +2319,8 @@
             async function processTransaction() {
                 const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
                 const payment = parseFloat(paymentAmount.value) || 0;
+                // console.log('yang di order', orderItems);
+
 
                 if (orderItems.length === 0) {
                     createDynamicAlert('danger', 'Belum ada item di order');
@@ -2321,8 +2334,7 @@
 
                 // Get the current active tab to determine business type
                 const activeTab = document.querySelector('#posTabs .nav-link.active');
-                let businessType = 'coffee'; // default
-
+                let businessType = 'coffee';
                 if (activeTab && activeTab.id === 'services-tab') {
                     businessType = 'barbershop';
                 } else if (activeTab && activeTab.id === 'exercise-tab') {
@@ -2332,6 +2344,7 @@
                 // Prepare the request data dengan struktur yang benar
                 const requestData = {
                     business_type: businessType,
+
                     items: orderItems.map(item => {
                         // Pastikan ID sesuai dengan tipe item
                         let itemId = item.id;

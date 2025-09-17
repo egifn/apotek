@@ -354,7 +354,7 @@
                 } else {
                     data.data.forEach((member, index) => {
                         // Format status
-                        console.log(member);
+                        // console.log(member);
 
                         const statusBadge = member.is_active ?
                             '<span class="badge bg-success">Aktif</span>' :
@@ -414,45 +414,42 @@
                 });
 
                 const data = response.data.data;
+                console.log(data);
 
                 quotaHistoryTable.innerHTML = '';
                 quotaHistoryTable.innerHTML += `
                     <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
-                            <th>Total Kuota</th>
-                            <th>Sisa Kuota</th>
-                            <th>Periode</th>
-                            <th>Status</th>
+                            <th>Member</th>
+                            <th>Notes</th>
+                            <th hidden>Quota</th>
+                            <th hidden>Sisa Kuota</th>
+                            <th>Tanggal</th>
                         </tr>
                     </thead>
                     <tbody>
                 `;
 
-                if (!data || data.data.length === 0) {
+                if (!data) {
                     quotaHistoryTable.innerHTML += `
                         <tr>
                             <td colspan="5" class="ps-4 text-center">Tidak ada Data</td>
                         </tr>
                     `;
                 } else {
-                    data.data.forEach((quota, index) => {
-                        // Format status
-                        const statusBadge = quota.is_active ?
-                            '<span class="badge bg-success">Aktif</span>' :
-                            '<span class="badge bg-secondary">Tidak Aktif</span>';
-
-                        // Format dates
-                        const startDate = new Date(quota.start_date).toLocaleDateString('id-ID');
-                        const endDate = new Date(quota.end_date).toLocaleDateString('id-ID');
-
+                    data.forEach((quota, index) => {
+                        // Format tanggal
+                        const createdAt = quota.created_at ? new Date(quota.created_at).toLocaleString(
+                            'id-ID') : '';
                         quotaHistoryTable.innerHTML += `
                             <tr>
-                                <td class="ps-4">${data.from + index}</td>
-                                <td>${quota.total_quota}</td>
-                                <td>${quota.remaining_quota}</td>
-                                <td>${startDate} - ${endDate}</td>
-                                <td>${statusBadge}</td>
+                                <td class="ps-4">${index + 1}</td>
+                                <td>${quota.name || ''}</td>
+                                <td>${quota.notes || ''}</td>
+                                <td hidden>${quota.quota || ''}</td>
+                                <td hidden>${quota.remaining_quota || ''}</td>
+                                <td>${createdAt}</td>
                             </tr>
                         `;
                     });
@@ -717,7 +714,7 @@
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
-                    await fetchData(search, status, membershipType, limit);
+                    await fetchData(search, status, limit);
 
                     bootstrap.Modal.getInstance(quotaModalInput).hide();
                     inAdditionalQuota.value = '';

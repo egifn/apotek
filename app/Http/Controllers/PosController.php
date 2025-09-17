@@ -105,14 +105,8 @@ class PosController extends Controller
 
 
     private function generateInvoiceNumber($businessType)
-    {
-        $prefixMap = [
-            'coffee' => 'COF',
-            'barbershop' => 'BAR',
-            'exercise' => 'EXE'
-        ];
-        
-        $prefix = $prefixMap[$businessType] ?? 'TXN';
+    {        
+        $prefix = 'TXN';
         $date = date('Ymd');
         $sequence = DB::table('all_transactions')
                      ->where('business_type', $businessType)
@@ -184,7 +178,6 @@ class PosController extends Controller
                 'business_type' => $businessType,
                 'transaction_date' => now(),
                 'customer_id' => $customerId,
-                'customer_name' => $customerName,
                 'subtotal' => $subtotal,
                 'tax' => $tax,
                 'discount' => $discount,
@@ -193,8 +186,7 @@ class PosController extends Controller
                 'payment_amount' => $paymentAmount,
                 'change_amount' => $changeAmount,
                 'notes' => $notes,
-                'created_at' => now(),
-                'updated_at' => now()
+                'created_at' => now()
             ]);
 
             // Process items
@@ -236,20 +228,23 @@ class PosController extends Controller
                 'quota_added' => 4,
                 'valid_until' => date('Y-m-d', strtotime('+1 month'))
             ];
-            
-            // Insert new member quota
-            DB::table('s_member_quotas')->insert([
-                'member_id' => $item['member_id'],
-                'total_quota' => 4,
+
+            DB::table('s_member_quotas')
+            ->where('member_id', $item['member_id'])
+            ->update([
                 'remaining_quota' => 4,
-                'start_date' => now(),
-                'end_date' => now()->addMonth(),
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
+            ]);
+
+            DB::table('s_quota_history')
+            ->insert([
+                'member_id' => $item['member_id'],
+                'quota' => 4,
+                'notes' => 'Pembelian Kelas Quota + 4',
+                'created_at' => now()
             ]);
               
         } else {
+
             $metadata = [
                 'member_id' => $item['member_id'] ?? null,
                 'class_time' => now(),
@@ -262,6 +257,13 @@ class PosController extends Controller
                     ->where('member_id', $item['member_id'])
                     ->where('is_active', true)
                     ->decrement('remaining_quota');
+
+                DB::table('s_quota_history')->insert([
+                    'member_id' => $item['member_id'],
+                    'quota' => 1,
+                    'notes' => 'Quota digunakan - 1',
+                    'created_at' => now()
+                ]);
             }
         }
 
@@ -285,50 +287,50 @@ class PosController extends Controller
         ]);
     }
 
-    private function processItem($transactionId, $item, $businessType)
-    {
-        $metadata = [];
+    // private function processItem($transactionId, $item, $businessType)
+    // {
+    //     $metadata = [];
         
-        // Handle special item types
-        switch ($item['type']) {
-            case 'quota_topup':
-                $metadata = [
-                    'member_id' => $item['member_id'],
-                    'quota_added' => 4,
-                    'valid_until' => date('Y-m-d', strtotime('+1 month'))
-                ];
+    //     // Handle special item types
+    //     switch ($item['type']) {
+    //         case 'quota_topup':
+    //             $metadata = [
+    //                 'member_id' => $item['member_id'],
+    //                 'quota_added' => 4,
+    //                 'valid_until' => date('Y-m-d', strtotime('+1 month'))
+    //             ];
                 
-                // Update member quota
-                DB::table('all_member_quotas')
-                    ->where('member_id', $item['member_id'])
-                    ->where('is_active', true)
-                    ->update([
-                        'remaining_quota' => DB::raw('remaining_quota + 4'),
-                        'updated_at' => now()
-                    ]);
-                break;
+    //             // Update member quota
+    //             DB::table('all_member_quotas')
+    //                 ->where('member_id', $item['member_id'])
+    //                 ->where('is_active', true)
+    //                 ->update([
+    //                     'remaining_quota' => DB::raw('remaining_quota + 4'),
+    //                     'updated_at' => now()
+    //                 ]);
+    //             break;
                 
-            case 'class':
-                $metadata = [
-                    'class_time' => $item['class_time'] ?? null,
-                    'instructor' => $item['instructor'] ?? null
-                ];
-                break;
-        }
+    //         case 'class':
+    //             $metadata = [
+    //                 'class_time' => $item['class_time'] ?? null,
+    //                 'instructor' => $item['instructor'] ?? null
+    //             ];
+    //             break;
+    //     }
 
-        // Insert transaction item
-        DB::table('all_transaction_items')->insert([
-            'transaction_id' => $transactionId,
-            'item_type' => $item['type'],
-            'item_id' => $item['id'],
-            'name' => $item['name'],
-            'quantity' => $item['quantity'] ?? 1,
-            'price' => $item['price'],
-            'subtotal' => $item['subtotal'],
-            'metadata' => !empty($metadata) ? json_encode($metadata) : null,
-            'created_at' => now()
-        ]);
-    }
+    //     // Insert transaction item
+    //     DB::table('all_transaction_items')->insert([
+    //         'transaction_id' => $transactionId,
+    //         'item_type' => $item['type'],
+    //         'item_id' => $item['id'],
+    //         'name' => $item['name'],
+    //         'quantity' => $item['quantity'] ?? 1,
+    //         'price' => $item['price'],
+    //         'subtotal' => $item['subtotal'],
+    //         'metadata' => !empty($metadata) ? json_encode($metadata) : null,
+    //         'created_at' => now()
+    //     ]);
+    // }
 
     public function getTransactionReport(Request $request)
     {
@@ -477,11 +479,10 @@ class PosController extends Controller
             $query = $request->input('search', '');
             
             $members = DB::table('s_members')
-                ->select('id', 'name', 'email', 'phone')
+                ->select('id', 'name', 'phone')
                 ->where('is_active', true)
                 ->where(function($q) use ($query) {
-                    $q->where('name', 'like', "%{$query}%")
-                    ->orWhere('email', 'like', "%{$query}%");
+                    $q->where('name', 'like', "%{$query}%");
                 })
                 ->orderBy('name')
                 ->limit(20)
@@ -521,8 +522,6 @@ class PosController extends Controller
                 ->where('is_active', true)
                 ->first();
 
-                // dd($member);
-
             if (!$member) {
                 return response()->json([
                     'status' => false,
@@ -536,8 +535,6 @@ class PosController extends Controller
                 ->whereDate('start_date', '<=', now())
                 ->whereDate('end_date', '>=', now())
                 ->first();
-
-                // dd($quota);
 
             return response()->json([
                 'status' => true,

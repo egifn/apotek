@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sindangsari Farma - Dashboard</title> 
+    <title>Coffee 3 - Dashboard</title>
     <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <style>
         /* Reset and Base Styles */
@@ -559,8 +559,8 @@
         <div class="container">
             <div class="flex items-center justify-between">
                 <div class="logo">
-                    <div class="logo-icon">SF</div>
-                    <div class="logo-text">Sindangsari Farma</div>
+                    <div class="logo-icon">3</div>
+                    <div class="logo-text">Coffee 3</div>
                 </div>
 
                 <div class="profile-dropdown">
@@ -599,50 +599,51 @@
                         <div style="color: rgba(0, 171, 6, 0.8); font-size: 0.875rem; font-weight: 600;">
                             TOTAL PENDAPATAN
                         </div>
-                        <div class="summary-value">Rp 12,450,000</div>
+                        <div class="summary-value">Rp.
+                            {{ number_format($total_pendapatan->ttl_pendapatan, 0, ',', '.') }}</div>
                         <div class="summary-change">
-                            <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
-                            8% dari kemarin
+                            <!-- <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i> -->
+                            <!-- 8% dari kemarin -->
                         </div>
                     </div>
                     <div>
                         <div style="color: rgba(255, 7, 7, 0.8); font-size: 0.875rem; font-weight: 600;">
                             TOTAL PENGELUARAN
                         </div>
-                        <div class="summary-value">Rp 12,450,000</div>
+                        <div class="summary-value">Rp 0</div>
                         <div class="summary-change">
-                            <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
-                            8% dari kemarin
+                            <!-- <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i> -->
+                            <!-- 8% dari kemarin -->
                         </div>
                     </div>
                     <div>
-                        <div style="color: rgba(255, 7, 7, 0.8); font-size: 0.875rem; font-weight: 600;">
+                        <!-- <div style="color: rgba(255, 7, 7, 0.8); font-size: 0.875rem; font-weight: 600;">
                             TOTAL GROS
                         </div>
                         <div class="summary-value">Rp 12,450,000</div>
                         <div class="summary-change">
                             <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
                             8% dari kemarin
-                        </div>
+                        </div> -->
                     </div>
                     <div>
-                        <div style="color: rgba(0, 171, 6, 0.8); font-size: 0.875rem; font-weight: 600;">
+                        <!-- <div style="color: rgba(0, 171, 6, 0.8); font-size: 0.875rem; font-weight: 600;">
                             TOTAL LABA
                         </div>
                         <div class="summary-value">Rp 12,450,000</div>
                         <div class="summary-change">
                             <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
                             8% dari kemarin
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Metrics Grid -->
-        <div class="grid grid-cols-4">
+        <div class="grid grid-cols-3">
             <!-- Apotek -->
-            <div class="card metric-card">
+            <!-- <div class="card metric-card">
                 <div class="card-content">
                     <div class="metric-header">
                         <div>
@@ -669,7 +670,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Cafe -->
             <div class="card metric-card">
@@ -677,10 +678,11 @@
                     <div class="metric-header">
                         <div>
                             <div class="metric-label">Cafe</div>
-                            <div class="metric-value">Rp 3,800,000</div>
+                            <div class="metric-value">Rp.
+                                {{ number_format($total_pendapatan_cafe->ttl_pendapatan_cafe, 0, ',', '.') }}</div>
                             <div class="metric-change up">
-                                <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
-                                +8%
+                                <!-- <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
+                                +8% -->
                             </div>
                         </div>
                         <div class="activity-icon icon-blue"><a href="{{ route('coffeshop.dashboard') }}"><i
@@ -690,7 +692,7 @@
 
                     <div class="metric-stats">
                         <div>
-                            <div class="stat-value">35</div>
+                            <div class="stat-value">{{ $total_pendapatan_cafe->jml_item }}</div>
                             <div class="stat-label">Order</div>
                         </div>
                         <div>
@@ -707,10 +709,11 @@
                     <div class="metric-header">
                         <div>
                             <div class="metric-label">Barbershop</div>
-                            <div class="metric-value">Rp 2,100,000</div>
+                            <div class="metric-value">Rp.
+                                {{ number_format($total_pendapatan_barber->ttl_pendapatan_barber, 0, ',', '.') }}</div>
                             <div class="metric-change down">
-                                <i class="bi bi-graph-down-arrow" style="margin-right: 10px;"></i>
-                                -5%
+                                <!-- <i class="bi bi-graph-down-arrow" style="margin-right: 10px;"></i> -->
+                                <!-- -5% -->
                             </div>
                         </div>
                         <div class="activity-icon icon-blue"><a href="{{ route('barbershop.dashboard') }}"><i
@@ -720,7 +723,7 @@
 
                     <div class="metric-stats">
                         <div>
-                            <div class="stat-value">18</div>
+                            <div class="stat-value">{{ $total_pendapatan_barber->jml }}</div>
                             <div class="stat-label">Booking</div>
                         </div>
                         <div>
@@ -737,10 +740,11 @@
                     <div class="metric-header">
                         <div>
                             <div class="metric-label">Senam</div>
-                            <div class="metric-value">Rp 1,350,000</div>
+                            <div class="metric-value">Rp.
+                                {{ number_format($total_pendapatan_senam->ttl_pendapatan_senam, 0, ',', '.') }}</div>
                             <div class="metric-change up">
-                                <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
-                                +22%
+                                <!-- <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i> -->
+                                <!-- +22% -->
                             </div>
                         </div>
                         <div class="activity-icon icon-blue"><a href="{{ route('senam.dashboard') }}"><i
@@ -750,7 +754,7 @@
 
                     <div class="metric-stats">
                         <div>
-                            <div class="stat-value">27</div>
+                            <div class="stat-value">{{ $total_pendapatan_senam->jml }}</div>
                             <div class="stat-label">Peserta</div>
                         </div>
                         <div>
@@ -763,66 +767,7 @@
         </div>
 
         <!-- Charts and Activity -->
-        {{-- <div class="grid grid-cols-3">
-            <!-- Chart -->
-            <div class="card" style="grid-column: span 3;">
-                <div class="card-header">
-                    <div class="flex items-center justify-between">
-                        <div class="card-title">Trend Pendapatan 7 Hari</div>
-                        <button class="btn btn-outline btn-sm">Semua Bisnis</button>
-                    </div>
-                </div>
-                <div class="card-content">
-                    <div class="chart-placeholder">
-                        Chart akan ditampilkan di sini
-                    </div>
-                </div>
-            </div>
 
-            <!-- Recent Activity -->
-            <div class="card" style="grid-column: span 3;">
-                <div class="card-header">
-                    <div class="card-title">Aktivitas Terkini</div>
-                </div>
-                <div style="padding: 0;">
-                    <div class="activity-item">
-                        <div class="activity-icon icon-blue"><i class="bi bi-hospital"></i></div>
-                        <div class="activity-content">
-                            <div class="activity-time">2 menit lalu</div>
-                            <div class="activity-desc">Transaksi #TRX-1280</div>
-                            <div class="activity-amount">Rp 185,000</div>
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon icon-blue"><i class="bi bi-cup-hot"></i></div>
-                        <div class="activity-content">
-                            <div class="activity-time">15 menit lalu</div>
-                            <div class="activity-desc">Order: Kopi Susu x2</div>
-                            <div class="activity-amount">Rp 67,000</div>
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon icon-blue"><i class="bi bi-person-workspace"></i></div>
-                        <div class="activity-content">
-                            <div class="activity-time">32 menit lalu</div>
-                            <div class="activity-desc">Booking: Haircut</div>
-                            <div class="activity-amount">Rp 85,000</div>
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon icon-blue"><i class="bi bi-droplet"></i></div>
-                        <div class="activity-content">
-                            <div class="activity-time">1 jam lalu</div>
-                            <div class="activity-desc">Pendaftaran Zumba</div>
-                            <div class="activity-amount">Rp 75,000</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
 
         <!-- Transactions Table -->
         <div class="card">
@@ -852,52 +797,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>10:15</td>
-                                <td><span class="badge badge-blue">Apotek</span></td>
-                                <td style="font-family: monospace;">#TRX-1280</td>
-                                <td>Paracetamol, Vitamin C</td>
-                                <td style="text-align: right; font-weight: 500;">Rp 185,000</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>09:30</td>
-                                <td><span class="badge badge-emerald">Cafe</span></td>
-                                <td style="font-family: monospace;">#CAFE-892</td>
-                                <td>Kopi Susu x2, Croissant</td>
-                                <td style="text-align: right; font-weight: 500;">Rp 67,000</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>09:15</td>
-                                <td><span class="badge badge-red">Barber</span></td>
-                                <td style="font-family: monospace;">#BAR-421</td>
-                                <td>Haircut + Styling</td>
-                                <td style="text-align: right; font-weight: 500;">Rp 85,000</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>08:45</td>
-                                <td><span class="badge badge-purple">Senam</span></td>
-                                <td style="font-family: monospace;">#GYM-056</td>
-                                <td>Zumba Class</td>
-                                <td style="text-align: right; font-weight: 500;">Rp 75,000</td>
-                            </tr>
+                            <?php $no = 1; ?>
+                            @forelse($data_transaksi as $val)
+                                <tr>
+                                    <td>{{ $no }}</td>
+                                    <td>{{ $val->transaction_date }}</td>
+                                    <td>{{ $val->business_type }}</td>
+                                    <td>{{ $val->invoice_number }}</td>
+                                    <td>{{ $val->item_names }}</td>
+                                    <td align = "right">{{ $val->total_subtotal }}</td>
+                                </tr>
+                                <?php $no++; ?>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">Tidak ada data untuk saat ini</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="pagination">
-                    <div class="pagination-info">Menampilkan 4 dari 42 transaksi</div>
-                    <div class="pagination-buttons">
-                        <button class="btn btn-outline btn-sm">←</button>
-                        <button class="btn btn-primary btn-sm">1</button>
-                        <button class="btn btn-outline btn-sm">2</button>
-                        <button class="btn btn-outline btn-sm">3</button>
-                        <button class="btn btn-outline btn-sm">→</button>
-                    </div>
-                </div>
+
             </div>
         </div>
     </main>
