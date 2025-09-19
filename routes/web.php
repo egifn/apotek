@@ -109,9 +109,16 @@ Route::prefix('coffeshop')->name('coffeshop.')->group(function () {
     });
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/sales', 'Coffeshop\ReportController@index')->name('reports');
-        Route::get('/sales/transaction', 'Coffeshop\ReportController@getTransactionReport')->name('transaction');
+        Route::get('/sales/purchase', 'Coffeshop\ReportController@getPurchaseReport')->name('purchase');
+        Route::get('/sales/sales', 'Coffeshop\ReportController@getSalesReport')->name('sales');
         Route::get('/sales/stock', 'Coffeshop\ReportController@getStockReport')->name('stock');
         Route::get('/branches','Coffeshop\ReportController@getBranches')->name('branches');
+        // laporan penjualan
+        Route::get('/laporan_penjualan','Coffeshop\LaporanPenjualanController@index')->name('laporan_penjualan');
+        Route::get('/laporan_penjualan/penjualan','Coffeshop\LaporanPenjualanController@getDataPenjualan')->name('laporan_data_penjualan');
+        // laporan pembelian
+        Route::get('/laporan_pembelian','Coffeshop\LaporanPembelianController@index')->name('laporan_pembelian');
+        Route::get('/laporan_pembelian/pembelian','Coffeshop\LaporanPembelianController@getDataPembelian')->name('laporan_data_pembelian');
     });
 
 });
@@ -236,23 +243,27 @@ Route::prefix('senam')->name('senam.')->group(function () {
             Route::post('/store', 'Senam\EquipmentController@store')->name('store');
             Route::post('/update', 'Senam\EquipmentController@update')->name('update');
             Route::post('/destroy', 'Senam\EquipmentController@destroy')->name('destroy');
-        });
+        });    
+        
+    });
 
-         Route::prefix('reports')->name('reports.')->group(function () {
-            Route::get('/', 'Senam\ReportController@index')->name('index');
-            
-            // Data endpoints
-            Route::get('/class-participation', 'Senam\ReportController@getClassParticipation')->name('class-participation');
-            Route::get('/quota-usage', 'Senam\ReportController@getQuotaUsage')->name('quota-usage');
-            Route::get('/instructor-sessions', 'Senam\ReportController@getInstructorSessions')->name('instructor-sessions');
-            
-            // Export endpoints
-            Route::get('/export-participation', 'Senam\ReportController@exportParticipation')->name('export-participation');
-            Route::get('/export-quota', 'Senam\ReportController@exportQuota')->name('export-quota');
-            Route::get('/export-instructor', 'Senam\ReportController@exportInstructor')->name('export-instructor');
-        });
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', 'Senam\ReportController@index')->name('index');
 
+        Route::get('/report/report', 'Senam\ReportController@getSalesReport')->name('sales');
+        Route::get('/report/quota', 'Senam\ReportController@getQuotaReport')->name('quota');
+        Route::get('/report/instruktur', 'Senam\ReportController@getInstrukturReport')->name('instruktur');
+        Route::get('/report/purchase', 'Senam\ReportController@getPurchaseReport')->name('purchase');
 
+        // Data endpoints
+        Route::get('/class-participation', 'Senam\ReportController@getClassParticipation')->name('class-participation');
+        Route::get('/quota-usage', 'Senam\ReportController@getQuotaUsage')->name('quota-usage');
+        Route::get('/instructor-sessions', 'Senam\ReportController@getInstructorSessions')->name('instructor-sessions');
+        
+        // Export endpoints
+        Route::get('/export-participation', 'Senam\ReportController@exportParticipation')->name('export-participation');
+        Route::get('/export-quota', 'Senam\ReportController@exportQuota')->name('export-quota');
+        Route::get('/export-instructor', 'Senam\ReportController@exportInstructor')->name('export-instructor');
     });
 
 });

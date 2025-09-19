@@ -66,9 +66,21 @@
             </a>
 
             <div class="menu-title">Laporan</div>
-            <a class="nav-link {{ request()->routeIs('coffeshop.reports.reports') ? 'active' : '' }}" href="{{ route('coffeshop.reports.reports') }}">
+            <a class="nav-link {{ request()->routeIs('coffeshop.reports.reports') ? 'active' : '' }}"
+                href="{{ route('coffeshop.reports.reports') }}">
                 <i class="fas fa-coffee"></i>
                 <span class="nav-link-text">Laporan</span>
+            </a>
+            <a class="nav-link {{ request()->routeIs('coffeshop.reports.laporan_penjualan') ? 'active' : '' }}"
+                href="{{ route('coffeshop.reports.laporan_penjualan') }}">
+                <i class="fas fa-coffee"></i>
+                <span class="nav-link-text">Penjualan</span>
+            </a>
+
+            <a class="nav-link {{ request()->routeIs('coffeshop.reports.laporan_pembelian') ? 'active' : '' }}"
+                href="{{ route('coffeshop.reports.laporan_pembelian') }}">
+                <i class="fas fa-coffee"></i>
+                <span class="nav-link-text">Pembelian</span>
             </a>
             {{-- <a class="nav-link {{ request()->routeIs('coffeshop.master.analisa') ? 'active' : '' }}" href="#">
                 <i class="fas fa-coffee"></i>

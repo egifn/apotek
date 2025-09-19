@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
 class PosController extends Controller
 {
-     const VALID_BUSINESS_TYPES = ['coffee', 'barbershop', 'exercise', 'mixed'];
+    const VALID_BUSINESS_TYPES = ['cafe', 'barbershop', 'exercise', 'mixed'];
     const VALID_PAYMENT_METHODS = ['cash', 'debit', 'credit', 'e-wallet', 'qris'];
 
     public function index()
@@ -109,7 +110,6 @@ class PosController extends Controller
         $prefix = 'TXN';
         $date = date('Ymd');
         $sequence = DB::table('all_transactions')
-                     ->where('business_type', $businessType)
                      ->whereDate('created_at', today())
                      ->count() + 1;
         
@@ -118,7 +118,6 @@ class PosController extends Controller
 
     public function processTransaction(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'business_type' => 'required|in:'.implode(',', self::VALID_BUSINESS_TYPES),
             'items' => 'required|array|min:1',
@@ -176,8 +175,9 @@ class PosController extends Controller
             $transactionId = DB::table('all_transactions')->insertGetId([
                 'invoice_number' => $invoiceNumber,
                 'business_type' => $businessType,
-                'transaction_date' => now(),
+                'transaction_date' => now()->format('Y-m-d'),
                 'customer_id' => $customerId,
+                'customer_name' => $customerName,
                 'subtotal' => $subtotal,
                 'tax' => $tax,
                 'discount' => $discount,
@@ -186,12 +186,13 @@ class PosController extends Controller
                 'payment_amount' => $paymentAmount,
                 'change_amount' => $changeAmount,
                 'notes' => $notes,
-                'created_at' => now()
+                'branch_id' => Auth::user()->kd_lokasi,
+                'created_at' => now(),
             ]);
 
             // Process items
             foreach ($items as $item) {
-                $this->processTransactionItem($transactionId, $item, $businessType);
+                $this->processTransactionItem($transactionId, $item, $businessType,$invoiceNumber);
             }
 
             DB::commit();
@@ -217,55 +218,66 @@ class PosController extends Controller
         }
     }
 
-    private function processTransactionItem($transactionId, $item, $businessType)
+    private function processTransactionItem($transactionId, $item, $businessType, $invoiceNumber)
     {
         $metadata = [];
         // Handle different item types
-        if ($item['price'] != 0) {
-        
-            $metadata = [
-                'member_id' => $item['member_id'],
-                'quota_added' => 4,
-                'valid_until' => date('Y-m-d', strtotime('+1 month'))
-            ];
-
-            DB::table('s_member_quotas')
-            ->where('member_id', $item['member_id'])
-            ->update([
-                'remaining_quota' => 4,
-            ]);
-
-            DB::table('s_quota_history')
-            ->insert([
-                'member_id' => $item['member_id'],
-                'quota' => 4,
-                'notes' => 'Pembelian Kelas Quota + 4',
-                'created_at' => now()
-            ]);
-              
-        } else {
-
-            $metadata = [
-                'member_id' => $item['member_id'] ?? null,
-                'class_time' => now(),
-                'instructor' => 'System' 
-            ];
+        if ($businessType === 'exercise') {
+            if ($item['price'] != 0 &&  $item['member_id'] != '0') {
             
-            // Jika member menggunakan kuota, kurangi kuota
-            if (isset($item['member_id'])) {
-                DB::table('s_member_quotas')
-                    ->where('member_id', $item['member_id'])
-                    ->where('is_active', true)
-                    ->decrement('remaining_quota');
-
-                DB::table('s_quota_history')->insert([
+                $metadata = [
                     'member_id' => $item['member_id'],
-                    'quota' => 1,
-                    'notes' => 'Quota digunakan - 1',
+                    'quota_added' => 4,
+                    'valid_until' => date('Y-m-d', strtotime('+1 month'))
+                ];
+
+                DB::table('s_member_quotas')
+                ->where('member_id', $item['member_id'])
+                ->update([
+                    'remaining_quota' => 4,
+                ]);
+
+                DB::table('s_quota_history')
+                ->insert([
+                    'member_id' => $item['member_id'],
+                    'quota' => 4,
+                    'notes' => 'Pembelian Kelas Quota + 4',
                     'created_at' => now()
                 ]);
+                
+            } else if ($item['price'] === 0  && $item['member_id'] != '0') {
+
+                $metadata = [
+                    'member_id' => $item['member_id'] ?? null,
+                    'class_time' => now(),
+                    'instructor' => 'System' 
+                ];
+                
+                // Jika member menggunakan kuota, kurangi kuota
+                if (isset($item['member_id'])) {
+                    DB::table('s_member_quotas')
+                        ->where('member_id', $item['member_id'])
+                        ->where('is_active', true)
+                        ->decrement('remaining_quota');
+
+                    DB::table('s_quota_history')->insert([
+                        'member_id' => $item['member_id'],
+                        'quota' => 1,
+                        'notes' => 'Quota digunakan - 1',
+                        'created_at' => now()
+                    ]);
+                }
+            } else {
+                $metadata = [
+                    'business_type' => $businessType,
+                    'member_id' => $customerName ?? 'Non-Member',
+                ];
             }
+        } else if ($businessType === 'cafe'){
+            dd($item);
         }
+
+
 
         // Untuk item class, ID bisa string (UUID) atau numeric
         $itemId = $item['id'];
@@ -276,6 +288,7 @@ class PosController extends Controller
 
         DB::table('all_transaction_items')->insert([
             'transaction_id' => $transactionId,
+            'invoice_number' => $invoiceNumber,
             'item_type' => $item['type'],
             'item_id' => $itemId,
             'name' => $item['name'],
@@ -286,51 +299,6 @@ class PosController extends Controller
             'created_at' => now()
         ]);
     }
-
-    // private function processItem($transactionId, $item, $businessType)
-    // {
-    //     $metadata = [];
-        
-    //     // Handle special item types
-    //     switch ($item['type']) {
-    //         case 'quota_topup':
-    //             $metadata = [
-    //                 'member_id' => $item['member_id'],
-    //                 'quota_added' => 4,
-    //                 'valid_until' => date('Y-m-d', strtotime('+1 month'))
-    //             ];
-                
-    //             // Update member quota
-    //             DB::table('all_member_quotas')
-    //                 ->where('member_id', $item['member_id'])
-    //                 ->where('is_active', true)
-    //                 ->update([
-    //                     'remaining_quota' => DB::raw('remaining_quota + 4'),
-    //                     'updated_at' => now()
-    //                 ]);
-    //             break;
-                
-    //         case 'class':
-    //             $metadata = [
-    //                 'class_time' => $item['class_time'] ?? null,
-    //                 'instructor' => $item['instructor'] ?? null
-    //             ];
-    //             break;
-    //     }
-
-    //     // Insert transaction item
-    //     DB::table('all_transaction_items')->insert([
-    //         'transaction_id' => $transactionId,
-    //         'item_type' => $item['type'],
-    //         'item_id' => $item['id'],
-    //         'name' => $item['name'],
-    //         'quantity' => $item['quantity'] ?? 1,
-    //         'price' => $item['price'],
-    //         'subtotal' => $item['subtotal'],
-    //         'metadata' => !empty($metadata) ? json_encode($metadata) : null,
-    //         'created_at' => now()
-    //     ]);
-    // }
 
     public function getTransactionReport(Request $request)
     {

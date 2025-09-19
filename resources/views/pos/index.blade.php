@@ -1373,14 +1373,14 @@
                             data-price="${product.selling_price}" 
                             data-type="product">
                             ${product.image ? `
-                                                                                                                                                                                                                                                                                                                                                                                        <img src="${product.image}" class="card-img-top" alt="${product.name}" 
-                                                                                                                                                                                                                                                                                                                                                                                            style="height: 150px; object-fit: cover;">
-                                                                                                                                                                                                                                                                                                                                                                                    ` : `
-                                                                                                                                                                                                                                                                                                                                                                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                                                                                                                                                                                                                                                                                                                                                                            style="height: 150px;">
-                                                                                                                                                                                                                                                                                                                                                                                            <i class="fas fa-coffee fa-3x text-muted"></i>
-                                                                                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                                                                                    `}
+                                                                                                                                                                                                                                                                                                                                                                                                    <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                                                                                                                                                                                                                                                                                                                                                                                        style="height: 150px; object-fit: cover;">
+                                                                                                                                                                                                                                                                                                                                                                                                ` : `
+                                                                                                                                                                                                                                                                                                                                                                                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                                                                                                                                                                                                                                                                                                                                                                                        style="height: 150px;">
+                                                                                                                                                                                                                                                                                                                                                                                                        <i class="fas fa-coffee fa-3x text-muted"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
                                 <p class="card-text">${formatRupiah(product.selling_price)}</p>
@@ -2249,7 +2249,7 @@
                                 ${item.type === 'quota_topup' ? 
                                 '1' : 
                                 `<input type="number" class="form-control-qty form-control-sm quantity-input" 
-                                                                                                                                                                                                                                                                                                                                                                                                data-index="${index}" value="${item.quantity}" min="1">`}
+                                                                                                                                                                                                                                                                                                                                                                                                            data-index="${index}" value="${item.quantity}" min="1">`}
                             </td>
                             <td>${formatRupiah(item.price)}</td>
                             <td>${formatRupiah(item.subtotal)}</td>
@@ -2319,51 +2319,37 @@
             async function processTransaction() {
                 const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
                 const payment = parseFloat(paymentAmount.value) || 0;
-                // console.log('yang di order', orderItems);
 
-
-                if (orderItems.length === 0) {
+                if (!Array.isArray(orderItems) || orderItems.length === 0) {
                     createDynamicAlert('danger', 'Belum ada item di order');
                     return;
                 }
 
-                if (payment < total) {
+                if (isNaN(payment) || payment < total) {
                     createDynamicAlert('danger', 'Pembayaran tidak mencukupi');
                     return;
                 }
 
-                // Get the current active tab to determine business type
+                // Tentukan business type
                 const activeTab = document.querySelector('#posTabs .nav-link.active');
-                let businessType = 'coffee';
+                let businessType = 'cafe';
                 if (activeTab && activeTab.id === 'services-tab') {
                     businessType = 'barbershop';
                 } else if (activeTab && activeTab.id === 'exercise-tab') {
                     businessType = 'exercise';
                 }
 
-                // Prepare the request data dengan struktur yang benar
+                // Siapkan request data
                 const requestData = {
                     business_type: businessType,
-
                     items: orderItems.map(item => {
-                        // Pastikan ID sesuai dengan tipe item
                         let itemId = item.id;
-
-                        // Untuk product dan service, pastikan ID numeric
                         if (item.type === 'product' || item.type === 'service') {
                             itemId = parseInt(item.id) || 0;
                         }
-
-                        // Untuk class, bisa string atau numeric tergantung kebutuhan
-                        if (item.type === 'class') {
-                            // Jika ID class numeric, konversi ke number
-                            if (!isNaN(item.id)) {
-                                itemId = parseInt(item.id);
-                            }
-                            // Jika ID class string (seperti UUID), biarkan sebagai string
+                        if (item.type === 'class' && !isNaN(item.id)) {
+                            itemId = parseInt(item.id);
                         }
-
-                        // Siapkan data item
                         const itemData = {
                             type: item.type,
                             id: itemId,
@@ -2372,35 +2358,25 @@
                             quantity: Number(item.quantity || 1),
                             subtotal: Number(item.subtotal)
                         };
-
-                        // Tambahkan member_id dan quota info untuk class
                         if (item.type === 'class') {
                             itemData.member_id = item.member_id ? Number(item.member_id) : 0;
-                            // Jika peserta member
                             if (item.tipe_peserta === 'member') {
-                                // available_quota jika masih punya quota
                                 if (item.quota && item.quota > 0) {
                                     itemData.available_quota = item.quota;
                                 } else {
-                                    // quota_topup jika tidak punya quota
                                     itemData.quota_topup = true;
                                 }
                             }
                         }
-
-                        // Untuk quota_topup, tambahkan member_id
                         if (item.type === 'quota_topup' && item.member_id) {
                             itemData.member_id = Number(item.member_id);
                         }
-
                         return itemData;
                     }),
                     payment_method: document.getElementById('paymentMethod').value,
                     payment_amount: payment,
                     customer_name: 'Walk-in Customer'
                 };
-
-                // Add customer_id jika tersedia
                 if (currentMember) {
                     requestData.customer_id = Number(currentMember.id);
                     requestData.customer_name = currentMember.name;
@@ -2413,7 +2389,8 @@
                 }
 
                 try {
-                    console.log('Sending data:', requestData); // Debugging
+                    // Debug: tampilkan data yang dikirim
+                    console.log('Sending data:', requestData);
 
                     const response = await fetch("{{ route('pos.process') }}", {
                         method: 'POST',
@@ -2424,23 +2401,29 @@
                         body: JSON.stringify(requestData)
                     });
 
-                    const data = await response.json();
+                    let data = null;
+                    try {
+                        data = await response.json();
+                    } catch (jsonErr) {
+                        throw new Error('Gagal membaca response dari server');
+                    }
 
-                    if (!response.ok) {
-                        if (data.errors) {
+                    if (!response.ok || !data || data.status === false) {
+                        let errorMsg = 'Gagal memproses transaksi';
+                        if (data && data.errors) {
                             let errorMessages = [];
                             for (const [field, messages] of Object.entries(data.errors)) {
                                 errorMessages.push(...messages);
                             }
-                            createDynamicAlert('danger', 'Validation errors:\n' + errorMessages.join('\n'));
-                            return;
+                            errorMsg = 'Validasi gagal:\n' + errorMessages.join('\n');
+                        } else if (data && data.message) {
+                            errorMsg = data.message;
                         }
-
-                        throw new Error(data.message || 'Failed to process transaction');
+                        createDynamicAlert('danger', errorMsg);
+                        return;
                     }
 
-                    createDynamicAlert('success',
-                        `Transaction processed successfully. Invoice: ${data.data.invoice_number}`);
+                    createDynamicAlert('success', `Transaksi berhasil. Invoice: ${data.data.invoice_number}`);
                     // Reset order
                     orderItems = [];
                     if (paymentAmount) paymentAmount.value = '';
@@ -2449,7 +2432,7 @@
 
                 } catch (error) {
                     console.error('Transaction error:', error);
-                    createDynamicAlert('danger', error.message || 'Error processing transaction');
+                    createDynamicAlert('danger', error.message || 'Terjadi kesalahan saat memproses transaksi');
                 } finally {
                     if (processBtn) {
                         processBtn.disabled = false;

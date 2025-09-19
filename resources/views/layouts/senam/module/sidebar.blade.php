@@ -1,15 +1,15 @@
 <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand">
-                <span class="logo-text">Senam</span>
-            </div>
-            <button class="btn btn-link p-0 text-muted" id="sidebarCollapse">
-                <i class="fas fa-bars"></i>
-            </button>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand">
+            <span class="logo-text">Senam</span>
         </div>
+        <button class="btn btn-link p-0 text-muted" id="sidebarCollapse">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 
-        <!-- Navigation Menu -->
+    <!-- Navigation Menu -->
     <div class="sidebar-menu-container">
         <div class="sidebar-menu">
             <div class="menu-title">Menu</div>
@@ -61,7 +61,8 @@
 
             <div class="menu-title">Laporan</div>
 
-            <a class="nav-link {{ request()->routeIs('senam.master.reports.index') ? 'active' : '' }}" href="{{ route('senam.master.reports.index') }}">
+            <a class="nav-link {{ request()->routeIs('senam.reports.index') ? 'active' : '' }}"
+                href="{{ route('senam.reports.index') }}">
                 <i class="fas fa-file-alt"></i>
                 <span class="nav-link-text">Laporan</span>
             </a>
