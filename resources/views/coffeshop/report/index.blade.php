@@ -123,6 +123,7 @@
 
         filterType.addEventListener('change', function() {
             const type = this.value;
+            filterPeriod.value = '';
 
             filterPeriodContainer.style.display = 'none';
             dailyContainer.style.display = 'none';

@@ -118,6 +118,7 @@ class PosController extends Controller
 
     public function processTransaction(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'business_type' => 'required|in:'.implode(',', self::VALID_BUSINESS_TYPES),
             'items' => 'required|array|min:1',
@@ -130,8 +131,6 @@ class PosController extends Controller
             'items.*.member_id' => 'nullable|numeric', // Tambahkan untuk kelas
             'payment_method' => 'required|string|in:'.implode(',', self::VALID_PAYMENT_METHODS),
             'payment_amount' => 'required|numeric|min:0',
-            'customer_id' => 'nullable|numeric',
-            'customer_name' => 'nullable|string|max:100',
             'notes' => 'nullable|string'
         ], [
             'items.*.id.required' => 'Item ID is required.',
@@ -154,8 +153,6 @@ class PosController extends Controller
             $items = $request->input('items');
             $paymentMethod = $request->input('payment_method');
             $paymentAmount = (float)$request->input('payment_amount');
-            $customerId = $request->input('customer_id');
-            $customerName = $request->input('customer_name');
             $notes = $request->input('notes');
 
             // Calculate totals
@@ -176,8 +173,6 @@ class PosController extends Controller
                 'invoice_number' => $invoiceNumber,
                 'business_type' => $businessType,
                 'transaction_date' => now()->format('Y-m-d'),
-                'customer_id' => $customerId,
-                'customer_name' => $customerName,
                 'subtotal' => $subtotal,
                 'tax' => $tax,
                 'discount' => $discount,
@@ -220,6 +215,7 @@ class PosController extends Controller
 
     private function processTransactionItem($transactionId, $item, $businessType, $invoiceNumber)
     {
+        // dd($item);
         $metadata = [];
         // Handle different item types
         if ($businessType === 'exercise') {
@@ -239,10 +235,14 @@ class PosController extends Controller
 
                 DB::table('s_quota_history')
                 ->insert([
-                    'member_id' => $item['member_id'],
-                    'quota' => 4,
-                    'notes' => 'Pembelian Kelas Quota + 4',
-                    'created_at' => now()
+                      'member_id' => $item['member_id'],
+                        'class_booking_id' => $item['id'],
+                        'quota' => 1,
+                        'remaining_quota' =>  DB::table('s_member_quotas')
+                                                ->where('member_id', $item['member_id'])
+                                                ->value('remaining_quota'),
+                        'notes' => 'Pembelian Kelas Quota + 4',
+                        'created_at' => now()
                 ]);
                 
             } else if ($item['price'] === 0  && $item['member_id'] != '0') {
@@ -262,7 +262,11 @@ class PosController extends Controller
 
                     DB::table('s_quota_history')->insert([
                         'member_id' => $item['member_id'],
+                        'class_booking_id' => $item['id'],
                         'quota' => 1,
+                        'remaining_quota' =>  DB::table('s_member_quotas')
+                                                ->where('member_id', $item['member_id'])
+                                                ->value('remaining_quota'),
                         'notes' => 'Quota digunakan - 1',
                         'created_at' => now()
                     ]);
@@ -274,7 +278,7 @@ class PosController extends Controller
                 ];
             }
         } else if ($businessType === 'cafe'){
-            dd($item);
+            // dd($item);
         }
 
 
@@ -291,6 +295,7 @@ class PosController extends Controller
             'invoice_number' => $invoiceNumber,
             'item_type' => $item['type'],
             'item_id' => $itemId,
+            'member_id' => $item['member_id'] ?? 0,
             'name' => $item['name'],
             'quantity' => $item['quantity'] ?? 1,
             'price' => $item['price'],
@@ -352,55 +357,55 @@ class PosController extends Controller
         }
     }
 
-    public function processBooking(Request $request)
-    {
-        try {
-            $request->validate([
-                'customer_name' => 'required|string|max:255',
-                'customer_phone' => 'required|string|max:20',
-                'service_id' => 'required|exists:bs_services,id',
-                'booking_date' => 'required|date',
-                'booking_time' => 'required'
-            ]);
+    // public function processBooking(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'customer_name' => 'required|string|max:255',
+    //             'customer_phone' => 'required|string|max:20',
+    //             'service_id' => 'required|exists:bs_services,id',
+    //             'booking_date' => 'required|date',
+    //             'booking_time' => 'required'
+    //         ]);
 
-            DB::beginTransaction();
+    //         DB::beginTransaction();
 
-            // Get service duration
-            $service = DB::table('bs_services')
-                ->select('duration')
-                ->where('id', $request->service_id)
-                ->first();
+    //         // Get service duration
+    //         $service = DB::table('bs_services')
+    //             ->select('duration')
+    //             ->where('id', $request->service_id)
+    //             ->first();
 
-            $bookingDateTime = $request->booking_date . ' ' . $request->booking_time;
+    //         $bookingDateTime = $request->booking_date . ' ' . $request->booking_time;
 
-            // Create booking record
-            $bookingId = DB::table('bs_bookings')->insertGetId([
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'service_id' => $request->service_id,
-                'booking_date' => $bookingDateTime,
-                'end_time' => date('Y-m-d H:i:s', strtotime($bookingDateTime) + ($service->duration * 60)),
-                'status' => 'pending',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+    //         // Create booking record
+    //         $bookingId = DB::table('bs_bookings')->insertGetId([
+    //             'customer_name' => $request->customer_name,
+    //             'customer_phone' => $request->customer_phone,
+    //             'service_id' => $request->service_id,
+    //             'booking_date' => $bookingDateTime,
+    //             'end_time' => date('Y-m-d H:i:s', strtotime($bookingDateTime) + ($service->duration * 60)),
+    //             'status' => 'pending',
+    //             'created_at' => now(),
+    //             'updated_at' => now()
+    //         ]);
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Booking created successfully',
-                'booking_id' => $bookingId
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => false,
-                'message' => 'Failed to create booking',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Booking created successfully',
+    //             'booking_id' => $bookingId
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Failed to create booking',
+    //             'error' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
      public function getExerciseClasses(Request $request)
     {
@@ -413,12 +418,7 @@ class PosController extends Controller
                 ->leftjoin('s_instructors as i', 'cs.instructor_id', '=', 'i.id')
                 ->join('s_locations as l', 'cs.location_id', '=', 'l.id')
                 ->select(
-                    'cs.id',
-                    'cs.price',
-                    'cs.class_type_id',
-                    'cs.instructor_id',
-                    'cs.location_id',
-                    'cs.is_active',
+                    'cs.*',
                     'ct.name as class_name',
                     'i.name as instructor_name',
                     'l.name as location_name'

@@ -886,7 +886,7 @@
             </div>
             <div class="">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
                                 <ul class="nav nav-tabs" id="posTabs" role="tablist">
@@ -953,7 +953,8 @@
                                             <table class="table-types-table" id="classTable">
                                                 <thead>
                                                     <tr>
-                                                        <th>Kelas</th>
+                                                        <th>Name</th>
+                                                        <th>Kategori</th>
                                                         <th>Harga</th>
                                                         <th>Aksi</th>
                                                     </tr>
@@ -976,7 +977,7 @@
                     </div>
 
                     <!-- Order Summary Section -->
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Order Summary</h5>
@@ -1373,14 +1374,14 @@
                             data-price="${product.selling_price}" 
                             data-type="product">
                             ${product.image ? `
-                                                                                                                                                                                                                                                                                                                                                                                                    <img src="${product.image}" class="card-img-top" alt="${product.name}" 
-                                                                                                                                                                                                                                                                                                                                                                                                        style="height: 150px; object-fit: cover;">
-                                                                                                                                                                                                                                                                                                                                                                                                ` : `
-                                                                                                                                                                                                                                                                                                                                                                                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                                                                                                                                                                                                                                                                                                                                                                                        style="height: 150px;">
-                                                                                                                                                                                                                                                                                                                                                                                                        <i class="fas fa-coffee fa-3x text-muted"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                `}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px; object-fit: cover;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ` : `
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="fas fa-coffee fa-3x text-muted"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
                                 <p class="card-text">${formatRupiah(product.selling_price)}</p>
@@ -1510,12 +1511,14 @@
 
                                 html += `
                                     <tr>
+                                        <td>${cls.services_name}</td>
                                         <td>${cls.class_name}</td>
                                         <td>${formatRupiah(cls.price)}</td>
                                         <td>
                                             <button class="btn btn-sm btn-primary select-class-btn" 
                                                     data-id="${cls.id}"
-                                                    data-name="${cls.class_name}"
+                                                    data-name="${cls.services_name}"
+                                                    data-jenis="${cls.class_name}"
                                                     data-price="${cls.price}">
                                                 Pilih
                                             </button>
@@ -1546,6 +1549,7 @@
                     selectedClassData = {
                         id: btn.dataset.id,
                         name: btn.dataset.name,
+                        jenis: btn.dataset.jenis,
                         price: parseInt(btn.dataset.price)
                     };
 
@@ -2018,7 +2022,7 @@
                             id_member = memberInput.dataset.memberId;
                         }
                         addToOrder(
-                            `Kelas ${selectedClassData.name} - ${memberName}${price === 0 ? ' (Pakai Kuota)' : ''}`,
+                            `${selectedClassData.jenis} ${selectedClassData.name} - ${memberName}${price === 0 ? '' : ''}`,
                             price,
                             'class',
                             selectedClassData.id,
@@ -2028,7 +2032,7 @@
                         const nonMemberName = card.querySelector('.non-member-name')?.value || '';
                         const nonMemberPhone = card.querySelector('.non-member-phone')?.value || '';
                         addToOrder(
-                            `Kelas ${selectedClassData.name} - ${nonMemberName} (Non-Member)`,
+                            `${selectedClassData.jenis} ${selectedClassData.name} - ${nonMemberName} (Non-Member)`,
                             price,
                             'class',
                             selectedClassData.id,
@@ -2226,7 +2230,6 @@
                     }
                     orderItems.push(itemObj);
                 }
-                // console.log('orderItems', orderItems);
 
                 updateOrderTable();
             }
@@ -2246,10 +2249,7 @@
                         <tr class="${rowClass}">
                             <td>${item.name}${item.type === 'class' && item.member_id ? ' (Member)' : ''}</td>
                             <td>
-                                ${item.type === 'quota_topup' ? 
-                                '1' : 
-                                `<input type="number" class="form-control-qty form-control-sm quantity-input" 
-                                                                                                                                                                                                                                                                                                                                                                                                            data-index="${index}" value="${item.quantity}" min="1">`}
+                                ${item.type === 'quota_topup' ? '1' : `<input type="number" class="form-control-qty form-control-sm quantity-input" data-index="${index}" value="${item.quantity}" min="1">`}
                             </td>
                             <td>${formatRupiah(item.price)}</td>
                             <td>${formatRupiah(item.subtotal)}</td>
@@ -2319,6 +2319,8 @@
             async function processTransaction() {
                 const total = orderItems.reduce((sum, item) => sum + item.subtotal, 0);
                 const payment = parseFloat(paymentAmount.value) || 0;
+                const amountString = changeAmount.value;
+                const change = parseInt(amountString.replace(/[^\d]/g, ''), 10);
 
                 if (!Array.isArray(orderItems) || orderItems.length === 0) {
                     createDynamicAlert('danger', 'Belum ada item di order');
@@ -2375,7 +2377,8 @@
                     }),
                     payment_method: document.getElementById('paymentMethod').value,
                     payment_amount: payment,
-                    customer_name: 'Walk-in Customer'
+                    payment_change: change
+                    // notes: document.getElementById('transactionNotes').value,
                 };
                 if (currentMember) {
                     requestData.customer_id = Number(currentMember.id);

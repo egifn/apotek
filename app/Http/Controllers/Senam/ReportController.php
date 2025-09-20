@@ -134,7 +134,7 @@ class ReportController extends Controller
                     DB::raw('COUNT(cb.id) as total_participants'),
                     DB::raw('ROUND(COUNT(cb.id) / COUNT(DISTINCT cs.id), 2) as avg_participants')
                 )
-                ->groupBy('i.id', 'i.name');
+                ->groupBy('', 'i.name');
 
             if ($startDate && $endDate) {
                 $query->whereBetween('cs.start_datetime', [$startDate, $endDate]);
@@ -245,30 +245,79 @@ class ReportController extends Controller
     
     public function getInstrukturReport(Request $request)
     {
+        // dd($request->all());
         try {
             $period = $request->input('filter_type');
             $date = $request->input('date');
 
             $query = DB::table('all_transaction_items')
                 ->select(
-                    'all_transaction_items.*',
-                    'all_transactions.*',
-                    'cs_branches.name as branch_name',
-                    's_instructors.name as instructor_name',
-                    's_class_types.name as class_name'
+                    'all_transaction_items.item_id',
+                    'all_transactions.transaction_date',
+                     's_instructors.name as instructor_name',
+                    's_class_schedule.services_name as class_name',
+                    DB::raw("COUNT(CASE WHEN JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') != 'Non-Member' AND JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') != 0 THEN 1 END) as total_member"),
+                    DB::raw("COUNT(CASE WHEN JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') = 'Non-Member' OR JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') = 0 THEN 1 END) as total_nonmember")
                 )
                 ->join('all_transactions', 'all_transaction_items.transaction_id', '=', 'all_transactions.id')
-                ->join('cs_branches', 'all_transactions.branch_id', '=', 'cs_branches.id')
                 ->join('s_class_schedule', 'all_transaction_items.item_id', '=', 's_class_schedule.id')
-                ->join('s_class_types', 's_class_schedule.class_type_id', '=', 's_class_types.id')
                 ->join('s_instructors', 's_class_schedule.instructor_id', '=', 's_instructors.id')
-                ->where('all_transaction_items.item_type', 'class');
-
-                // dd($query->get());
+                ->where('all_transaction_items.item_type', 'class')
+                ->groupBy('all_transaction_items.item_id', 'all_transactions.transaction_date', 's_class_schedule.services_name')
+                ->orderBy('all_transactions.transaction_date', 'DESC')
+                ->orderBy('s_class_schedule.services_name');
             
-            // if ($branchId) {
-            //     $query->where('all_transactions.branch_id', $branchId);
-            // }
+            if ($period === 'daily' && $date) {
+                $query->whereDate('all_transactions.transaction_date', $date);
+            }
+            
+            if ($period === 'monthly' && $date) {
+                list($year, $month) = explode('-', $date);
+                $query->whereYear('all_transactions.transaction_date', $year)
+                    ->whereMonth('all_transactions.transaction_date', $month);
+            }
+
+            if ($period === 'yearly' && $date) {
+                $query->whereYear('all_transactions.transaction_date', $date);
+            }
+
+            $data = $query->get();
+
+            return response()->json([
+                'status' => true,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal mengambil laporan transaksi: ' . $e->getMessage()
+            ]);
+        }
+    }
+    
+    public function getRentReport(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $period = $request->input('filter_type');
+            $date = $request->input('date');
+
+            $query = DB::table('all_transaction_items')
+                ->select(
+                    'all_transaction_items.item_id',
+                    'all_transactions.transaction_date',
+                     's_instructors.name as instructor_name',
+                    's_class_schedule.services_name as class_name',
+                    DB::raw("COUNT(CASE WHEN JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') != 'Non-Member' AND JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') != 0 THEN 1 END) as total_member"),
+                    DB::raw("COUNT(CASE WHEN JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') = 'Non-Member' OR JSON_EXTRACT(all_transaction_items.metadata, '$.member_id') = 0 THEN 1 END) as total_nonmember")
+                )
+                ->join('all_transactions', 'all_transaction_items.transaction_id', '=', 'all_transactions.id')
+                ->join('s_class_schedule', 'all_transaction_items.item_id', '=', 's_class_schedule.id')
+                ->join('s_instructors', 's_class_schedule.instructor_id', '=', 's_instructors.id')
+                ->where('all_transaction_items.item_type', 'class')
+                ->groupBy('all_transaction_items.item_id', 'all_transactions.transaction_date', 's_class_schedule.services_name')
+                ->orderBy('all_transactions.transaction_date', 'DESC')
+                ->orderBy('s_class_schedule.services_name');
             
             if ($period === 'daily' && $date) {
                 $query->whereDate('all_transactions.transaction_date', $date);

@@ -43,7 +43,7 @@
                         <div class="col-lg-3">
                             <select class="form-control form-control-sm" id="filter_class_type">
                                 <option value="">Semua Jasa</option>
-                                @foreach($classTypes as $classType)
+                                @foreach ($classTypes as $classType)
                                     <option value="{{ $classType->id }}">{{ $classType->name }}</option>
                                 @endforeach
                             </select>
@@ -87,15 +87,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_services_name" class="form-label">Nama Servis*</label>
-                                    <input type="text" class="form-control" id="insert_services_name" name="insert_services_name" required>
+                                    <input type="text" class="form-control" id="insert_services_name"
+                                        name="insert_services_name" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_class_type_id" class="form-label">Jenis Jasa*</label>
-                                    <select class="form-control" id="insert_class_type_id" name="insert_class_type_id" required>
+                                    <select class="form-control" id="insert_class_type_id" name="insert_class_type_id"
+                                        required>
                                         <option value="">Pilih Jenis Jasa</option>
-                                        @foreach($classTypes as $classType)
+                                        @foreach ($classTypes as $classType)
                                             <option value="{{ $classType->id }}">{{ $classType->name }}</option>
                                         @endforeach
                                     </select>
@@ -108,7 +110,7 @@
                                     <label for="insert_location_id" class="form-label">Lokasi*</label>
                                     <select class="form-control" id="insert_location_id" name="insert_location_id" required>
                                         <option value="">Pilih Lokasi</option>
-                                        @foreach($locations as $location)
+                                        @foreach ($locations as $location)
                                             <option value="{{ $location->id }}">{{ $location->name }}</option>
                                         @endforeach
                                     </select>
@@ -117,7 +119,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_price" class="form-label">Harga*</label>
-                                    <input type="number" class="form-control" id="insert_price" name="insert_price" min="0" required>
+                                    <input type="number" class="form-control" id="insert_price" name="insert_price"
+                                        min="0" required>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +142,7 @@
                                     <label for="insert_instructor_id" class="form-label">Instruktur*</label>
                                     <select class="form-control" id="insert_instructor_id" name="insert_instructor_id">
                                         <option value="">Pilih Instruktur</option>
-                                        @foreach($instructors as $instructor)
+                                        @foreach ($instructors as $instructor)
                                             <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
                                         @endforeach
                                     </select>
@@ -150,7 +153,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_insert_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_insert_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -173,15 +177,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_services_name" class="form-label">Nama Servis*</label>
-                                    <input type="text" class="form-control" id="edit_services_name" name="edit_services_name" required>
+                                    <input type="text" class="form-control" id="edit_services_name"
+                                        name="edit_services_name" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_class_type_id" class="form-label">Jenis Jasa*</label>
-                                    <select class="form-control" id="edit_class_type_id" name="edit_class_type_id" required>
+                                    <select class="form-control" id="edit_class_type_id" name="edit_class_type_id"
+                                        required>
                                         <option value="">Pilih Jenis Senam</option>
-                                        @foreach($classTypes as $classType)
+                                        @foreach ($classTypes as $classType)
                                             <option value="{{ $classType->id }}">{{ $classType->name }}</option>
                                         @endforeach
                                     </select>
@@ -192,7 +198,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="edit_price" class="form-label">Harga*</label>
-                                    <input type="number" class="form-control" id="edit_price" name="edit_price" min="0" required>
+                                    <input type="number" class="form-control" id="edit_price" name="edit_price"
+                                        min="0" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -200,7 +207,7 @@
                                     <label for="edit_location_id" class="form-label">Lokasi*</label>
                                     <select class="form-control" id="edit_location_id" name="edit_location_id" required>
                                         <option value="">Pilih Lokasi</option>
-                                        @foreach($locations as $location)
+                                        @foreach ($locations as $location)
                                             <option value="{{ $location->id }}">{{ $location->name }}</option>
                                         @endforeach
                                     </select>
@@ -222,7 +229,7 @@
                                         <label for="edit_instructor_id" class="form-label">Instruktur*</label>
                                         <select class="form-control" id="edit_instructor_id" name="edit_instructor_id">
                                             <option value="">Pilih Instruktur</option>
-                                            @foreach($instructors as $instructor)
+                                            @foreach ($instructors as $instructor)
                                                 <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
                                             @endforeach
                                         </select>
@@ -234,7 +241,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_update" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_update_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_update_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -263,7 +271,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_delete" class="btn btn-danger btn-sm">Konfirmasi</button>
-                        <button type="button" id="button_delete_send" class="btn btn-danger" style="display: none;">Memproses...</button>
+                        <button type="button" id="button_delete_send" class="btn btn-danger"
+                            style="display: none;">Memproses...</button>
                     </div>
                 </form>
             </div>
@@ -334,7 +343,7 @@
                 inInstructorId.value = ''; // Reset nilai
             }
 
-        const editInstructorField = document.querySelector('.edit-instructor-field');
+            const editInstructorField = document.querySelector('.edit-instructor-field');
             // Event listener untuk checkbox EDIT
             if (editNeedInstructor && editInstructorField && editInstructorId) {
                 editNeedInstructor.addEventListener('change', function() {
@@ -379,17 +388,17 @@
 
         // untuk Edit
         const editNeedInstructor = document.getElementById('edit_need_instructor');
-            const editInstructorField = document.querySelector('.edit-instructor-field');
+        const editInstructorField = document.querySelector('.edit-instructor-field');
 
-            editNeedInstructor.addEventListener('change', function() {
-                if (this.checked) {
-                    editInstructorField.style.display = 'block';
-                    editInstructorId.setAttribute('required', 'required');
-                } else {
-                    editInstructorField.style.display = 'none';
-                    editInstructorId.removeAttribute('required');
-                    editInstructorId.value = '';
-                }
+        editNeedInstructor.addEventListener('change', function() {
+            if (this.checked) {
+                editInstructorField.style.display = 'block';
+                editInstructorId.setAttribute('required', 'required');
+            } else {
+                editInstructorField.style.display = 'none';
+                editInstructorId.removeAttribute('required');
+                editInstructorId.value = '';
+            }
         });
     </script>
 
@@ -425,7 +434,7 @@
                     url += '?' + params.toString();
                 }
                 const response = await axios.get(url);
-                
+
                 if (!response.data.status) {
                     throw new Error(response.data.message || 'Gagal mengambil data');
                 }
@@ -457,14 +466,14 @@
                 } else {
                     data.data.forEach((schedule, index) => {
                         // Format status
-                        const statusBadge = schedule.is_active 
-                            ? '<span class="badge bg-success">Aktif</span>' 
-                            : '<span class="badge bg-danger">Nonaktif</span>';
+                        const statusBadge = schedule.is_active ?
+                            '<span class="badge bg-success">Aktif</span>' :
+                            '<span class="badge bg-danger">Nonaktif</span>';
 
                         scheduleTable.innerHTML += `
                             <tr>
                                 <td class="ps-4">${data.from + index}</td>
-                                <td>${schedule.services_name}</td>
+                                <td>${schedule.services_name}<br><small>${schedule.instructor_name || ''}</small></td>
                                 <td>${schedule.class_name}</td>
                                 <td style="text-align: right;">${formatRupiah(schedule.price)}</td>
                                 <td>${statusBadge}</td>
@@ -477,17 +486,17 @@
                                         </button>
                                         ${schedule.is_active ? 
                                             `<button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                                data-id="${schedule.id}" 
-                                                data-active="${schedule.is_active}"
-                                                title="Nonaktifkan">
-                                                <i class="fas fa-ban"></i>
-                                            </button>` : 
+                                                                data-id="${schedule.id}" 
+                                                                data-active="${schedule.is_active}"
+                                                                title="Nonaktifkan">
+                                                                <i class="fas fa-ban"></i>
+                                                            </button>` : 
                                             `<button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                                data-id="${schedule.id}" 
-                                                data-active="${schedule.is_active}"
-                                                title="Hapus Permanen">
-                                                <i class="fas fa-trash"></i>
-                                            </button>`
+                                                                data-id="${schedule.id}" 
+                                                                data-active="${schedule.is_active}"
+                                                                title="Hapus Permanen">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>`
                                         }
                                     </div>
                                 </td>
@@ -548,7 +557,7 @@
             const now = new Date();
             const timezoneOffset = now.getTimezoneOffset() * 60000;
             const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
-            
+
             new bootstrap.Modal(componentModalFormInsert).show();
         });
 
@@ -572,7 +581,8 @@
                     price: inPrice.value
                 };
 
-                const response = await axios.post(`{{ route('senam.master.class-schedule.store') }}`, formData);
+                const response = await axios.post(`{{ route('senam.master.class-schedule.store') }}`,
+                    formData);
                 const data = response.data;
 
                 if (data.status === true) {
@@ -591,7 +601,8 @@
                     if (data.type === 'validation') {
                         showValidationErrors(data.errors);
                     } else {
-                        createDynamicAlert('danger', data.message || 'Terjadi kesalahan saat menambahkan jadwal');
+                        createDynamicAlert('danger', data.message ||
+                            'Terjadi kesalahan saat menambahkan jadwal');
                     }
                 }
 
@@ -617,16 +628,18 @@
     {{-- EDIT DATA --}}
     <script>
         document.addEventListener('click', async function(event) {
-             const editBtn = event.target.closest('.btn_edit');
+            const editBtn = event.target.closest('.btn_edit');
             if (editBtn) {
                 event.preventDefault();
                 const id = editBtn.dataset.id;
 
                 try {
                     const response = await axios.get(`{{ route('senam.master.class-schedule.data') }}`, {
-                        params: { id: id }
+                        params: {
+                            id: id
+                        }
                     });
-                    
+
                     if (!response.data.status || !response.data.data) {
                         throw new Error('Data jadwal tidak ditemukan');
                     }
@@ -672,7 +685,8 @@
 
         buttonUpdate.addEventListener('click', async function() {
 
-            if (editNeedInstructor && editNeedInstructor.checked && (!editInstructorId || !editInstructorId.value)) {
+            if (editNeedInstructor && editNeedInstructor.checked && (!editInstructorId || !editInstructorId
+                    .value)) {
                 createDynamicAlert('warning', 'Silakan pilih instruktur');
                 return;
             }
@@ -691,17 +705,18 @@
                     // is_active: editIsActive.value
                 };
 
-                const response = await axios.post(`{{ route('senam.master.class-schedule.update') }}`, formData);
+                const response = await axios.post(`{{ route('senam.master.class-schedule.update') }}`,
+                    formData);
                 const data = response.data;
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message || 'Jadwal berhasil diperbarui');
-                    
+
                     const status = filterStatus.value;
                     const classTypeId = filterClassType.value;
                     const limit = syLimit.value;
                     await fetchData(status, classTypeId, limit);
-                    
+
                     bootstrap.Modal.getInstance(scheduleModalEdit).hide();
                 } else {
                     createDynamicAlert('danger', data.message || 'Gagal memperbarui jadwal');
@@ -729,16 +744,17 @@
                 event.preventDefault();
                 const id = deleteBtn.dataset.id;
                 const isActive = deleteBtn.dataset.active === '1';
-                
+
                 deleteScheduleId.value = id;
-                
+
                 if (isActive) {
                     deleteAction.value = 'deactivate';
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan jasa ini?';
                     passwordContainer.style.display = 'none';
                 } else {
                     deleteAction.value = 'delete';
-                    deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen jasa ini? Tindakan ini tidak dapat dibatalkan.';
+                    deleteMessage.textContent =
+                        'Apakah Anda yakin ingin menghapus permanen jasa ini? Tindakan ini tidak dapat dibatalkan.';
                     passwordContainer.style.display = 'block';
                 }
 
@@ -757,17 +773,18 @@
                     password: deletePassword.value
                 };
 
-                const response = await axios.post(`{{ route('senam.master.class-schedule.destroy') }}`, formData);
+                const response = await axios.post(`{{ route('senam.master.class-schedule.destroy') }}`,
+                    formData);
                 const data = response.data;
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message);
-                    
+
                     const status = filterStatus.value;
                     const classTypeId = filterClassType.value;
                     const limit = syLimit.value;
                     await fetchData(status, classTypeId, limit);
-                    
+
                     bootstrap.Modal.getInstance(scheduleModalDelete).hide();
                     deletePassword.value = '';
                 } else {

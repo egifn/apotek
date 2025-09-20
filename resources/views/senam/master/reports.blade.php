@@ -1,4 +1,4 @@
-@extends('layouts.coffeshop.admin')
+@extends('layouts.senam.admin')
 @section('page-title', 'Laporan')
 @section('content')
     <div class="row mb-4">
@@ -29,7 +29,7 @@
                                 <option value="quota">Quota</option>
                                 <option value="sales">Transaksi</option>
                                 <option value="instruktur">Instruktur</option>
-                                <option value="purchase" hidden>Pembelian</option>
+                                <option value="rent" hidden>Sewa</option>
 
                             </select>
                         </div>
@@ -125,6 +125,8 @@
         filterType.addEventListener('change', function() {
             const type = this.value;
 
+            filterPeriod.value = '';
+
             filterPeriodContainer.style.display = 'none';
             dailyContainer.style.display = 'none';
             monthlyContainer.style.display = 'none';
@@ -175,12 +177,13 @@
                 url = "{{ route('senam.reports.quota') }}";
             } else if (reportType === 'sales') {
                 url = "{{ route('senam.reports.sales') }}";
-            } else {
+            } else if (reportType === 'instruktur') {
                 url = "{{ route('senam.reports.instruktur') }}";
+            } else if (reportType === 'rent') {
+                url = "{{ route('senam.reports.rent') }}";
             }
 
             try {
-
                 const response = await axios.get(url, {
                     params: {
                         // branch_id: branchId,
@@ -188,7 +191,6 @@
                         date: date
                     }
                 });
-
 
                 const data = response.data.data;
                 console.log(data);
@@ -313,6 +315,57 @@
                                 </tbody>`;
 
                     reportBody.innerHTML = tableHTML;
+                }
+                if (reportType === 'quota') {
+                    let tableHTML = `<thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                    // Build table rows safely
+                    data.forEach((item, index) => {
+                        tableHTML += `<tr>
+                                        <td>${index + 1}</td>
+                                        <td>${item.name}</td>
+                                        <td>${item.notes}</td>
+                                      </tr>`;
+                    });
+
+                    tableHTML += `</tbody>`;
+
+                    reportBody.innerHTML = tableHTML;
+                } else if (reportType === 'instruktur') {
+                    let tableHTML = ` <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Instruktur</th>
+                                        <th>Jenis</th>
+                                        <th>Member</th>
+                                        <th>Non Member</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                    // Build table rows safely
+                    data.forEach((item, index) => {
+                        tableHTML += `<tr>
+                                        <td>${item.transaction_date}</td>
+                                        <td>${item.instructor_name}</td>
+                                        <td>${item.class_name}</td>
+                                        <td>${item.total_member}</td>
+                                        <td>${item.total_nonmember}</td>
+                                      </tr>`;
+                    });
+
+
+                    tableHTML += `</tbody>`;
+
+                    reportBody.innerHTML = tableHTML;
+
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);

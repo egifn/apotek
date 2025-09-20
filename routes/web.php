@@ -253,6 +253,7 @@ Route::prefix('senam')->name('senam.')->group(function () {
         Route::get('/report/report', 'Senam\ReportController@getSalesReport')->name('sales');
         Route::get('/report/quota', 'Senam\ReportController@getQuotaReport')->name('quota');
         Route::get('/report/instruktur', 'Senam\ReportController@getInstrukturReport')->name('instruktur');
+        Route::get('/report/rent', 'Senam\ReportController@getRentReport')->name('rent');
         Route::get('/report/purchase', 'Senam\ReportController@getPurchaseReport')->name('purchase');
 
         // Data endpoints
