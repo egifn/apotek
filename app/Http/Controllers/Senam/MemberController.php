@@ -16,6 +16,7 @@ class MemberController extends Controller
 
     public function getData(Request $request)
     {
+        // dd($request->all());
         try {
             $search = $request->input('search');
             $status = $request->input('status', 1);
@@ -28,8 +29,7 @@ class MemberController extends Controller
                     's_members.*',
                     'mq.total_quota',
                     'mq.remaining_quota'
-                )
-                ->groupBy('s_members.id', 'mq.total_quota', 'mq.remaining_quota');
+                );
 
             if ($id) {
                 $query->where('s_members.id', $id);
@@ -61,6 +61,8 @@ class MemberController extends Controller
             $data = $query->orderBy('id')
                          ->paginate($limit);
 
+            // dd($data);
+
 
             return response()->json([
                 'status' => true,
@@ -81,7 +83,7 @@ class MemberController extends Controller
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
-            'phone' => 'required|string|max:20',
+            'phone' => 'nullable|number|max:20',
             'join_date' => 'required|date',
             'total_quota' => 'required|integer',
             'start_date' => 'required|date',
@@ -100,11 +102,24 @@ class MemberController extends Controller
 
         DB::beginTransaction();
         try {
+            // Generate a code_member using membership type and join date.
+            // Format: TYPE-YYYYMMDD-XXXX (XXXX = sequential per type+date)
+            $type = strtoupper(substr($request->membership_type, 0, 4));
+            $datePart = date('Ymd', strtotime($request->join_date));
+            // Count existing members with same type and date to create a sequence
+            $seq = DB::table('s_members')
+                ->where('membership_type', $request->membership_type)
+                ->whereDate('join_date', $request->join_date)
+                ->count();
+            $seq = $seq + 1;
+            $seqPart = str_pad($seq, 4, '0', STR_PAD_LEFT);
+            $code_member = sprintf('%s-%s-%s', $type, $datePart, $seqPart);
+
             $memberId = DB::table('s_members')->insertGetId([
+                'code_member' => $code_member,
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'join_date' => $request->join_date,
-                // 'quota' => 0,
                 'membership_type' => $request->membership_type,
                 'is_active' => true,
                 'created_at' => now(),
@@ -112,6 +127,7 @@ class MemberController extends Controller
 
             // Add initial quota
             DB::table('s_member_quotas')->insert([
+                'code_member' => $code_member,
                 'member_id' => $memberId,
                 'total_quota' => 4,
                 'remaining_quota' => 0,
@@ -297,7 +313,7 @@ class MemberController extends Controller
             $data = DB::table('s_quota_history')
                 ->join('s_members', 's_quota_history.member_id', '=', 's_members.id')
                 ->select('s_quota_history.*', 's_members.name')
-                ->where('s_quota_history.member_id', $memberId)
+                ->where('member_id', $memberId)
                 ->orderBy('created_at', 'desc')
                 ->get();
 

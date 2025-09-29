@@ -448,6 +448,7 @@ class PosController extends Controller
             
             $members = DB::table('s_members')
                 ->select('id', 'name', 'phone')
+                ->where('membership_type', $request->jenis)
                 ->where('is_active', true)
                 ->where(function($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%");

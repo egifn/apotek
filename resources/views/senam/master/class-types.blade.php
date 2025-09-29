@@ -19,7 +19,8 @@
                 <div class="table-card-header g-2">
                     <div style="width: 100%; display: flex; gap: 5px;">
                         <div class="col-lg-4">
-                            <input type="text" class="form-control form-control-sm" id="filter_search" placeholder="Cari...">
+                            <input type="text" class="form-control form-control-sm" id="filter_search"
+                                placeholder="Cari...">
                         </div>
                         <div class="col-lg-3">
                             <select class="form-control form-control-sm" id="filter_status">
@@ -67,12 +68,12 @@
                             <label for="insert_name" class="form-label">Nama Jenis Senam</label>
                             <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="insert_description" class="form-label">Deskripsi</label>
                             <textarea class="form-control" id="insert_description" name="insert_description" rows="2"></textarea>
                         </div>
-                        
+
                         {{-- <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="insert_duration_minutes" class="form-label">Durasi (menit)</label>
@@ -82,7 +83,7 @@
                         <div class="mb-3">
                             <label class="form-label">Pilih Alat dari Daftar</label>
                             <div class="equipment-checkbox-container">
-                                @foreach($equipment as $item)
+                                @foreach ($equipment as $item)
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="insert_equipment_ids[]" value="{{ $item->id }}" id="equipment_{{ $item->id }}">
                                         <label class="form-check-label" for="equipment_{{ $item->id }}">
@@ -96,7 +97,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_insert_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_insert_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -119,12 +121,12 @@
                             <label for="edit_name" class="form-label">Nama Jenis Senam</label>
                             <input type="text" class="form-control" id="edit_name" name="edit_name" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="edit_description" class="form-label">Deskripsi</label>
                             <textarea class="form-control" id="edit_description" name="edit_description" rows="2"></textarea>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="edit_is_active" class="form-label">Status</label>
                             <select class="form-control" id="edit_is_active" name="edit_is_active" required>
@@ -136,7 +138,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_update" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_update_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_update_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -165,7 +168,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_delete" class="btn btn-danger btn-sm">Konfirmasi</button>
-                        <button type="button" id="button_delete_send" class="btn btn-danger" style="display: none;">Memproses...</button>
+                        <button type="button" id="button_delete_send" class="btn btn-danger"
+                            style="display: none;">Memproses...</button>
                     </div>
                 </form>
             </div>
@@ -188,14 +192,14 @@
 @push('scripts')
     {{-- GLOBAL DEBOUNCE FUNCTION --}}
     <script>
-    // Simple debounce implementation
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
+        // Simple debounce implementation
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
     </script>
     {{-- SET VARIABLE --}}
     <script>
@@ -284,17 +288,18 @@
                 } else {
                     data.data.forEach((classType, index) => {
                         // Format status
-                        const statusBadge = classType.is_active 
-                            ? '<span class="badge bg-success">Aktif</span>' 
-                            : '<span class="badge bg-danger">Nonaktif</span>';
+                        const statusBadge = classType.is_active ?
+                            '<span class="badge bg-success">Aktif</span>' :
+                            '<span class="badge bg-danger">Nonaktif</span>';
 
                         // Format duration
                         const duration = classType.duration_minutes + ' menit';
 
                         // Format equipment
-                        const equipment = classType.required_equipment 
-                            ? classType.required_equipment.substring(0, 30) + (classType.required_equipment.length > 30 ? '...' : '')
-                            : '-';
+                        const equipment = classType.required_equipment ?
+                            classType.required_equipment.substring(0, 30) + (classType.required_equipment
+                                .length > 30 ? '...' : '') :
+                            '-';
 
                         classTypeTable.innerHTML += `
                             <tr>
@@ -371,7 +376,7 @@
             // inEquipmentIds.forEach(checkbox => {
             //     checkbox.checked = false;
             // });
-            
+
             new bootstrap.Modal(componentModalFormInsert).show();
         });
 
@@ -380,7 +385,8 @@
             buttonInsertSend.style.display = 'inline-block';
 
             try {
-                const selectedEquipment = Array.from(document.querySelectorAll('input[name="insert_equipment_ids[]"]:checked'))
+                const selectedEquipment = Array.from(document.querySelectorAll(
+                        'input[name="insert_equipment_ids[]"]:checked'))
                     .map(el => el.value);
 
                 const formData = {
@@ -409,7 +415,8 @@
                     if (data.type === 'validation') {
                         showValidationErrors(data.errors);
                     } else {
-                        createDynamicAlert('danger', data.message || 'Terjadi kesalahan saat menambahkan jenis senam');
+                        createDynamicAlert('danger', data.message ||
+                            'Terjadi kesalahan saat menambahkan jenis senam');
                     }
                 }
 
@@ -448,7 +455,9 @@
                     editIsActive.value = '1';
 
                     const response = await axios.get(`{{ route('senam.master.class-types.data') }}`, {
-                        params: { id: id }
+                        params: {
+                            id: id
+                        }
                     });
 
                     if (!response.data.status || !response.data.data) {
@@ -463,7 +472,7 @@
                     editName.value = classType.name || '';
                     editDescription.value = classType.description || '';
                     editIsActive.value = classType.is_active ? '1' : '0';
-                    
+
                     new bootstrap.Modal(classTypeModalEdit).show();
                 } catch (error) {
                     console.error('Error:', error);
@@ -477,7 +486,7 @@
             buttonUpdateSend.style.display = 'inline-block';
 
             try {
-            const formData = {
+                const formData = {
                     id: editClassTypeId.value,
                     name: editName.value,
                     description: editDescription.value,
@@ -489,12 +498,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message || 'Jenis senam berhasil diperbarui');
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, limit);
-                    
+
                     bootstrap.Modal.getInstance(classTypeModalEdit).hide();
                 } else {
                     createDynamicAlert('danger', data.message || 'Gagal memperbarui jenis senam');
@@ -522,9 +531,9 @@
                 event.preventDefault();
                 const id = deleteBtn.dataset.id;
                 const isActive = deleteBtn.dataset.active === '1';
-                
+
                 deleteClassTypeId.value = id;
-                
+
                 if (isActive) {
                     deleteAction.value = 'deactivate';
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan jenis senam ini?';
@@ -534,7 +543,7 @@
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen jenis senam ini?';
                     passwordContainer.style.display = 'block';
                 }
-                
+
                 new bootstrap.Modal(classTypeModalDelete).show();
             }
         });
@@ -555,12 +564,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message);
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, limit);
-                    
+
                     bootstrap.Modal.getInstance(classTypeModalDelete).hide();
                     deletePassword.value = '';
                 } else {

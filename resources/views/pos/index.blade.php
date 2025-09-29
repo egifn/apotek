@@ -1162,8 +1162,8 @@
                                 <select class="form-select" id="insert_membership_type" name="insert_membership_type"
                                     required>
                                     <option value="">Pilih Jenis Membership</option>
-                                    <option value="senam">Senam</option>
-                                    <option value="studio">Studio</option>
+                                    <option value="Senam">Senam</option>
+                                    <option value="Sewa">Sewa</option>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -1374,14 +1374,14 @@
                             data-price="${product.selling_price}" 
                             data-type="product">
                             ${product.image ? `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <img src="${product.image}" class="card-img-top" alt="${product.name}" 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px; object-fit: cover;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ` : `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="fas fa-coffee fa-3x text-muted"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px; object-fit: cover;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ` : `
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="fas fa-coffee fa-3x text-muted"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
                                 <p class="card-text">${formatRupiah(product.selling_price)}</p>
@@ -1552,6 +1552,8 @@
                         jenis: btn.dataset.jenis,
                         price: parseInt(btn.dataset.price)
                     };
+                    console.log(selectedClassData);
+
 
                     // Tampilkan modal untuk input peserta
                     showExerciseModal();
@@ -1656,8 +1658,11 @@
                             'X-CSRF-TOKEN': csrfToken
                         },
                         data: function(params) {
+                            // Kirimkan juga jenis class untuk filter di backend
                             return {
-                                search: params.term
+                                search: params.term,
+                                jenis: selectedClassData && selectedClassData.jenis ? selectedClassData
+                                    .jenis : ''
                             };
                         },
                         processResults: function(data) {
@@ -1690,6 +1695,7 @@
                 }
 
                 try {
+                    // Kirimkan juga jenis jika ada
                     const response = await fetch("{{ route('pos.search-members') }}", {
                         method: 'POST',
                         headers: {
@@ -1697,7 +1703,9 @@
                             'X-CSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
-                            search: query
+                            search: query,
+                            jenis: selectedClassData && selectedClassData.jenis ?
+                                selectedClassData.jenis : ''
                         })
                     });
 

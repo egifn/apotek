@@ -118,15 +118,18 @@ class IngredientController extends Controller
                 'purchase_price'    => $request->purchase_price,
                 'quantity_purchase' => $request->quantity_purchase,
                 'price_per_unit'    => $pricePerUnit,
+                'losses'            => $request->losses,
                 'is_active'         => 1,
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ]);
+
+            $stock_insert = $request->quantity_purchase * (1-($request->losses/100));
            
             DB::table('cs_stocks')->insert([
                 'id_branch'         => $user,
                 'id_ingredients'    => $kode,
-                'stock_available'   => $request->quantity_purchase,
+                'stock_available'   => $stock_insert,
                 'min_stock'         => 0,
                 'created_at'        => now(),
             ]);

@@ -64,17 +64,25 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="insert_name" class="form-label">Nama Bahan Baku*</label>
+                                    <label for="insert_name" class="form-label" style="margin-bottom: 10px;">Nama Bahan
+                                        Baku*</label>
                                     <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="insert_unit_id" class="form-label">Satuan*</label>
-                                    <select class="form-control" id="insert_unit_id" name="insert_unit_id" required>
-                                        <option value="">Pilih Satuan</option>
-                                    </select>
-                                    <small class="text-muted" style="margin-left: 2px;">Satuan dikonversi ke satuan baku
-                                        yang sudah ditetapkan</small>
+                                    <label for="insert_quantity" class="form-label">Quantity dalam Satuan*</label>
+                                    <input type="number" class="form-control" id="insert_quantity" name="insert_quantity"
+                                        step="0.01" required>
+                                    <small class="text-muted">Quantity dikonversi ke dalam satuan</small>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Harga per Unit</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="text" class="form-control" id="insert_price_per_unit" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="insert_purchase_price" class="form-label">Harga Beli*</label>
                                     <div class="input-group">
@@ -83,20 +91,20 @@
                                             name="insert_purchase_price" required>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="insert_quantity" class="form-label">Quantity dalam Satuan*</label>
-                                    <input type="number" class="form-control" id="insert_quantity" name="insert_quantity"
-                                        step="0.01" required>
-                                    {{-- <small class="text-muted">Satuan dikonversi ke satuan baku yang sudah
-                                        ditetapkan</small> --}}
+                                    <label for="insert_unit_id" class="form-label">Satuan*</label>
+                                    <select class="form-control" id="insert_unit_id" name="insert_unit_id" required>
+                                        <option value="">Pilih Satuan</option>
+                                    </select>
+                                    <small class="text-muted">Satuan dikonversi ke satuan baku
+                                        yang sudah ditetapkan</small>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Harga per Unit</label>
+                                    <label for="insert_losses" class="form-label">Penyusutan Bahan</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
-                                        <input type="text" class="form-control" id="insert_price_per_unit" readonly>
+                                        <input type="number" class="form-control" id="insert_losses" value="0"
+                                            placeholder="0" name="insert_losses" required>
+                                        <span class="input-group-text">%</span>
                                     </div>
                                 </div>
                             </div>
@@ -228,6 +236,7 @@
         const inName = document.getElementById('insert_name');
         const inUnitId = document.getElementById('insert_unit_id');
         const inPurchasePrice = document.getElementById('insert_purchase_price');
+        const inLosses = document.getElementById('insert_losses');
         const inQuantity = document.getElementById('insert_quantity');
         const inPricePerUnit = document.getElementById('insert_price_per_unit');
 
@@ -428,6 +437,7 @@
             inName.value = '';
             inUnitId.value = '';
             inPurchasePrice.value = '';
+            inLosses.value = '0';
             inQuantity.value = '';
             inPricePerUnit.value = '';
 
@@ -444,6 +454,7 @@
                     name: inName.value,
                     unit_id: inUnitId.value,
                     purchase_price: inPurchasePrice.value,
+                    losses: inLosses.value,
                     quantity_purchase: inQuantity.value,
                     price_per_unit: calculatePricePerUnit(
                         parseFloat(inPurchasePrice.value) || 0,

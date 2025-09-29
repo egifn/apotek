@@ -53,7 +53,7 @@
 @endsection
 
 @push('modal')
-    <!-- Modal untuk Tambah Member -->
+    {{-- modal tambah member --}}
     <div class="modal fade" id="memberModalInput">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -71,12 +71,21 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="insert_phone" class="form-label">No. Telepon</label>
-                                <input type="text" class="form-control" id="insert_phone" name="insert_phone" required>
+                                <input type="text" class="form-control" id="insert_phone" name="insert_phone">
                             </div>
                         </div>
                         <input type="date" class="form-control" id="insert_join_date" name="insert_join_date" required
                             hidden>
                         <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="insert_membership_type" class="form-label">Jenis Membership</label>
+                                <select class="form-select" id="insert_membership_type" name="insert_membership_type"
+                                    required>
+                                    <option value="">Pilih Jenis Membership</option>
+                                    <option value="Senam">Senam</option>
+                                    <option value="Sewa">Sewa</option>
+                                </select>
+                            </div>
                             <div class="col-md-4 mb-3">
                                 <label for="insert_start_date" class="form-label">Tanggal Mulai</label>
                                 <input type="date" class="form-control" id="insert_start_date" name="insert_start_date"
@@ -87,7 +96,7 @@
                                 <input type="date" class="form-control" id="insert_end_date" name="insert_end_date"
                                     required>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-3" hidden>
                                 <label for="insert_total_quota" class="form-label">Kuota</label>
                                 <input type="number" class="form-control" id="insert_total_quota" name="insert_total_quota"
                                     min="1" required readonly>
@@ -270,6 +279,7 @@
         const componentModalFormInsert = document.getElementById('memberModalInput');
         const inName = document.getElementById('insert_name');
         const inPhone = document.getElementById('insert_phone');
+        const inMembershipType = document.getElementById('insert_membership_type');
         const inJoinDate = document.getElementById('insert_join_date');
         const inTotalQuota = document.getElementById('insert_total_quota');
         const inStartDate = document.getElementById('insert_start_date');
@@ -336,6 +346,7 @@
                         <tr>
                             <th class="ps-4" width="50">No</th>
                             <th>Nama</th>
+                            <th>Jenis Membership</th>
                             <th>Kontak</th>
                             <th>Kuota</th>
                             <th>Status</th>
@@ -353,8 +364,6 @@
                     `;
                 } else {
                     data.data.forEach((member, index) => {
-                        // Format status
-                        // console.log(member);
 
                         const statusBadge = member.is_active ?
                             '<span class="badge bg-success">Aktif</span>' :
@@ -367,6 +376,7 @@
                                     <div class="fw-medium">${member.name}</div>
                                     <div class="small text-muted">Bergabung: ${new Date(member.join_date).toLocaleDateString('id-ID')}</div>
                                 </td>
+                                <td>${member.membership_type}</td>
                                 <td>${member.phone}</td>
                                 <td>${member.remaining_quota}</td>
                                 <td>${statusBadge}</td>
@@ -499,7 +509,8 @@
             inName.value = '';
             inPhone.value = '';
             inJoinDate.value = '';
-            inTotalQuota.value = '4';
+            inMembershipType.value = '';
+            inTotalQuota.value = '0';
             inStartDate.value = '';
             inEndDate.value = '';
 
@@ -525,6 +536,7 @@
                     name: inName.value,
                     phone: inPhone.value,
                     join_date: inJoinDate.value,
+                    membership_type: inMembershipType.value,
                     total_quota: inTotalQuota.value,
                     start_date: inStartDate.value,
                     end_date: inEndDate.value
