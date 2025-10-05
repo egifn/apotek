@@ -27,8 +27,7 @@
                 <div class="table-card-header">
                     <div class="col-lg-1">
                         <select class="form-control form-control-sm" id="short_by_limit" style="width: 50px;">
-                            <option value="2" selected>2</option>
-                            <option value="10" >10</option>
+                            <option value="10" selected>10</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
                             <option value="500">500</option>
@@ -53,7 +52,8 @@
                     <!-- Pagination Section -->
                     <div class="table-card-footer d-flex justify-content-between align-items-center mt-3">
                         <div class="small text-muted">
-                            Menampilkan <span id="showing-from">0</span> - <span id="showing-to">0</span> dari <span id="total-items">0</span> data
+                            Menampilkan <span id="showing-from">0</span> - <span id="showing-to">0</span> dari <span
+                                id="total-items">0</span> data
                         </div>
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm mb-0" id="pagination-links">
@@ -315,7 +315,10 @@
 
         // Function to generate pagination links
         function generatePaginationLinks(pagination) {
-            const { current_page, total_pages } = pagination;
+            const {
+                current_page,
+                total_pages
+            } = pagination;
             paginationLinks.innerHTML = '';
 
             if (total_pages <= 1) return;
@@ -381,16 +384,17 @@
         // Update event listeners for pagination
         document.addEventListener('click', function(e) {
             // Handle pagination clicks
-            if (e.target.classList.contains('page-link') || (e.target.parentElement && e.target.parentElement.classList.contains('page-link'))) {
+            if (e.target.classList.contains('page-link') || (e.target.parentElement && e.target.parentElement
+                    .classList.contains('page-link'))) {
                 e.preventDefault();
-                
+
                 let link;
                 if (e.target.classList.contains('page-link')) {
                     link = e.target;
                 } else if (e.target.parentElement.classList.contains('page-link')) {
                     link = e.target.parentElement;
                 }
-                
+
                 if (link && link.dataset.page) {
                     const page = parseInt(link.dataset.page);
                     if (page && page > 0) {

@@ -585,6 +585,10 @@
             padding: 0;
         }
 
+        .table>:not(:first-child) {
+            border-top: 0px solid currentColor;
+        }
+
         /* ========== DROPDOWN STYLES ========== */
         /* Minimalist White Navbar */
         /* .top-navbar {

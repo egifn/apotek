@@ -19,7 +19,8 @@
                 <div class="table-card-header g-2">
                     <div style="width: 100%; display: flex; gap: 5px;">
                         <div class="col-lg-4">
-                            <input type="text" class="form-control form-control-sm" id="filter_search" placeholder="Cari...">
+                            <input type="text" class="form-control form-control-sm" id="filter_search"
+                                placeholder="Cari...">
                         </div>
                         <div class="col-lg-3">
                             <select class="form-control form-control-sm" id="filter_status">
@@ -67,32 +68,42 @@
                             <label for="insert_name" class="form-label">Nama Instruktur</label>
                             <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="insert_specialization" class="form-label">Spesialisasi</label>
-                            <input type="text" class="form-control" id="insert_specialization" name="insert_specialization" required>
+                            <input type="text" class="form-control" id="insert_specialization"
+                                name="insert_specialization" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="insert_bio" class="form-label">Bio</label>
                             <textarea class="form-control" id="insert_bio" name="insert_bio" rows="2"></textarea>
                         </div>
-                        
-                        <div class="row">
+
+                        <div class="mb-3">
+                            <label for="insert_contact_phone" class="form-label">No. Telepon</label>
+                            <input type="text" class="form-control" id="insert_contact_phone" name="insert_contact_phone"
+                                required>
+                        </div>
+
+                        <div class="row" hidden>
                             <div class="col-md-6 mb-3">
                                 <label for="insert_contact_phone" class="form-label">No. Telepon</label>
-                                <input type="text" class="form-control" id="insert_contact_phone" name="insert_contact_phone" required>
+                                <input type="text" class="form-control" id="insert_contact_phone"
+                                    name="insert_contact_phone" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="insert_contact_email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="insert_contact_email" name="insert_contact_email" required>
+                                <input type="email" class="form-control" id="insert_contact_email"
+                                    name="insert_contact_email" required>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_insert_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_insert_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -115,28 +126,37 @@
                             <label for="edit_name" class="form-label">Nama Instruktur</label>
                             <input type="text" class="form-control" id="edit_name" name="edit_name" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="edit_specialization" class="form-label">Spesialisasi</label>
-                            <input type="text" class="form-control" id="edit_specialization" name="edit_specialization" required>
+                            <input type="text" class="form-control" id="edit_specialization"
+                                name="edit_specialization" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="edit_bio" class="form-label">Bio</label>
                             <textarea class="form-control" id="edit_bio" name="edit_bio" rows="2"></textarea>
                         </div>
-                        
-                        <div class="row">
+
+                        <div class="mb-3">
+                            <label for="edit_contact_phone" class="form-label">No. Telepon</label>
+                            <input type="text" class="form-control" id="edit_contact_phone" name="edit_contact_phone"
+                                required>
+                        </div>
+
+                        <div class="row" hidden>
                             <div class="col-md-6 mb-3">
                                 <label for="edit_contact_phone" class="form-label">No. Telepon</label>
-                                <input type="text" class="form-control" id="edit_contact_phone" name="edit_contact_phone" required>
+                                <input type="text" class="form-control" id="edit_contact_phone"
+                                    name="edit_contact_phone" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="edit_contact_email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="edit_contact_email" name="edit_contact_email" required>
+                                <input type="email" class="form-control" id="edit_contact_email"
+                                    name="edit_contact_email" required>
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="edit_is_active" class="form-label">Status</label>
                             <select class="form-control" id="edit_is_active" name="edit_is_active" required>
@@ -148,7 +168,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_update" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_update_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_update_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -177,7 +198,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_delete" class="btn btn-danger btn-sm">Konfirmasi</button>
-                        <button type="button" id="button_delete_send" class="btn btn-danger" style="display: none;">Memproses...</button>
+                        <button type="button" id="button_delete_send" class="btn btn-danger"
+                            style="display: none;">Memproses...</button>
                     </div>
                 </form>
             </div>
@@ -188,14 +210,14 @@
 @push('scripts')
     {{-- GLOBAL DEBOUNCE FUNCTION --}}
     <script>
-    // Simple debounce implementation
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
+        // Simple debounce implementation
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
     </script>
     {{-- SET VARIABLE --}}
     <script>
@@ -289,9 +311,9 @@
                 } else {
                     data.data.forEach((instructor, index) => {
                         // Format status
-                        const statusBadge = instructor.is_active 
-                            ? '<span class="badge bg-success">Aktif</span>' 
-                            : '<span class="badge bg-danger">Nonaktif</span>';
+                        const statusBadge = instructor.is_active ?
+                            '<span class="badge bg-success">Aktif</span>' :
+                            '<span class="badge bg-danger">Nonaktif</span>';
 
                         // Format contact
                         const contact = `
@@ -375,7 +397,7 @@
             inBio.value = '';
             inContactPhone.value = '';
             inContactEmail.value = '';
-            
+
             new bootstrap.Modal(componentModalFormInsert).show();
         });
 
@@ -411,7 +433,8 @@
                     if (data.type === 'validation') {
                         showValidationErrors(data.errors);
                     } else {
-                        createDynamicAlert('danger', data.message || 'Terjadi kesalahan saat menambahkan instruktur');
+                        createDynamicAlert('danger', data.message ||
+                            'Terjadi kesalahan saat menambahkan instruktur');
                     }
                 }
 
@@ -453,7 +476,9 @@
                     editIsActive.value = '1';
 
                     const response = await axios.get(`{{ route('senam.master.instructors.data') }}`, {
-                        params: { id: id }
+                        params: {
+                            id: id
+                        }
                     });
 
                     // Ambil data instruktur dari response (object/class)
@@ -472,12 +497,18 @@
                     }
 
                     // Fill the form
-                    editInstructorId.value = instructor.id !== undefined && instructor.id !== null ? instructor.id : '';
-                    editName.value = instructor.name !== undefined && instructor.name !== null ? instructor.name : '';
-                    editSpecialization.value = instructor.specialization !== undefined && instructor.specialization !== null ? instructor.specialization : '';
-                    editBio.value = instructor.bio !== undefined && instructor.bio !== null ? instructor.bio : '';
-                    editContactPhone.value = instructor.contact_phone !== undefined && instructor.contact_phone !== null ? instructor.contact_phone : '';
-                    editContactEmail.value = instructor.contact_email !== undefined && instructor.contact_email !== null ? instructor.contact_email : '';
+                    editInstructorId.value = instructor.id !== undefined && instructor.id !== null ? instructor
+                        .id : '';
+                    editName.value = instructor.name !== undefined && instructor.name !== null ? instructor
+                        .name : '';
+                    editSpecialization.value = instructor.specialization !== undefined && instructor
+                        .specialization !== null ? instructor.specialization : '';
+                    editBio.value = instructor.bio !== undefined && instructor.bio !== null ? instructor.bio :
+                        '';
+                    editContactPhone.value = instructor.contact_phone !== undefined && instructor
+                        .contact_phone !== null ? instructor.contact_phone : '';
+                    editContactEmail.value = instructor.contact_email !== undefined && instructor
+                        .contact_email !== null ? instructor.contact_email : '';
                     editIsActive.value = instructor.is_active == 1 ? '1' : '0';
 
                     new bootstrap.Modal(instructorModalEdit).show();
@@ -508,12 +539,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message || 'Instruktur berhasil diperbarui');
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, limit);
-                    
+
                     bootstrap.Modal.getInstance(instructorModalEdit).hide();
                 } else {
                     createDynamicAlert('danger', data.message || 'Gagal memperbarui instruktur');
@@ -541,9 +572,9 @@
                 event.preventDefault();
                 const id = deleteBtn.dataset.id;
                 const isActive = deleteBtn.dataset.active === '1';
-                
+
                 deleteInstructorId.value = id;
-                
+
                 if (isActive) {
                     deleteAction.value = 'deactivate';
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan instruktur ini?';
@@ -553,7 +584,7 @@
                     deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen instruktur ini?';
                     passwordContainer.style.display = 'block';
                 }
-                
+
                 new bootstrap.Modal(instructorModalDelete).show();
             }
         });
@@ -574,12 +605,12 @@
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message);
-                    
+
                     const search = filterSearch.value;
                     const status = filterStatus.value;
                     const limit = syLimit.value;
                     await fetchData(search, status, limit);
-                    
+
                     bootstrap.Modal.getInstance(instructorModalDelete).hide();
                     deletePassword.value = '';
                 } else {

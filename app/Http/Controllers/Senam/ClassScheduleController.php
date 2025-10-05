@@ -34,6 +34,7 @@ class ClassScheduleController extends Controller
                 ->join('s_locations as l', 'cs.location_id', '=', 'l.id')
                 ->select(
                     'cs.id',
+                    'cs.member_price',
                     'cs.services_name',
                     'cs.type_services',
                     'cs.class_type_id',

@@ -41,22 +41,28 @@
                 <span class="nav-link-text">Instruktur</span>
             </a>
 
+            <a hidden class="nav-link {{ request()->routeIs('senam.master.equipment.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.equipment.index') }}">
+                <i class="fas fa-dumbbell"></i>
+                <span class="nav-link-text">Alat</span>
+            </a>
+
             <a class="nav-link {{ request()->routeIs('senam.master.members.index') ? 'active' : '' }}"
                 href="{{ route('senam.master.members.index') }}">
                 <i class="fas fa-users"></i>
                 <span class="nav-link-text">Member</span>
             </a>
 
-            <a class="nav-link {{ request()->routeIs('senam.master.non-members.index') ? 'active' : '' }}"
-                href="{{ route('senam.master.non-members.index') }}">
-                <i class="fas fa-user-times"></i>
-                <span class="nav-link-text">Non-Member</span>
+            <a class="nav-link {{ request()->routeIs('senam.master.pegawai.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.pegawai.index') }}">
+                <i class="fas fa-user"></i>
+                <span class="nav-link-text">Pegawai</span>
             </a>
 
-            <a class="nav-link {{ request()->routeIs('senam.master.equipment.index') ? 'active' : '' }}"
-                href="{{ route('senam.master.equipment.index') }}">
-                <i class="fas fa-dumbbell"></i>
-                <span class="nav-link-text">Alat</span>
+            <a class="nav-link {{ request()->routeIs('senam.master.user.index') ? 'active' : '' }}"
+                href="{{ route('senam.master.user.index') }}">
+                <i class="fas fa-user"></i>
+                <span class="nav-link-text">User</span>
             </a>
 
             <div class="menu-title">Laporan</div>

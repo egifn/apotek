@@ -72,8 +72,8 @@ class InstructorController extends Controller
             'name' => 'required|string|max:100',
             'specialization' => 'required|string|max:100',
             'bio' => 'nullable|string',
-            'contact_phone' => 'required|string|max:20',
-            'contact_email' => 'required|email|max:100'
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'nulleble|email|max:100'
         ]);
 
         if ($validator->fails()) {

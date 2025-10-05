@@ -65,6 +65,19 @@
                 <span class="nav-link-text">Bahan Baku</span>
             </a>
 
+            <a class="nav-link {{ request()->routeIs('coffeshop.master.pegawai.index') ? 'active' : '' }}"
+                href="{{ route('coffeshop.master.pegawai.index') }}">
+                <i class="fas fa-user"></i>
+                <span class="nav-link-text">Pegawai</span>
+            </a>
+
+            <a class="nav-link {{ request()->routeIs('coffeshop.master.user.index') ? 'active' : '' }}"
+                href="{{ route('coffeshop.master.user.index') }}">
+                <i class="fas fa-user"></i>
+                <span class="nav-link-text">User</span>
+            </a>
+
+
             <div class="menu-title">Laporan</div>
             <a class="nav-link {{ request()->routeIs('coffeshop.reports.reports') ? 'active' : '' }}"
                 href="{{ route('coffeshop.reports.reports') }}">
@@ -82,6 +95,8 @@
                 <i class="fas fa-coffee"></i>
                 <span class="nav-link-text">Pembelian</span>
             </a>
+
+
             {{-- <a class="nav-link {{ request()->routeIs('coffeshop.master.analisa') ? 'active' : '' }}" href="#">
                 <i class="fas fa-coffee"></i>
                 <span class="nav-link-text">Laporan Bulanan</span>

@@ -1,14 +1,14 @@
 @extends('layouts.senam.admin')
-@section('page-title', 'Jenis Senam')
+@section('page-title', 'Tipe Jasa')
 
 @section('content')
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h4 class="mb-0">Manajemen Jenis Senam</h4>
+            <h4 class="mb-0">Manajemen Tipe Jasa</h4>
         </div>
         <div class="col-md-4 text-end">
             <button class="btn btn-primary btn-sm" id="addClassTypeBtn">
-                <i class="fas fa-plus me-1"></i> Tambah Jenis
+                <i class="fas fa-plus me-1"></i> Tambah Tipe Jasa
             </button>
         </div>
     </div>
@@ -53,19 +53,19 @@
 @endsection
 
 @push('modal')
-    <!-- Modal untuk Tambah Jenis Senam -->
+    <!-- Modal untuk Tambah Tipe Senam -->
     <div class="modal fade" id="classTypeModalInput">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <p class="modal-title" id="classTypeModalLabel">Tambah Jenis Senam</p>
+                    <p class="modal-title" id="classTypeModalLabel">Tambah Tipe Jasa</p>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="classTypeFormInput" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="insert_name" class="form-label">Nama Jenis Senam</label>
+                            <label for="insert_name" class="form-label">Nama Tipe</label>
                             <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                         </div>
 
@@ -105,12 +105,12 @@
         </div>
     </div>
 
-    <!-- Modal untuk Edit Jenis Senam -->
+    <!-- Modal untuk Edit Tipe Senam -->
     <div class="modal fade" id="classTypeModalEdit">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <p class="modal-title">Edit Jenis Senam</p>
+                    <p class="modal-title">Edit Tipe Jasa</p>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="classTypeFormEdit">
@@ -118,7 +118,7 @@
                     <input type="hidden" id="edit_class_type_id">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit_name" class="form-label">Nama Jenis Senam</label>
+                            <label for="edit_name" class="form-label">Nama Tipe </label>
                             <input type="text" class="form-control" id="edit_name" name="edit_name" required>
                         </div>
 
@@ -159,7 +159,7 @@
                     <input type="hidden" id="delete_class_type_id">
                     <input type="hidden" id="delete_action">
                     <div class="modal-body">
-                        <p id="delete_message">Apakah Anda yakin ingin menghapus jenis senam ini?</p>
+                        <p id="delete_message">Apakah Anda yakin ingin menghapus jenis jasa ini?</p>
                         <div id="password_container" style="display: none;">
                             <label for="delete_password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="delete_password" name="delete_password">
@@ -270,7 +270,7 @@
                     <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
-                            <th>Nama Jenis</th>
+                            <th>Nama Tipe</th>
                             <th>Deskripsi</th>
                             <th>Status</th>
                             <th class="text-center pe-4" width="150">Aksi</th>
@@ -330,7 +330,7 @@
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
-                createDynamicAlert('danger', 'Gagal memuat data jenis senam');
+                createDynamicAlert('danger', 'Gagal memuat data jenis jasa');
             }
         }
 
@@ -400,7 +400,7 @@
                 const data = response.data;
 
                 if (data.status === true) {
-                    createDynamicAlert('success', data.message || 'Jenis senam berhasil ditambahkan');
+                    createDynamicAlert('success', data.message || 'Tipe jasa berhasil ditambahkan');
 
                     // Refresh data
                     const search = filterSearch.value;
@@ -416,7 +416,7 @@
                         showValidationErrors(data.errors);
                     } else {
                         createDynamicAlert('danger', data.message ||
-                            'Terjadi kesalahan saat menambahkan jenis senam');
+                            'Terjadi kesalahan saat menambahkan jenis jasa');
                     }
                 }
 
@@ -461,7 +461,7 @@
                     });
 
                     if (!response.data.status || !response.data.data) {
-                        throw new Error('Data jenis senam tidak ditemukan');
+                        throw new Error('Data jenis jasa tidak ditemukan');
                     }
 
                     const classType = response.data.data.class_type;
@@ -476,7 +476,7 @@
                     new bootstrap.Modal(classTypeModalEdit).show();
                 } catch (error) {
                     console.error('Error:', error);
-                    createDynamicAlert('danger', error.message || 'Gagal memuat data jenis senam');
+                    createDynamicAlert('danger', error.message || 'Gagal memuat data jenis jasa');
                 }
             }
         });
@@ -497,7 +497,7 @@
                 const data = response.data;
 
                 if (data.status === true) {
-                    createDynamicAlert('success', data.message || 'Jenis senam berhasil diperbarui');
+                    createDynamicAlert('success', data.message || 'Tipe jasa berhasil diperbarui');
 
                     const search = filterSearch.value;
                     const status = filterStatus.value;
@@ -506,7 +506,7 @@
 
                     bootstrap.Modal.getInstance(classTypeModalEdit).hide();
                 } else {
-                    createDynamicAlert('danger', data.message || 'Gagal memperbarui jenis senam');
+                    createDynamicAlert('danger', data.message || 'Gagal memperbarui jenis jasa');
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -536,11 +536,11 @@
 
                 if (isActive) {
                     deleteAction.value = 'deactivate';
-                    deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan jenis senam ini?';
+                    deleteMessage.textContent = 'Apakah Anda yakin ingin menonaktifkan jenis jasa ini?';
                     passwordContainer.style.display = 'none';
                 } else {
                     deleteAction.value = 'delete';
-                    deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen jenis senam ini?';
+                    deleteMessage.textContent = 'Apakah Anda yakin ingin menghapus permanen jenis jasa ini?';
                     passwordContainer.style.display = 'block';
                 }
 

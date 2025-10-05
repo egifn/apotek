@@ -1,14 +1,14 @@
-@extends('layouts.senam.admin')
-@section('page-title', 'Non-Member')
+@extends('layouts.coffeshop.admin')
+@section('page-title', 'Pegawai')
 
 @section('content')
     <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h4 class="mb-0">Manajemen Non-Member</h4>
+            <h4 class="mb-0">Manajemen Pegawai</h4>
         </div>
         <div class="col-md-4 text-end">
             <button class="btn btn-primary btn-sm" id="addNonMemberBtn">
-                <i class="fas fa-plus me-1"></i> Tambah Non-Member
+                <i class="fas fa-plus me-1"></i> Tambah Pegawai
             </button>
         </div>
     </div>
@@ -19,7 +19,8 @@
                 <div class="table-card-header g-2">
                     <div style="width: 100%; display: flex; gap: 5px;">
                         <div class="col-lg-4">
-                            <input type="text" class="form-control form-control-sm" id="filter_search" placeholder="Cari...">
+                            <input type="text" class="form-control form-control-sm" id="filter_search"
+                                placeholder="Cari...">
                         </div>
                     </div>
                     <div class="col-2">
@@ -45,22 +46,41 @@
 @endsection
 
 @push('modal')
-    <!-- Modal untuk Tambah Non-Member -->
+    <!-- Modal untuk Tambah Pegawai -->
     <div class="modal fade" id="nonMemberModalInput">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <p class="modal-title" id="nonMemberModalLabel">Tambah Non-Member</p>
+                    <p class="modal-title" id="nonMemberModalLabel">Tambah Pegawai</p>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="nonMemberFormInput" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="insert_name" class="form-label">Nama</label>
+                            <label for="insert_name" class="form-label">Nama Pegawai</label>
                             <input type="text" class="form-control" id="insert_name" name="insert_name" required>
                         </div>
-                        
+
+                        <div class="mb-3">
+                            <label for="insert_nik" class="form-label">NIK</label>
+                            <input type="text" class="form-control" id="insert_nik" name="insert_nik" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="insert_jk" class="form-label">Jenis Kelamin</label>
+                            <select class="form-control" id="insert_jk" name="insert_jk" required>
+                                <option value="" selected>Pilih Jenis Kelamin</option>
+                                <option value="L">Laki-Laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="insert_address" class="form-label">Alamat</label>
+                            <input type="text" class="form-control" id="insert_address" name="insert_address" required>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="insert_email" class="form-label">Email</label>
@@ -71,11 +91,22 @@
                                 <input type="text" class="form-control" id="insert_phone" name="insert_phone">
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="insert_jabatan" class="form-label">Jabatan</label>
+                            <input type="text" class="form-control" id="insert_jabatan" name="insert_jabatan" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="insert_unit_kerja" class="form-label">Unit Kerja</label>
+                            <input type="text" class="form-control" id="insert_unit_kerja" name="insert_unit_kerja"
+                                value="Senam" placeholder="Senam" readonly>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_insert" class="btn btn-primary btn-sm">Simpan</button>
-                        <button type="button" id="button_insert_send" class="btn btn-primary" style="display: none;">Menyimpan...</button>
+                        <button type="button" id="button_insert_send" class="btn btn-primary"
+                            style="display: none;">Menyimpan...</button>
                     </div>
                 </form>
             </div>
@@ -94,12 +125,13 @@
                     @csrf
                     <input type="hidden" id="delete_non_member_id">
                     <div class="modal-body">
-                        <p>Apakah Anda yakin ingin menghapus non-member ini?</p>
+                        <p>Apakah Anda yakin ingin menghapus Pegawai ini?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                         <button type="button" id="button_delete" class="btn btn-danger btn-sm">Hapus</button>
-                        <button type="button" id="button_delete_send" class="btn btn-danger" style="display: none;">Menghapus...</button>
+                        <button type="button" id="button_delete_send" class="btn btn-danger"
+                            style="display: none;">Menghapus...</button>
                     </div>
                 </form>
             </div>
@@ -108,20 +140,19 @@
 @endpush
 
 @push('scripts')
-
     {{-- GLOBAL DEBOUNCE FUNCTION --}}
     <script>
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            const later = () => {
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func.apply(this, args);
+                };
                 clearTimeout(timeout);
-                func.apply(this, args);
+                timeout = setTimeout(later, wait);
             };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
+        }
     </script>
 
     {{-- SET VARIABLE --}}
@@ -139,8 +170,14 @@
         const buttonInsertSend = document.getElementById('button_insert_send');
         const componentModalFormInsert = document.getElementById('nonMemberModalInput');
         const inName = document.getElementById('insert_name');
+        const inNik = document.getElementById('insert_nik');
+        const inJenisKelamin = document.getElementById('insert_jk');
+        const inAddress = document.getElementById('insert_address');
         const inEmail = document.getElementById('insert_email');
         const inPhone = document.getElementById('insert_phone');
+        const inJabatan = document.getElementById('insert_jabatan');
+        const inUnitKerja = document.getElementById('insert_unit_kerja');
+        // const in = document.getElementById('insert_');
 
         // MODAL DELETE
         const nonMemberModalDelete = document.getElementById('nonMemberModalDelete');
@@ -153,7 +190,7 @@
     <script>
         async function fetchData(search, limit) {
             try {
-                let url = `{{ route('senam.master.non-members.data') }}`;
+                let url = `{{ route('coffeshop.master.pegawai.data') }}`;
                 let params = new URLSearchParams();
 
                 if (search && search !== '') {
@@ -175,10 +212,12 @@
                     <thead>
                         <tr>
                             <th class="ps-4" width="50">No</th>
-                            <th>Nama</th>
-                            <th>Kontak</th>
-                            <th>Tanggal Daftar</th>
-                            
+                            <th>Kode Pegawai</th>
+                            <th>Nama Pegawai</th>
+                            <th>JK</th>
+                            <th>Alamat</th>
+                            <th>Telepon</th>
+                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -187,39 +226,27 @@
                 if (!data || data.data.length === 0) {
                     nonMemberTable.innerHTML += `
                         <tr>
-                            <td colspan="5" class="ps-4 text-center">Tidak ada Data</td>
+                            <td colspan="7" class="ps-4 text-center">Tidak ada Data</td>
                         </tr>
                     `;
                 } else {
-                    data.data.forEach((nonMember, index) => {
-                        // Format contact
-                        const contact = `
-                            <div>${nonMember.phone || '-'}</div>
-                            <div class="small text-muted">${nonMember.email || '-'}</div>
-                        `;
-
-                        // Format date
-                        const createdAt = new Date(nonMember.created_at);
-                        const formattedDate = createdAt.toLocaleDateString('id-ID', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric'
-                        });
-
+                    data.data.forEach((pegawai, index) => {
                         nonMemberTable.innerHTML += `
                             <tr>
                                 <td class="ps-4">${data.from + index}</td>
-                                <td>${nonMember.name}</td>
-                                <td>${contact}</td>
-                                <td>${formattedDate}</td>
-                                
+                                <td>${pegawai.kode_pegawai}</td>
+                                <td>${pegawai.nama_pegawai}</td>
+                                <td>${pegawai.jk}</td>
+                                <td>${pegawai.alamat}</td>
+                                <td>${pegawai.tlp}</td>
+                                <td>${pegawai.email}</td>
                             </tr>
                         `;
                     });
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
-                createDynamicAlert('danger', 'Gagal memuat data non-member');
+                createDynamicAlert('danger', 'Gagal memuat data Pegawai');
             }
         }
 
@@ -251,7 +278,12 @@
             inName.value = '';
             inEmail.value = '';
             inPhone.value = '';
-            
+            inNik.value = '';
+            inJenisKelamin.value = '';
+            inAddress.value = '';
+            inJabatan.value = '';
+            inUnitKerja.value = 'Coffeshop';
+
             new bootstrap.Modal(componentModalFormInsert).show();
         });
 
@@ -263,14 +295,19 @@
                 const formData = {
                     name: inName.value,
                     email: inEmail.value,
-                    phone: inPhone.value
+                    phone: inPhone.value,
+                    nik: inNik.value,
+                    jk: inJenisKelamin.value,
+                    address: inAddress.value,
+                    jabatan: inJabatan.value,
+                    unit_kerja: inUnitKerja.value
                 };
 
-                const response = await axios.post(`{{ route('senam.master.non-members.store') }}`, formData);
+                const response = await axios.post(`{{ route('coffeshop.master.pegawai.store') }}`, formData);
                 const data = response.data;
 
                 if (data.status === true) {
-                    createDynamicAlert('success', data.message || 'Non-member berhasil ditambahkan');
+                    createDynamicAlert('success', data.message || 'Pegawai berhasil ditambahkan');
 
                     // Refresh data
                     const search = filterSearch.value;
@@ -284,7 +321,8 @@
                     if (data.type === 'validation') {
                         showValidationErrors(data.errors);
                     } else {
-                        createDynamicAlert('danger', data.message || 'Terjadi kesalahan saat menambahkan non-member');
+                        createDynamicAlert('danger', data.message ||
+                            'Terjadi kesalahan saat menambahkan Pegawai');
                     }
                 }
 
@@ -314,7 +352,7 @@
             if (deleteBtn) {
                 event.preventDefault();
                 const id = deleteBtn.dataset.id;
-                
+
                 deleteNonMemberId.value = id;
                 new bootstrap.Modal(nonMemberModalDelete).show();
             }
@@ -325,21 +363,21 @@
             buttonDeleteSend.style.display = 'inline-block';
 
             try {
-                const response = await axios.post(`{{ route('senam.master.non-members.destroy') }}`, {
+                const response = await axios.post(`{{ route('coffeshop.master.pegawai.destroy') }}`, {
                     id: deleteNonMemberId.value
                 });
                 const data = response.data;
 
                 if (data.status === true) {
                     createDynamicAlert('success', data.message);
-                    
+
                     const search = filterSearch.value;
                     const limit = syLimit.value;
                     await fetchData(search, limit);
-                    
+
                     bootstrap.Modal.getInstance(nonMemberModalDelete).hide();
                 } else {
-                    createDynamicAlert('danger', data.message || 'Gagal menghapus non-member');
+                    createDynamicAlert('danger', data.message || 'Gagal menghapus Pegawai');
                 }
             } catch (error) {
                 console.error('Error:', error);

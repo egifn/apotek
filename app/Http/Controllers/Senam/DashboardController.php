@@ -22,21 +22,6 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        // Kelas hari ini
-        $todayClasses = DB::table('s_class_schedule as cs')
-            ->join('s_class_types as ct', 'cs.class_type_id', '=', 'ct.id')
-            ->join('s_instructors as i', 'cs.instructor_id', '=', 'i.id')
-            ->join('s_locations as l', 'cs.location_id', '=', 'l.id')
-            ->select(
-                'cs.id',
-                'ct.name as class_name',
-                'i.name as instructor_name',
-                'l.name as location_name',
-                DB::raw('(SELECT COUNT(*) FROM s_class_bookings WHERE class_schedule_id = cs.id) as participants_count')
-            )
-            ->where('cs.is_active', true)
-            ->get();
-
         // Kelas mendatang (7 hari ke depan)
         $upcomingClasses = DB::table('s_class_schedule as cs')
             ->join('s_class_types as ct', 'cs.class_type_id', '=', 'ct.id')
@@ -49,28 +34,9 @@ class DashboardController extends Controller
             ->where('cs.is_active', true)
             ->get();
 
-        // Booking terbaru
-        $recentBookings = DB::table('s_class_bookings as cb')
-            ->leftJoin('s_members as m', 'cb.member_id', '=', 'm.id')
-            ->leftJoin('s_non_members as nm', 'cb.non_member_id', '=', 'nm.id')
-            ->join('s_class_schedule as cs', 'cb.class_schedule_id', '=', 'cs.id')
-            ->join('s_class_types as ct', 'cs.class_type_id', '=', 'ct.id')
-            ->select(
-                'cb.id',
-                DB::raw('COALESCE(m.name, nm.name) as customer_name'),
-                'ct.name as class_name',
-                'cb.payment_status',
-                'cb.created_at'
-            )
-            ->orderBy('cb.created_at', 'desc')
-            ->limit(10)
-            ->get();
-
         return view('senam.dashboard.index', compact(
             'stats',
-            'todayClasses',
-            'upcomingClasses',
-            'recentBookings'
+            'upcomingClasses'
         ));
     }
 }

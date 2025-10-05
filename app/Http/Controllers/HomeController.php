@@ -91,18 +91,12 @@ class HomeController extends Controller
                             ->join('m_produk','tr_penjualan_d.kode_produk','=','m_produk.kode_produk')
                             ->join('m_produk_unit','m_produk.id_unit','m_produk_unit.id')
                             ->select('tr_penjualan_d.kode_produk','m_produk.nama_produk',DB::raw('SUM(tr_penjualan_d.qty_kecil) as jml_jual_terkecil'),'m_produk_unit.nama_unit')
-                            //->where('tgl_kunjungan',  $date)
-                            //->where('kode_cabang', Auth::user()->kd_lokasi)
-                            // ->where('id_user_input', Auth::user()->id )
                             ->groupBy('tr_penjualan_d.kode_produk','m_produk.nama_produk','m_produk_unit.nama_unit')
                             ->orderBy('jml_jual_terkecil', 'DESC')
                             ->get();
 
             $data_barang_habis = DB::table('m_produk')
                             ->select('m_produk.kode_produk','m_produk.nama_produk','m_produk.qty','m_produk.qty_min')
-                            //->where('tgl_kunjungan',  $date)
-                            //->where('kode_cabang', Auth::user()->kd_lokasi)
-                            // ->where('id_user_input', Auth::user()->id )
                             ->where('m_produk.qty', '<=', 'm_produk.qty_min')
                             ->get();
                             
@@ -126,6 +120,64 @@ class HomeController extends Controller
 
             return view('master_dashboard', compact('data_terlaris','data_barang_habis','data_barang_kadaluarsa','data_cabang'));
         }
+    }
+
+    public function dashboard_kasir()
+    {
+        date_default_timezone_set('Asia/Jakarta');
+        // $date = (date('Y-m-d'));
+        $date = '2025-09-20';
+        
+
+        $total_pendapatan = DB::table('all_transactions')
+                ->select(DB::raw('SUM(all_transactions.total) as ttl_pendapatan'))
+                ->whereDate('all_transactions.transaction_date',   $date)
+                ->first();
+       
+        // $total_pendapatan = DB::table('all_transactions')
+        //         ->select(DB::raw('SUM(all_transactions.total) as ttl_pendapatan'))
+        //         ->whereDate('all_transactions.transaction_date',   $date)
+        //         ->first();
+
+        $total_pendapatan_cafe = DB::table('all_transactions')
+                ->join('all_transaction_items','all_transactions.id','=','all_transaction_items.transaction_id')
+                ->select(DB::raw('SUM(all_transaction_items.subtotal) as ttl_pendapatan_cafe'),
+                        DB::raw('SUM(all_transaction_items.quantity) as jml_item'))
+                ->whereDate('all_transactions.transaction_date',   $date)
+                ->whereIn('all_transaction_items.item_type', ['product'])
+                ->first();
+        
+        $total_pendapatan_barber = DB::table('all_transactions')
+                ->join('all_transaction_items','all_transactions.id','=','all_transaction_items.transaction_id')
+                ->select(DB::raw('SUM(all_transaction_items.subtotal) as ttl_pendapatan_barber'),
+                        DB::raw('SUM(all_transaction_items.quantity) as jml'))
+                ->whereDate('all_transactions.transaction_date',   $date)
+                ->whereIn('all_transaction_items.item_type', ['service'])
+                ->first();
+
+        $total_pendapatan_senam = DB::table('all_transactions')
+                ->join('all_transaction_items','all_transactions.id','=','all_transaction_items.transaction_id')
+                ->select(DB::raw('SUM(all_transaction_items.subtotal) as ttl_pendapatan_senam'),
+                        DB::raw('SUM(all_transaction_items.quantity) as jml'))
+                ->whereDate('all_transactions.transaction_date',   $date)
+                ->whereIn('all_transaction_items.item_type', ['class'])
+                ->first();
+
+        $data_transaksi = DB::table('all_transactions')
+                ->join('all_transaction_items', 'all_transactions.id', '=', 'all_transaction_items.transaction_id')
+                ->select('all_transactions.id',
+                    'all_transactions.transaction_date',
+                    'all_transactions.invoice_number',
+                    'all_transactions.business_type',
+                    DB::raw("GROUP_CONCAT(all_transaction_items.item_id ORDER BY all_transaction_items.item_id SEPARATOR ', ') as item_ids"),
+                    DB::raw("GROUP_CONCAT(all_transaction_items.name ORDER BY all_transaction_items.item_id SEPARATOR ', ') as item_names"),
+                    DB::raw("SUM(all_transaction_items.subtotal) as total_subtotal")
+                )
+                ->groupBy('all_transactions.id', 'all_transactions.transaction_date', 'all_transactions.invoice_number', 'all_transactions.business_type')
+                ->get();
+
+        return view('dashboard_kasir', compact('total_pendapatan', 'total_pendapatan_cafe', 'total_pendapatan_barber', 'total_pendapatan_senam', 'data_transaksi' ));
+        
     }
 
     public function index2()
@@ -224,4 +276,52 @@ class HomeController extends Controller
         }
         
     }
+
+    public function akses_ditolak()
+    {
+        return view('errors.akses-ditolak');
+    }
+
+    public function getData(Request $request)
+    {
+        // dd(Auth::user()->id);
+        $businessType = $request->business_type; 
+        $period       = $request->period;        
+        $date         = '2025-09-20';          
+
+        $query = DB::table('all_transaction_items as ati')
+            ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
+            ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
+            ->where('at.user_id', Auth::user()->id)
+            ->select(
+                'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method');
+
+        // 1. filter bisnis
+        if ($businessType && $businessType !== 'all') {
+            $query->where('ati.business_type', $businessType);
+        }
+
+        // 2. filter tanggal
+        if ($period === 'daily' && $date) {
+            $query->whereDate('at.transaction_date', $date);
+        } elseif ($period === 'monthly' && $date) {
+            $query->whereYear('at.transaction_date', substr($date,0,4))
+                ->whereMonth('at.transaction_date', substr($date,5,2));
+        } elseif ($period === 'yearly' && $date) {
+            $query->whereYear('at.transaction_date', $date);
+        }
+
+        // $totalCash = DB::table('all_transaction_items as ati')
+        //     ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
+        //     ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
+        //     ->where('at.user_id', Auth::user()->id)
+        //     ->where('at.payment_method', 'cash')   // <-- filter cash
+        //     ->sum('ati.subtotal');  
+
+        return response()->json([
+            'status' => true,
+            'data'   => $query->get()
+        ]);
+    }
+
 }

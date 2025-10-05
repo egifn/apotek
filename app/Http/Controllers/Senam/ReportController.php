@@ -266,6 +266,11 @@ class ReportController extends Controller
                 ->groupBy('all_transaction_items.item_id', 'all_transactions.transaction_date', 's_class_schedule.services_name')
                 ->orderBy('all_transactions.transaction_date', 'DESC')
                 ->orderBy('s_class_schedule.services_name');
+
+            // $query1 = DB::table('all_transaction_items')
+            //         ->select('*');
+
+            // dd($query->get());
             
             if ($period === 'daily' && $date) {
                 $query->whereDate('all_transactions.transaction_date', $date);

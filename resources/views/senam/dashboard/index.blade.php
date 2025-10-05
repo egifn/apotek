@@ -8,24 +8,29 @@
         .card-stat {
             transition: all 0.3s ease;
         }
+
         .card-stat:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
         .stat-icon {
             font-size: 2rem;
             opacity: 0.7;
         }
+
         .table-card {
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
+
         .table-card-header {
             background-color: #f8f9fa;
             padding: 15px 20px;
             border-bottom: 1px solid #eaeaea;
         }
+
         .table-card-header .header-title {
             margin: 0;
             font-size: 16px;
@@ -115,128 +120,4 @@
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <!-- Kelas Hari Ini -->
-        <div class="col-lg-6 mb-4">
-            <div class="table-card">
-                <div class="table-card-header">
-                    <div class="header-content">
-                        <h6 class="header-title">Kelas Hari Ini</h6>
-                    </div>
-                </div>
-                <div class="table-card-body">
-                    <div class="table-container">
-                        <table class="table table-hover table-types-table">
-                            <thead>
-                                <tr>
-                                    <th>Kelas</th>
-                                    <th>Instruktur</th>
-                                    <th>Lokasi</th>
-                                 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($todayClasses as $class)
-                                <tr>
-                                    <td>{{ $class->class_name }}</td>
-                                    <td>{{ $class->instructor_name }}</td>
-                                    <td>{{ $class->location_name }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">Tidak ada kelas hari ini</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Booking Terbaru -->
-        <div class="col-lg-6 mb-4">
-            <div class="table-card">
-                <div class="table-card-header">
-                    <div class="header-content">
-                        <h6 class="header-title">Booking Terbaru</h6>
-                    </div>
-                </div>
-                <div class="table-card-body">
-                    <div class="table-container">
-                        <table class="table table-hover table-types-table">
-                            <thead>
-                                <tr>
-                                    <th>Pelanggan</th>
-                                    <th>Kelas</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($recentBookings as $booking)
-                                <tr>
-                                    <td>{{ $booking->customer_name }}</td>
-                                    <td>{{ $booking->class_name }}</td>
-                                    <td>
-                                        @if($booking->payment_status == 'paid')
-                                            <span class="badge bg-success">Lunas</span>
-                                        @else
-                                            <span class="badge bg-warning text-dark">Belum Bayar</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="text-center">Tidak ada booking terbaru</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Kelas Mendatang (7 Hari) -->
-        {{-- <div class="row">
-            <div class="col-lg-12 mb-4">
-                <div class="table-card">
-                    <div class="table-card-header">
-                        <div class="header-content">
-                            <h6 class="header-title">Jadwal Kelas 7 Hari Mendatang</h6>
-                        </div>
-                    </div>
-                    <div class="table-card-body">
-                        <div class="table-container">
-                            <table class="table table-hover table-types-table">
-                                <thead>
-                                    <tr>
-                                        <th>Hari/Tanggal</th>
-                                        <th>Kelas</th>
-                                        <th>Instruktur</th>
-                                        <th>Waktu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($upcomingClasses as $class)
-                                    <tr>
-                                        <td>-</td>
-                                        <td>{{ $class->class_name }}</td>
-                                        <td>{{ $class->instructor_name }}</td>
-                                        <td>-</td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center">Tidak ada kelas dalam 7 hari mendatang</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
 @endsection

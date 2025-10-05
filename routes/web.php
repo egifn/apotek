@@ -17,13 +17,15 @@ use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index');
+// Route::get('/', 'HomeController@index');
+Route::get('/akses-ditolak', 'HomeController@akses_ditolak')->name('akses_ditolak');
 
 Route::get('/dashboard-master', 'HomeController@dashboard_master')->name('dashboard_master');
-// Route::get('/dashboard', 'Coffeshop\HomeCoffeshopController@home')->name('coffeshop.home');
+Route::get('/dashboard-kasir', 'HomeController@dashboard_kasir')->name('dashboard_kasir');
+Route::get('/data-dashboard', 'HomeController@getData')->name('dashboard_data');
 
 // ------------------------------------- CoffeShop Routes ----------------------------------------- //
-Route::prefix('coffeshop')->name('coffeshop.')->group(function () {
+Route::prefix('coffeshop')->name('coffeshop.')->middleware(['user.type:1'])->group(function () {
     Route::get('/dashboard', 'Coffeshop\DashboardController@index')->name('dashboard');
     
     
@@ -105,7 +107,20 @@ Route::prefix('coffeshop')->name('coffeshop.')->group(function () {
             Route::get('/compositions', 'Coffeshop\ProductController@getCompositions')->name('compositions');
         });
         
-        
+        Route::prefix('pegawai')->name('pegawai.')->group(function () {
+            Route::get('/', 'Coffeshop\PegawaiController@index')->name('index');
+            Route::get('/data', 'Coffeshop\PegawaiController@getData')->name('data');
+            Route::post('/store', 'Coffeshop\PegawaiController@store')->name('store');
+            Route::post('/destroy', 'Coffeshop\PegawaiController@destroy')->name('destroy');
+        });
+       
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('/', 'Coffeshop\UserController@index')->name('index');
+            Route::get('/data', 'Coffeshop\UserController@getData')->name('data');
+            Route::get('/datapegawai', 'Coffeshop\UserController@getDataPegawai')->name('data_pegawai');
+            Route::post('/store', 'Coffeshop\UserController@store')->name('store');
+            Route::post('/destroy', 'Coffeshop\UserController@destroy')->name('destroy');
+        });
     });
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/sales', 'Coffeshop\ReportController@index')->name('reports');
@@ -230,11 +245,19 @@ Route::prefix('senam')->name('senam.')->group(function () {
             Route::get('/quota-history', 'Senam\MemberController@getQuotaHistory')->name('quota-history');
         });
 
-        Route::prefix('non-members')->name('non-members.')->group(function () {
-            Route::get('/', 'Senam\NonMemberController@index')->name('index');
-            Route::get('/data', 'Senam\NonMemberController@getData')->name('data');
-            Route::post('/store', 'Senam\NonMemberController@store')->name('store');
-            Route::post('/destroy', 'Senam\NonMemberController@destroy')->name('destroy');
+        Route::prefix('pegawai')->name('pegawai.')->group(function () {
+            Route::get('/', 'Senam\PegawaiController@index')->name('index');
+            Route::get('/data', 'Senam\PegawaiController@getData')->name('data');
+            Route::post('/store', 'Senam\PegawaiController@store')->name('store');
+            Route::post('/destroy', 'Senam\PegawaiController@destroy')->name('destroy');
+        });
+       
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('/', 'Senam\UserController@index')->name('index');
+            Route::get('/data', 'Senam\UserController@getData')->name('data');
+            Route::get('/datapegawai', 'Senam\UserController@getDataPegawai')->name('data_pegawai');
+            Route::post('/store', 'Senam\UserController@store')->name('store');
+            Route::post('/destroy', 'Senam\UserController@destroy')->name('destroy');
         });
 
         Route::prefix('equipment')->name('equipment.')->group(function () {

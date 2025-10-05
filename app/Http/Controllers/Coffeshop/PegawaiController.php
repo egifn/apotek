@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Senam;
+namespace App\Http\Controllers\Coffeshop;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class NonMemberController extends Controller
+class PegawaiController extends Controller
 {
     public function index()
     {
-        return view('senam.master.non-members');
+        return view('coffeshop.master.pegawai');
     }
 
     public function getData(Request $request)
@@ -20,13 +21,13 @@ class NonMemberController extends Controller
             $search = $request->input('search');
             $limit = $request->input('limit', 10);
 
-            $query = DB::table('s_non_members');
+            $query = DB::table('m_pegawai')
+                    ->where('unit_kerja', 'Coffeshop');
 
             if ($search) {
                 $query->where(function($q) use ($search) {
-                    $q->where('name', 'like', "%$search%")
-                      ->orWhere('email', 'like', "%$search%")
-                      ->orWhere('phone', 'like', "%$search%");
+                    $q->where('name_pegawai', 'like', "%$search%")
+                      ->orWhere('kode_pegawai', 'like', "%$search%");
                 });
             }
 
@@ -49,8 +50,10 @@ class NonMemberController extends Controller
 
     public function store(Request $request)
     {
+        // validate input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
+            'jabatan' => 'required|string|max:20',
             'email' => 'nullable|email|max:100',
             'phone' => 'nullable|string|max:20'
         ]);
@@ -65,10 +68,30 @@ class NonMemberController extends Controller
         }
 
         try {
-            DB::table('s_non_members')->insert([
-                'name' => $request->name,
+            // generate sequence number based on how many employees in Coffeshop
+            $count = DB::table('m_pegawai')
+                ->where('unit_kerja', 'Coffeshop')
+                ->count();
+
+            $no_urut = $count + 1;
+            $no_urut_padded = str_pad($no_urut, 4, '0', STR_PAD_LEFT); // e.g. 0001
+
+            // build kode: CF-{JABATAN}-{0001}
+            $jabatan_code = strtoupper(preg_replace('/\s+/', '', $request->jabatan));
+            $kode_pegawai = 'CF-' . $jabatan_code . '-' . $no_urut_padded;
+
+            DB::table('m_pegawai')->insert([
+                'kode_pegawai' => $kode_pegawai,
+                'nik_pegawai' => $request->nik,
+                'nama_pegawai' => $request->name,
+                'jk' => $request->jk,
+                'alamat' => $request->address,
+                'tlp' => $request->phone,
                 'email' => $request->email,
-                'phone' => $request->phone,
+                'jabatan' => $request->jabatan,
+                'unit_kerja' => $request->unit_kerja,
+                'status_pegawai' => 'Aktif',
+                'id_user_input' => Auth::user()->id,
                 'created_at' => now()
             ]);
 

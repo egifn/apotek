@@ -182,7 +182,6 @@
 
         /* ========== MAIN CONTENT ========== */
         .main-content {
-            margin-left: 225px;
             min-height: 100vh;
             transition: margin 0.3s ease;
         }
@@ -550,6 +549,7 @@
         .table-responsive-custom {
             width: 100%;
             overflow-x: auto;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             border-collapse: collapse;
         }
@@ -770,19 +770,56 @@
             }
         }
     </style>
+
+    @yield('style')
 </head>
+
 
 <body>
     <div class="d-flex">
-
-        @include('layouts.barbershop.module.sidebar')
-
-
-
         <!-- Main Content -->
         <div class="main-content flex-grow-1" id="mainContent">
             <!-- Top Navbar -->
-            @include('layouts.barbershop.module.header')
+            <nav class="top-navbar navbar navbar-expand-lg navbar-light bg-white">
+                <button class="navbar-toggler" type="button" id="sidebarToggle">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <span class="navbar-brand">
+                    @yield('page-title')
+                </span>
+
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" style="margin-right: 5px;">
+                            <div class="user-avatar">
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            </div>
+                            <span>{{ Auth::user()->name }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <h6 class="dropdown-header">{{ Auth::user()->name }}</h6>
+                                <div class="dropdown-header" style="font-size: 0.75rem; color: #6b7280;">
+                                    {{ Auth::user()->username }}</div>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Keluar
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
             <!-- Page Content -->
             <div class="content-area">
                 <div id="alert-container" class="position-fixed top-0 end-0 p-3"
@@ -800,54 +837,6 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
-    <script>
-        // Toggle sidebar collapse
-        document.getElementById('sidebarCollapse').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.getElementById('mainContent').classList.toggle('collapsed');
-
-            // Store state in localStorage
-            localStorage.setItem('sidebarCollapsed',
-                document.getElementById('sidebar').classList.contains('collapsed'));
-        });
-
-        // Mobile sidebar toggle
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('show');
-        });
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-
-            if (window.innerWidth < 992 &&
-                !sidebar.contains(event.target) &&
-                !sidebarToggle.contains(event.target)) {
-                sidebar.classList.remove('show');
-            }
-        });
-
-        // Initialize sidebar state
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                document.getElementById('sidebar').classList.add('collapsed');
-                document.getElementById('mainContent').classList.add('collapsed');
-            }
-
-            // Prevent menu links from collapsing sidebar
-            const menuLinks = document.querySelectorAll('.sidebar .nav-link');
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (window.innerWidth < 992) {
-                        document.getElementById('sidebar').classList.remove('show');
-                    }
-                    // Don't prevent default to allow normal navigation
-                });
-            });
-        });
-    </script>
 
     <script>
         function toggleMasterMenu() {
@@ -931,6 +920,7 @@
     </script>
 
     @stack('scripts')
+    @yield('scripts')
 </body>
 
 </html>

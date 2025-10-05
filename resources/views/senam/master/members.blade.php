@@ -71,7 +71,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="insert_phone" class="form-label">No. Telepon</label>
-                                <input type="text" class="form-control" id="insert_phone" name="insert_phone">
+                                <input type="text" class="form-cont rol" id="insert_phone" name="insert_phone"
+                                    placeholder="-" value="-">
                             </div>
                         </div>
                         <input type="date" class="form-control" id="insert_join_date" name="insert_join_date" required
@@ -133,7 +134,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="edit_phone" class="form-label">No. Telepon</label>
-                                <input type="text" class="form-control" id="edit_phone" name="edit_phone" required>
+                                <input type="text" class="form-control" id="edit_phone" name="edit_phone"
+                                    placeholder="-" value="-" required>
                             </div>
                         </div>
                         <div class="mb-3">

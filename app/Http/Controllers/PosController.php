@@ -182,6 +182,7 @@ class PosController extends Controller
                 'change_amount' => $changeAmount,
                 'notes' => $notes,
                 'branch_id' => Auth::user()->kd_lokasi,
+                'user_id' => Auth::user()->id,
                 'created_at' => now(),
             ]);
 

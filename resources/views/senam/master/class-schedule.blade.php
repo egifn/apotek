@@ -84,14 +84,14 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="insert_services_name" class="form-label">Nama Servis*</label>
+                                    <label for="insert_services_name" class="form-label">Nama Jasa*</label>
                                     <input type="text" class="form-control" id="insert_services_name"
                                         name="insert_services_name" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="insert_class_type_id" class="form-label">Jenis Jasa*</label>
                                     <select class="form-control" id="insert_class_type_id" name="insert_class_type_id"
@@ -103,9 +103,7 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="insert_location_id" class="form-label">Lokasi*</label>
                                     <select class="form-control" id="insert_location_id" name="insert_location_id" required>
@@ -116,11 +114,20 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="insert_price" class="form-label">Harga*</label>
+                                    <label for="insert_price" class="form-label">Harga Visit*</label>
                                     <input type="number" class="form-control" id="insert_price" name="insert_price"
                                         min="0" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="insert_member_price" class="form-label">Harga Member*</label>
+                                    <input type="number" class="form-control" id="insert_member_price"
+                                        name="insert_member_price" min="0" required>
                                 </div>
                             </div>
                         </div>
@@ -298,6 +305,7 @@
         const componentModalFormInsert = document.getElementById('scheduleModalInput');
         const inServicesName = document.getElementById('insert_services_name');
         const inPrice = document.getElementById('insert_price');
+        const inMemberPrice = document.getElementById('insert_member_price');
         const inClassTypeId = document.getElementById('insert_class_type_id');
         const inInstructorId = document.getElementById('insert_instructor_id');
         const inLocationId = document.getElementById('insert_location_id');
@@ -307,6 +315,7 @@
         const editServicesName = document.getElementById('edit_services_name');
         const editTypeServices = document.getElementById('edit_type_services');
         const editPrice = document.getElementById('edit_price');
+        const editMemberPrice = document.getElementById('edit_member_price');
         const editScheduleId = document.getElementById('edit_schedule_id');
         const editClassTypeId = document.getElementById('edit_class_type_id');
         const editInstructorId = document.getElementById('edit_instructor_id');
@@ -448,7 +457,8 @@
                             <th class="ps-4" width="50">No</th>
                             <th>Nama Jasa</th>
                             <th>Jenis Jasa</th>
-                            <th>Harga</th>
+                            <th>Harga Visit</th>
+                            <th>Harga Member</th>
                             <th>Status</th>
                             <th class="text-center pe-4" width="150">Aksi</th>
                         </tr>
@@ -476,6 +486,7 @@
                                 <td>${schedule.services_name}<br><small>${schedule.instructor_name || ''}</small></td>
                                 <td>${schedule.class_name}</td>
                                 <td style="text-align: right;">${formatRupiah(schedule.price)}</td>
+                                <td style="text-align: right;">${formatRupiah(schedule.member_price)}</td>
                                 <td>${statusBadge}</td>
                                 <td class="text-center pe-4">
                                     <div class="d-flex justify-content-center gap-2">
@@ -486,17 +497,17 @@
                                         </button>
                                         ${schedule.is_active ? 
                                             `<button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                                                data-id="${schedule.id}" 
-                                                                data-active="${schedule.is_active}"
-                                                                title="Nonaktifkan">
-                                                                <i class="fas fa-ban"></i>
-                                                            </button>` : 
+                                                                                                                                    data-id="${schedule.id}" 
+                                                                                                                                    data-active="${schedule.is_active}"
+                                                                                                                                    title="Nonaktifkan">
+                                                                                                                                    <i class="fas fa-ban"></i>
+                                                                                                                                </button>` : 
                                             `<button class="btn btn-icon btn-sm btn-outline-danger btn_delete" 
-                                                                data-id="${schedule.id}" 
-                                                                data-active="${schedule.is_active}"
-                                                                title="Hapus Permanen">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>`
+                                                                                                                                    data-id="${schedule.id}" 
+                                                                                                                                    data-active="${schedule.is_active}"
+                                                                                                                                    title="Hapus Permanen">
+                                                                                                                                    <i class="fas fa-trash"></i>
+                                                                                                                                </button>`
                                         }
                                     </div>
                                 </td>
@@ -552,6 +563,7 @@
             inLocationId.value = '';
             inServicesName.value = '';
             inPrice.value = '';
+            inMemberPrice.value = '';
 
             // Set min datetime to now
             const now = new Date();
@@ -578,7 +590,8 @@
                     instructor_id: needInstructorCheckbox.checked ? inInstructorId.value : null,
                     location_id: inLocationId.value,
                     services_name: inServicesName.value,
-                    price: inPrice.value
+                    price: inPrice.value,
+                    member_price: inMemberPrice.value
                 };
 
                 const response = await axios.post(`{{ route('senam.master.class-schedule.store') }}`,
@@ -653,6 +666,7 @@
                     editInstructorId.value = schedule.instructor_id;
                     editLocationId.value = schedule.location_id;
                     editPrice.value = schedule.price || '';
+                    editMemberPrice.value = schedule.member_price || '';
                     // editTypeServices.value = schedule.type_services || '';
                     // editIsActive.value = schedule.is_active ? '1' : '0';
 
@@ -664,6 +678,7 @@
                         location_id: editLocationId.value,
                         services_name: editServicesName.value,
                         price: editPrice.value,
+                        member_price: editMemberPrice.value
                         // type_services: editTypeServices.value,
                         // is_active: editIsActive.value
                     };
@@ -702,6 +717,7 @@
                     location_id: editLocationId.value,
                     services_name: editServicesName.value,
                     price: editPrice.value,
+                    member_price: editMemberPrice.value,
                     // is_active: editIsActive.value
                 };
 

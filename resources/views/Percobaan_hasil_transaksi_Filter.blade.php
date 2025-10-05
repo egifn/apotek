@@ -1,36 +1,64 @@
-@extends('layouts.senam.admin')
-@section('page-title', 'Laporan')
+@extends('layouts.admin')
+@section('page-title', 'Transaksi hari ini')
 @section('content')
-    <div class="row mb-4">
+    {{-- <div class="row mb-4">
         <div class="col-md-8">
-            <h4>Laporan</h4>
+            <h4>Transaksi hari ini</h4>
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-lg-12">
             <div class="table-card">
                 <div class="table-card-header" style="display: flex; flex-wrap: wrap;gap: 5px;">
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-12 text-end" style="margin-bottom: 5px">
                             <button id="btn_export_pdf" class="btn btn-danger btn-sm">Export PDF</button>
                             <button id="btn_export_excel" class="btn btn-success btn-sm" style="margin-right: 5px">Export
                                 Excel</button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row g-2" style="width: 100%; align-items: center;">
                         {{-- <div class="col-md-3">
                             <select id="filter_branch" class="form-select form-select-sm">
                                 <option value="">Pilih Cabang</option>
                             </select>
                         </div> --}}
+
                         <div class="col-md-3">
-                            <select id="filter_type" class="form-select form-select-sm">
+                            <select id="filter_bisnis" class="form-select form-select-sm">
                                 <option value="">Pilih Jenis</option>
-                                <option value="quota">Quota</option>
+                                <option value="all">ALL</option>
+                                <option value="coffeshop">Coffeshop</option>
+                                <option value="senam">Senam</option>
+                                <option value="barbershop">barber</option>
+
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="filter_type_senam">
+                            <select id="filter_type_senam" class="form-select form-select-sm">
+                                <option value="">Pilih Jenis</option>
                                 <option value="sales">Transaksi</option>
+                                <option value="quota">Quota</option>
                                 <option value="instruktur">Instruktur</option>
                                 <option value="rent" hidden>Sewa</option>
-
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="filter_type_coffeshop">
+                            <select id="filter_type_coffeshop" class="form-select form-select-sm">
+                                <option value="">Pilih Jenis</option>
+                                <option value="sales">Transaksi</option>
+                                <option value="quota">Quota</option>
+                                <option value="instruktur">Instruktur</option>
+                                <option value="rent" hidden>Sewa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="filter_type_barbershop">
+                            <select id="filter_type_barbershop" class="form-select form-select-sm">
+                                <option value="">Pilih Jenis</option>
+                                <option value="sales">Transaksi</option>
+                                <option value="quota">Quota</option>
+                                <option value="instruktur">Instruktur</option>
+                                <option value="rent" hidden>Sewa</option>
                             </select>
                         </div>
                         <div class="col-md-3" id="filter_period_container" style="display: none">
@@ -60,13 +88,14 @@
                 <div class="card-body" style="padding:0">
                     <div class="table-responsive">
                         <table class="table" id="ingredientTable">
-                            {{-- <thead >
+                            <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Jumlah</th>
-                                    <th>Cabang</th>
-                                    <th>Tanggal</th>
+                                    <th>#</th>
+                                    <th>Waktu</th>
+                                    <th>Bisnis</th>
+                                    <th>Kode</th>
+                                    <th>Detail</th>
+                                    <th style="text-align: right;">Total</th>
                                 </tr>
                             </thead>
                             <tbody id="report_body">
@@ -74,7 +103,7 @@
                                     <td colspan="5" class="text-center">Silakan lakukan filter untuk menampilkan data
                                     </td>
                                 </tr>
-                            </tbody> --}}
+                            </tbody>
                         </table>
 
                     </div>
@@ -106,21 +135,7 @@
             return date.toLocaleDateString('id-ID');
         }
 
-        // async function loadBranches() {
-        //     try {
-        //         const response = await axios.get("{{ route('coffeshop.reports.branches') }}");
-        //         if (response.data.status) {
-        //             response.data.data.forEach(branch => {
-        //                 const option = document.createElement('option');
-        //                 option.value = branch.id;
-        //                 option.textContent = branch.name;
-        //                 branchSelect.appendChild(option);
-        //             });
-        //         }
-        //     } catch (error) {
-        //         console.error('Gagal memuat cabang:', error);
-        //     }
-        // }
+        fetchData();
 
         filterType.addEventListener('change', function() {
             const type = this.value;
@@ -157,7 +172,6 @@
             // const branchId = branchSelect.value;
             const reportType = filterType.value;
             const period = filterPeriod.value;
-            console.log(reportBody);
 
             let date = '';
             if (period === 'daily') {
