@@ -73,8 +73,7 @@
 
         function exportFile(route) {
             const params = new URLSearchParams({
-                business_type: dtFilterBisnis.value,
-                period: 'daily', // sesuaikan jika nanti ada select period
+               
                 date: '{{ now()->toDateString() }}'
             });
             window.open(route + '?' + params.toString(), '_blank');
@@ -90,16 +89,14 @@
                     data: res
                 } = await axios.get("{{ route('dashboard_data') }}", {
                     params: {
-                        business_type: dtFilterBisnis.value,
-                        period: 'daily',
                         date: '{{ now()->toDateString() }}'
                     }
                 });
 
                 console.log(res);
 
-
                 const rows = res.data;
+                const total_uang_fisik = res.total;
                 reportBody.innerHTML = '';
 
                 if (!rows.length) {
@@ -133,7 +130,7 @@
                             <td><b>Total Uang Fisik</b></td>
                             <td colspan='2'><b>Cash</b></td>
                             <td></td>
-                            <td style="text-align:right; display: flex; justify-content: space-between;"><span><b>Rp.</b></span><b>${formatRupiah(grandTotal)}</b></td>
+                            <td style="text-align:right; display: flex; justify-content: space-between;"><span><b>Rp.</b></span><b>${formatRupiah(total_uang_fisik)}</b></td>
                 </tr>
                   <tr>
                             <td></td>
@@ -149,7 +146,7 @@
 
             } catch (e) {
                 console.error(e);
-                reportBody.innerHTML = '<tr><td colspan="7" class="text-center">Gagal memuat data</td></tr>';
+                reportBody.innerHTML = '<tr><td colspan="8" class="text-center">Gagal memuat data</td></tr>';
             }
         }
 

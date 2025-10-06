@@ -641,9 +641,9 @@
         </div>
 
         <!-- Metrics Grid -->
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-4">
             <!-- Apotek -->
-            <!-- <div class="card metric-card">
+            <div class="card metric-card">
                 <div class="card-content">
                     <div class="metric-header">
                         <div>
@@ -670,7 +670,7 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
 
             <!-- Cafe -->
             <div class="card metric-card">
@@ -685,9 +685,8 @@
                                 +8% -->
                             </div>
                         </div>
-                        <div class="activity-icon icon-blue"><a href="{{ route('coffeshop.dashboard') }}"><i
+                        <a class="activity-icon icon-blue" href="{{ route('coffeshop.dashboard') }}"><i
                                     class="bi bi-arrow-up-right"></i></a>
-                        </div>
                     </div>
 
                     <div class="metric-stats">
@@ -696,8 +695,6 @@
                             <div class="stat-label">Order</div>
                         </div>
                         <div>
-                            <div class="stat-value">Kopi Susu</div>
-                            <div class="stat-label">Favorit</div>
                         </div>
                     </div>
                 </div>
@@ -716,9 +713,8 @@
                                 <!-- -5% -->
                             </div>
                         </div>
-                        <div class="activity-icon icon-blue"><a href="{{ route('barbershop.dashboard') }}"><i
+                        <a class="activity-icon icon-blue" href="{{ route('barbershop.dashboard') }}"><i
                                     class="bi bi-arrow-up-right"></i></a>
-                        </div>
                     </div>
 
                     <div class="metric-stats">
@@ -727,8 +723,6 @@
                             <div class="stat-label">Booking</div>
                         </div>
                         <div>
-                            <div class="stat-value">Haircut</div>
-                            <div class="stat-label">Favorit</div>
                         </div>
                     </div>
                 </div>
@@ -747,9 +741,8 @@
                                 <!-- +22% -->
                             </div>
                         </div>
-                        <div class="activity-icon icon-blue"><a href="{{ route('senam.dashboard') }}"><i
+                        <a class="activity-icon icon-blue" href="{{ route('senam.dashboard') }}"><i
                                     class="bi bi-arrow-up-right"></i></a>
-                        </div>
                     </div>
 
                     <div class="metric-stats">
@@ -758,8 +751,6 @@
                             <div class="stat-label">Peserta</div>
                         </div>
                         <div>
-                            <div class="stat-value">Zumba</div>
-                            <div class="stat-label">Favorit</div>
                         </div>
                     </div>
                 </div>

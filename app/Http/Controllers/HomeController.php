@@ -284,43 +284,66 @@ class HomeController extends Controller
 
     public function getData(Request $request)
     {
-        // dd(Auth::user()->id);
         $businessType = $request->business_type; 
         $period       = $request->period;        
-        $date         = '2025-09-20';          
+        $date         = '2025-09-20';  
 
-        $query = DB::table('all_transaction_items as ati')
+        $data = DB::table('all_transaction_items as ati')
             ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
             ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
-            ->where('at.user_id', Auth::user()->id)
+            ->where('at.user_id', 22)
+            ->where('at.transaction_date', '2025-09-20')
             ->select(
-                'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method');
+                'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method')
+            ->get();
 
-        // 1. filter bisnis
-        if ($businessType && $businessType !== 'all') {
-            $query->where('ati.business_type', $businessType);
-        }
-
-        // 2. filter tanggal
-        if ($period === 'daily' && $date) {
-            $query->whereDate('at.transaction_date', $date);
-        } elseif ($period === 'monthly' && $date) {
-            $query->whereYear('at.transaction_date', substr($date,0,4))
-                ->whereMonth('at.transaction_date', substr($date,5,2));
-        } elseif ($period === 'yearly' && $date) {
-            $query->whereYear('at.transaction_date', $date);
-        }
-
-        // $totalCash = DB::table('all_transaction_items as ati')
-        //     ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
-        //     ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
-        //     ->where('at.user_id', Auth::user()->id)
-        //     ->where('at.payment_method', 'cash')   // <-- filter cash
-        //     ->sum('ati.subtotal');  
+       $total_uang_fisik = DB::table('all_transactions')
+        ->where('payment_method', 'cash')
+        ->sum('total');
 
         return response()->json([
             'status' => true,
-            'data'   => $query->get()
+            'data'   => $data,
+            'total'   => $total_uang_fisik,
+        ]);
+    }
+    
+    public function getDataTransaksiHarian(Request $request)
+    {
+        $businessType = $request->business_type; 
+        $period       = $request->period;        
+        $date         = '2025-09-20';  
+
+        $data = DB::table('all_transaction_items as ati')
+            ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
+            ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
+            ->where('at.transaction_date', '2025-09-20')
+            ->select(
+                'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method')
+            ->get();
+
+        $data = DB::table('all_transaction_items as ati')
+            ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
+            ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
+            ->whereDate('at.transaction_date', '2025-09-20')
+            ->select(
+                'at.user_id',
+                DB::raw('SUM(ati.total) as total_semua'),
+                DB::raw('SUM(CASE WHEN at.payment_method = "cash" THEN ati.total ELSE 0 END) as total_cash'),
+                DB::raw('SUM(CASE WHEN at.payment_method = "qris" THEN ati.total ELSE 0 END) as total_qris'),
+                DB::raw('SUM(CASE WHEN at.payment_method NOT IN ("cash", "qris") THEN ati.total ELSE 0 END) as total_lainnya')
+            )
+            ->groupBy('at.user_id')
+            ->get();
+
+       $total_uang_fisik = DB::table('all_transactions')
+        ->where('payment_method', 'cash')
+        ->sum('total');
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data,
+            'total'   => $total_uang_fisik,
         ]);
     }
 
