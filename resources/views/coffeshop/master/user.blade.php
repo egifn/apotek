@@ -456,7 +456,7 @@
                         phone: insertPhone?.value || '',
                         username: usernameInput?.value || '',
                         password: passwordInput?.value || '',
-                        lokasi: 'coffeshop',
+                        lokasi: '03',
                         level: levelSelect?.value || ''
                     };
 

@@ -257,42 +257,53 @@ class HomeController extends Controller
     {
         $businessType = $request->business_type; 
         $period       = $request->period;        
-        $date         = $request->date;  
+        // $date         = $request->date;  
+        $date         = '2025-09-20';  
 
-        $data = DB::table('all_transaction_items as ati')
+        $query = DB::table('all_transaction_items as ati')
             ->join('all_transactions as at', 'ati.invoice_number', '=', 'at.invoice_number')
             ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
-            ->where('at.user_id', Auth::user()->id)
+            ->join('users as u', 'at.user_id', '=', 'u.id')
+            // ->where('at.user_id', Auth::user()->id)
             ->where('at.transaction_date', $date)
             ->select(
-                'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method')
-            ->get();
+                'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method', 'u.name as nama_kasir');
 
-       $total_uang_fisik = DB::table('all_transactions')
+        // dd(Auth::user()->id);
+        if (Auth::user()->id == '4')
+        {
+            $query->where('at.user_id', Auth::user()->id);
+        }
+
+        $dt_transaksi = $query->get();
+        // dd($dt_transaksi);
+
+        $dt_transaksi_cash = DB::table('all_transactions')
             ->where('payment_method', 'cash')
-            ->where('transaction_date', '2025-09-20')
+            ->where('transaction_date', $date)
             ->sum('total');
 
-        $dataHarian = DB::table('all_transactions as at')
-            ->join('all_transaction_items as ati', 'ati.invoice_number', '=', 'at.invoice_number')
-            ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
+        $data_transaksi_kasir = DB::table('all_transactions as at')
             ->join('users as u', 'at.user_id', '=', 'u.id')
-            ->whereDate('at.transaction_date', '2025-09-20')
+            // kalau mau include nama cabang: ->join('cs_branches as b', 'at.branch_id', '=', 'b.id')
+            ->whereDate('at.transaction_date', $date)
             ->select(
                 'at.user_id',
                 'u.name as user_name',
-                DB::raw('SUM(at.total) as total_semua'),
-                DB::raw('SUM(CASE WHEN at.payment_method = "cash" THEN at.total ELSE 0 END) as total_cash'),
-                DB::raw('SUM(CASE WHEN at.payment_method = "qris" THEN at.total ELSE 0 END) as total_qris'),
-                DB::raw('SUM(CASE WHEN at.payment_method NOT IN ("cash", "qris") THEN at.total ELSE 0 END) as total_lainnya')
+                DB::raw('COALESCE(SUM(at.total), 0) as total_semua'),
+                DB::raw('COALESCE(SUM(CASE WHEN at.payment_method = "cash" THEN at.total ELSE 0 END), 0) as total_cash'),
+                DB::raw('COALESCE(SUM(CASE WHEN at.payment_method = "qris" THEN at.total ELSE 0 END), 0) as total_qris'),
+                DB::raw('COALESCE(SUM(CASE WHEN at.payment_method NOT IN ("cash", "qris") THEN at.total ELSE 0 END), 0) as total_lainnya')
             )
             ->groupBy('at.user_id', 'u.name')
+            ->orderByDesc('total_semua') // opsional: urut dari terbesar
             ->get();
 
         return response()->json([
-            'status' => true,
-            'data'   => $data,
-            'total'   => $total_uang_fisik,
+            'status'                => true,
+            'dt_all_transaksi'      => $dt_transaksi,
+            'dt_all_transaksi_cash' => $dt_transaksi_cash,
+            'dt_transaksi_kasir'    => $data_transaksi_kasir,
         ]);
     }
     
