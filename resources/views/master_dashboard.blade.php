@@ -648,11 +648,11 @@
                     <div class="metric-header">
                         <div>
                             <div class="metric-label">Apotek</div>
-                            <div class="metric-value">Rp 5,250,000</div>
-                            <div class="metric-change up">
+                            <div class="metric-value">RP.</div>
+                            {{-- <div class="metric-change up">
                                 <i class="bi bi-graph-up-arrow" style="margin-right: 10px;"></i>
                                 +12%
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="activity-icon icon-blue"><a href="{{ route('home') }}"><i
                                     class="bi bi-arrow-up-right"></i></a>
@@ -661,13 +661,13 @@
 
                     <div class="metric-stats">
                         <div>
-                            <div class="stat-value">42</div>
+                            {{-- <div class="stat-value">42</div> --}}
                             <div class="stat-label">Transaksi</div>
                         </div>
-                        <div>
+                        {{-- <div>
                             <div class="stat-value" style="color: #dc2626;">8</div>
                             <div class="stat-label">Expired</div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

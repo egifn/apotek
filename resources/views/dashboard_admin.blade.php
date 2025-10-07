@@ -6,37 +6,7 @@
             <h4>Transaksi hari ini</h4>
         </div>
     </div> --}}
-    
     <div class="row">
-        <div class="col-md-6">
-                <div class="card metric-card" style="padding: 10px">
-                    <div class="card-content">
-                        <div class="metric-header">
-                            <div>
-                                <div class="metric-label">Barbershop</div>
-                                <div class="metric-value">Rp.
-                                    {{ number_format($total_pendapatan_barber->ttl_pendapatan_barber, 0, ',', '.') }}</div>
-                                <div class="metric-change down">
-                                    <!-- <i class="bi bi-graph-down-arrow" style="margin-right: 10px;"></i> -->
-                                    <!-- -5% -->
-                                </div>
-                            </div>
-                            <a class="activity-icon icon-blue" href="{{ route('barbershop.dashboard') }}"><i
-                                        class="bi bi-arrow-up-right"></i></a>
-                        </div>
-    
-                        <div class="metric-stats">
-                            <div>
-                                <div class="stat-value">{{ $total_pendapatan_barber->jml }}</div>
-                                <div class="stat-label">Booking</div>
-                            </div>
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="col-lg-12">
             <div class="table-card">
                 <div class="table-card-header" style="display: flex; flex-wrap: wrap;gap: 5px;">

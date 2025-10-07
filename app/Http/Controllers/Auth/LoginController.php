@@ -36,9 +36,9 @@ class LoginController extends Controller
         // Cek role user dan arahkan ke route yang sesuai
         switch ($user->type) { // Sesuaikan dengan kolom yang menyimpan role_id di tabel users
             case 1: // Super Admin
-                return '/dashboard-apotek';
+                return '/dashboard-master';
             case 2: // Admin
-                return '/dashboard-apotek';
+                return '/dashboard-master';
             case 3: // Dokter
                 return '/pemeriksaan/getDataAntrianPeriksa';
             case 4: // Kasir
