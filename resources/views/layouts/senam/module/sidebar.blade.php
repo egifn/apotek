@@ -26,13 +26,13 @@
             <a class="nav-link {{ request()->routeIs('senam.master.class-schedule.index') ? 'active' : '' }}"
                 href="{{ route('senam.master.class-schedule.index') }}">
                 <i class="fas fa-calendar-alt"></i>
-                <span class="nav-link-text">Produk Jasa</span>
+                <span class="nav-link-text">Kelas Senam</span>
             </a>
 
             <a class="nav-link {{ request()->routeIs('senam.master.class-types.index') ? 'active' : '' }}"
                 href="{{ route('senam.master.class-types.index') }}">
                 <i class="fas fa-layer-group"></i>
-                <span class="nav-link-text">Jenis Jasa</span>
+                <span class="nav-link-text">Jenis Kelas</span>
             </a>
 
             <a class="nav-link {{ request()->routeIs('senam.master.instructors.index') ? 'active' : '' }}"
@@ -50,7 +50,7 @@
             <a class="nav-link {{ request()->routeIs('senam.master.members.index') ? 'active' : '' }}"
                 href="{{ route('senam.master.members.index') }}">
                 <i class="fas fa-users"></i>
-                <span class="nav-link-text">Member</span>
+                <span class="nav-link-text">Peserta</span>
             </a>
 
             <a class="nav-link {{ request()->routeIs('senam.master.pegawai.index') ? 'active' : '' }}"

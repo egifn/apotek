@@ -477,7 +477,7 @@
                         phone: insertPhone?.value || '',
                         username: usernameInput?.value || '',
                         password: passwordInput?.value || '',
-                        lokasi: 'Senam',
+                        lokasi: '03',
                         level: levelSelect?.value || ''
                     };
 

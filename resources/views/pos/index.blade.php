@@ -1033,9 +1033,7 @@
                                     <label for="paymentMethod" class="form-label">Metode Pembayaran</label>
                                     <select class="form-control" id="paymentMethod">
                                         <option value="cash">Cash</option>
-                                        <option value="debit">Debit Card</option>
-                                        <option value="credit">Credit Card</option>
-                                        <option value="e-wallet">E-Wallet</option>
+                                        <option value="transfer">Transfer</option>
                                         <option value="qris">QRIS</option>
                                     </select>
                                 </div>
@@ -1088,7 +1086,7 @@
                     </button>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-md-6 mb-2">
                         <div class="form-check">
                             <input class="form-check-input participant-type" type="radio"
@@ -1101,7 +1099,7 @@
                             <label class="form-check-label" for="nonMemberType_{id}">Non-Member</label>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="member-fields">
                     <div class="mb-2 position-relative">
@@ -1382,14 +1380,14 @@
                             data-price="${product.selling_price}" 
                             data-type="product">
                             ${product.image ? `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <img src="${product.image}" class="card-img-top" alt="${product.name}" 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px; object-fit: cover;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ` : `
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                style="height: 150px;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="fas fa-coffee fa-3x text-muted"></i>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <img src="${product.image}" class="card-img-top" alt="${product.name}" 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        style="height: 150px; object-fit: cover;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ` : `
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        style="height: 150px;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="fas fa-coffee fa-3x text-muted"></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                `}
                             <div class="card-body">
                                 <h6 class="card-title">${product.name}</h6>
                                 <p class="card-text">${formatRupiah(product.selling_price)}</p>
@@ -2015,9 +2013,9 @@
                     const participantId = Number(card.getAttribute('data-participant-id'));
 
                     // Ambil tipe peserta
-                    const radioMember = card.querySelector(
-                        `input[name="participantType_${participantId}"]:checked`);
-                    const type = radioMember ? radioMember.value : 'member';
+                    // const radioMember = card.querySelector(
+                    //     `input[name="participantType_${participantId}"]:checked`);
+                    // const type = radioMember ? radioMember.value : 'member';
 
                     let id_member = 0;
                     let memberName = '';
@@ -2028,33 +2026,33 @@
                         price = 0;
                     }
 
-                    if (type === 'member') {
-                        const memberInput = card.querySelector('.member-search-input');
-                        memberName = memberInput ? memberInput.value : '';
-                        let participantData = participants.find(p => p.participantId === participantId);
-                        id_member = participantData && participantData.member_id ? participantData
-                            .member_id : 0;
-                        if (!id_member && memberInput && memberInput.dataset.memberId) {
-                            id_member = memberInput.dataset.memberId;
-                        }
-                        addToOrder(
-                            `${selectedClassData.jenis} ${selectedClassData.name} - ${memberName}${price === 0 ? '' : ''}`,
-                            price,
-                            'class',
-                            selectedClassData.id,
-                            id_member
-                        );
-                    } else if (type === 'non_member') {
-                        const nonMemberName = card.querySelector('.non-member-name')?.value || '';
-                        const nonMemberPhone = card.querySelector('.non-member-phone')?.value || '';
-                        addToOrder(
-                            `${selectedClassData.jenis} ${selectedClassData.name} - ${nonMemberName} (Non-Member)`,
-                            price,
-                            'class',
-                            selectedClassData.id,
-                            0
-                        );
+                    // if (type === 'member') {
+                    const memberInput = card.querySelector('.member-search-input');
+                    memberName = memberInput ? memberInput.value : '';
+                    let participantData = participants.find(p => p.participantId === participantId);
+                    id_member = participantData && participantData.member_id ? participantData
+                        .member_id : 0;
+                    if (!id_member && memberInput && memberInput.dataset.memberId) {
+                        id_member = memberInput.dataset.memberId;
                     }
+                    addToOrder(
+                        `${selectedClassData.jenis} ${selectedClassData.name} - ${memberName}${price === 0 ? '' : ''}`,
+                        price,
+                        'class',
+                        selectedClassData.id,
+                        id_member
+                    );
+                    // } else if (type === 'non_member') {
+                    //     const nonMemberName = card.querySelector('.non-member-name')?.value || '';
+                    //     const nonMemberPhone = card.querySelector('.non-member-phone')?.value || '';
+                    //     addToOrder(
+                    //         `${selectedClassData.jenis} ${selectedClassData.name} - ${nonMemberName} (Non-Member)`,
+                    //         price,
+                    //         'class',
+                    //         selectedClassData.id,
+                    //         0
+                    //     );
+                    // }
                 });
             }
 

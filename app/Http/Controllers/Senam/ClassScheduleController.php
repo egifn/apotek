@@ -94,13 +94,14 @@ class ClassScheduleController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'class_type_id' => 'required|exists:s_class_types,id',
-            // 'instructor_id' => 'required|exists:s_instructors,id',
+            'instructor_id' => 'required|exists:s_instructors,id',
             'location_id' => 'required|exists:s_locations,id',
-            'services_name' => 'required|string|max:255',
-            // 'type_services' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
+            'member_price' => 'required|numeric|min:0',
+            'profit_share' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -112,15 +113,18 @@ class ClassScheduleController extends Controller
             ]);
         }
 
+        $class_name = $request->type_services . ' (' . $request->instructor_id . ')' ;
+
         DB::beginTransaction();
         try {
             $data = [
+                'services_name' => $class_name,
                 'class_type_id' => $request->class_type_id,
                 'instructor_id' => $request->instructor_id,
                 'location_id' => $request->location_id,
-                'services_name' => $request->services_name,
-                'type_services' => $request->type_services,
                 'price' => $request->price,
+                'member_price' => $request->member_price,
+                'profit_share' => $request->profit_share,
                 'is_active' => true
             ];
 

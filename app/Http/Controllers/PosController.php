@@ -118,7 +118,7 @@ class PosController extends Controller
 
     public function processTransaction(Request $request)
     {
-        // dd($request->all());
+        // dd($request->items);
         $validator = Validator::make($request->all(), [
             'business_type' => 'required|in:'.implode(',', self::VALID_BUSINESS_TYPES),
             'items' => 'required|array|min:1',
@@ -216,9 +216,7 @@ class PosController extends Controller
 
     private function processTransactionItem($transactionId, $item, $businessType, $invoiceNumber)
     {
-        // dd($item);
         $metadata = [];
-        // Handle different item types
         if ($businessType === 'exercise') {
             if ($item['price'] != 0 &&  $item['member_id'] != '0') {
             
@@ -279,15 +277,20 @@ class PosController extends Controller
                 ];
             }
         } else if ($businessType === 'cafe'){
-            // dd($item);
+            $id_product = $item['id'];
+            $data_ingredients = DB::table('cs_product_compositions')
+                ->where('product_id', $id_product)
+                ->get();
+            
+            foreach ($data_ingredients as $ingredient) {
+                DB::table('cs_stocks')
+                    ->where('id_ingredients', $ingredient->ingredient_id)
+                    ->decrement('stock_available', $ingredient->quantity);
+            }
         }
 
-
-
-        // Untuk item class, ID bisa string (UUID) atau numeric
         $itemId = $item['id'];
         if ($item['type'] === 'class' && !is_numeric($itemId)) {
-            // Jika ID class bukan numeric, gunakan class_type_id atau buat ID khusus
             $itemId = isset($item['class_type_id']) ? $item['class_type_id'] : 0;
         }
 
@@ -444,6 +447,7 @@ class PosController extends Controller
 
     public function searchMembers(Request $request)
     {
+        dd($request->all());
         try {
             $query = $request->input('search', '');
             
@@ -455,7 +459,6 @@ class PosController extends Controller
                     $q->where('name', 'like', "%{$query}%");
                 })
                 ->orderBy('name')
-                ->limit(20)
                 ->get();
 
             return response()->json([

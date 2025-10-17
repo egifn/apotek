@@ -1,12 +1,6 @@
 @extends('layouts.kasir')
 @section('page-title', 'Transaksi hari ini')
 @section('content')
-    {{-- <div class="row mb-4">
-        <div class="col-md-8">
-            <h4>Transaksi hari ini</h4>
-        </div>
-    </div> --}}
-
     <div class="row" id="kasir" @if (Auth::user()->type == 4) style="display:none;" @endif></div>
 
     <div class="col-lg-12">
@@ -34,7 +28,6 @@
                     </div>
                 </div>
                 <h5>Rekap Transaksi Hari Ini</h5>
-                {{-- <p style="margin: 0">Nama Kasir : &nbsp; {{ Auth::user()->username }}</p> --}}
             </div>
 
             <div class="card-body" style="padding:0">

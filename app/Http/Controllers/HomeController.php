@@ -101,9 +101,7 @@ class HomeController extends Controller
     public function dashboard_kasir()
     {
         date_default_timezone_set('Asia/Jakarta');
-        // $date = (date('Y-m-d'));
         $date = '2025-09-20';
-        
 
         $total_pendapatan = DB::table('all_transactions')
                 ->select(DB::raw('SUM(all_transactions.total) as ttl_pendapatan'))
@@ -148,7 +146,6 @@ class HomeController extends Controller
                 ->get();
 
         return view('dashboard_kasir', compact('total_pendapatan', 'total_pendapatan_cafe', 'total_pendapatan_barber', 'total_pendapatan_senam', 'data_transaksi' ));
-        
     }
 
     public function index2()
@@ -269,14 +266,12 @@ class HomeController extends Controller
             ->select(
                 'ati.*', 'at.transaction_date', 'at.branch_id', 'at.user_id', 'at.payment_method', 'u.name as nama_kasir');
 
-        // dd(Auth::user()->id);
         if (Auth::user()->id == '4')
         {
             $query->where('at.user_id', Auth::user()->id);
         }
 
         $dt_transaksi = $query->get();
-        // dd($dt_transaksi);
 
         $dt_transaksi_cash = DB::table('all_transactions')
             ->where('payment_method', 'cash')
